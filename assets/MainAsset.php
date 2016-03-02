@@ -5,25 +5,26 @@
  * @license http://www.yiiframework.com/license/
  */
 
-namespace app\assets;
+namespace assets;
 
-use yii\web\AssetBundle;
+use abstracts\AssetAbstract;
 
-/**
- * @author Qiang Xue <qiang.xue@gmail.com>
- * @since 2.0
- */
-class AppAsset extends AssetBundle
+class MainAsset extends AssetAbstract
 {
-    public $basePath = '@webroot';
-    public $baseUrl = '@web';
+    public $theme = 'main';
+
     public $css = [
-        'css/site.css',
+        'css/main.css',
     ];
+
     public $js = [
+        'js/main.js',
     ];
+
     public $depends = [
-        'yii\web\YiiAsset',
+        'yii\web\JqueryAsset',
         'yii\bootstrap\BootstrapAsset',
+        'yii\bootstrap\BootstrapPluginAsset',
+        'yii\web\YiiAsset',
     ];
 }
