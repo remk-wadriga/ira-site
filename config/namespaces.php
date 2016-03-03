@@ -11,4 +11,5 @@ return [
     // Modules namespaces
     'front' => 'modules/front',
     'admin' => 'modules/admin',
+    'site' => 'modules/site',
 ];

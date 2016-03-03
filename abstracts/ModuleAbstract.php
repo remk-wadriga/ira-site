@@ -14,7 +14,7 @@ use yii\base\Module;
 class ModuleAbstract extends Module
 {
     public $theme;
-    public $layout = 'main';
+    public $layout;
     public $themeBasePath = '@app/themes';
 
     public function init()
@@ -22,8 +22,11 @@ class ModuleAbstract extends Module
         if ($this->theme === null) {
             $this->theme = $this->id;
         }
-        $this->setLayoutPath($this->themeBasePath . '/' . $this->id . '/' . 'layouts');
-        $this->setViewPath($this->themeBasePath . '/' . $this->id . '/' . 'views');
+        if ($this->layout === null) {
+            $this->layout = $this->id;
+        }
+        $this->setLayoutPath($this->themeBasePath . '/main/layouts');
+        $this->setViewPath($this->themeBasePath . '/' . $this->id .  '/views');
 
         parent::init();
     }
@@ -31,5 +34,13 @@ class ModuleAbstract extends Module
     public function getStaticPath()
     {
         return $this->themeBasePath . '/' . $this->id . '/static';
+    }
+
+    /**
+     * @return \abstracts\AssetAbstract | \abstracts\AssetAbstract[]
+     */
+    public function getAssets()
+    {
+        return 'assets\\' . ucfirst($this->id) . 'Asset';
     }
 }

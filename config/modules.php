@@ -7,4 +7,7 @@ return [
     'admin' => [
         'class' => 'admin\AdminModule',
     ],
+    'site' => [
+        'class' => 'site\SiteModule',
+    ],
 ];

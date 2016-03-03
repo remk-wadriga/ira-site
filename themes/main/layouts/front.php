@@ -11,9 +11,18 @@
  */
 
 use yii\helpers\Html;
-use assets\FrontAsset;
 
-FrontAsset::register($this);
+// Register module assets
+if (Yii::$app->controller->module !== null) {
+    $assetClass = Yii::$app->controller->module->getAssets();
+    if (is_array($assetClass)) {
+        foreach ($assetClass as $asset) {
+            $asset::register($this);
+        }
+    } else {
+        $assetClass::register($this);
+    }
+}
 ?>
 
 <?php $this->beginPage() ?>

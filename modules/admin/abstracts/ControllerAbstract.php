@@ -13,5 +13,16 @@ use abstracts\ControllerAbstract as BaseController;
 
 abstract class ControllerAbstract extends BaseController
 {
+    public function beforeAction($action)
+    {
+        if (!parent::beforeAction($action)) {
+            return false;
+        }
 
+        if (!Yii::$app->user->isAdmin) {
+            return $this->redirect(['/site/auth/login']);
+        }
+
+        return true;
+    }
 }

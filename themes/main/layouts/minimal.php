@@ -11,15 +11,24 @@
  */
 
 use yii\helpers\Html;
-use assets\AdminAsset;
 
-AdminAsset::register($this);
+// Register module assets
+if (Yii::$app->controller->module !== null) {
+    $assetClass = Yii::$app->controller->module->getAssets();
+    if (is_array($assetClass)) {
+        foreach ($assetClass as $asset) {
+            $asset::register($this);
+        }
+    } else {
+        $assetClass::register($this);
+    }
+}
 ?>
 
 <?php $this->beginPage() ?>
 
-    <!DOCTYPE html>
-    <html lang="<?= Yii::$app->language ?>">
+<!DOCTYPE html>
+<html lang="<?= Yii::$app->language ?>">
 
     <head>
         <meta charset="<?= Yii::$app->charset ?>">
@@ -30,13 +39,13 @@ AdminAsset::register($this);
     </head>
 
     <body>
-    <?php $this->beginBody() ?>
+        <?php $this->beginBody() ?>
 
-    <?= $content ?>
+        <?= $content ?>
 
-    <?php $this->endBody() ?>
+        <?php $this->endBody() ?>
     </body>
 
-    </html>
+</html>
 
 <?php $this->endPage() ?>

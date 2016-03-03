@@ -10,10 +10,6 @@ return [
     'cache' => [
         'class' => 'yii\caching\FileCache',
     ],
-    'user' => [
-        'identityClass' => 'models\User',
-        'enableAutoLogin' => true,
-    ],
     'errorHandler' => [
         'errorAction' => 'site/error',
     ],
@@ -41,5 +37,10 @@ return [
 
     'view' => [
         'class' => 'components\View',
+    ],
+    'user' => [
+        'class' => 'components\UserService',
+        'identityClass' => 'models\User',
+        'enableAutoLogin' => true,
     ],
 ];

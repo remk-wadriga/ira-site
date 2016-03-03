@@ -3,6 +3,9 @@
 return [
 // Landing page
     '/'                                                                             => 'front/index/index',
+    'login'                                                                         => 'site/auth/login',
+    'logout'                                                                        => 'site/auth/logout',
+    'register'                                                                      => 'site/auth/register',
 
     // Modules base routing
     '<module>/<controller>/<id:\d+>/<action>/<tab:\w+>'                             => '<module>/<controller>/<action>',
