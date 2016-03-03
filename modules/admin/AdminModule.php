@@ -2,9 +2,9 @@
 
 namespace admin;
 
-use yii\base\Module;
+use abstracts\ModuleAbstract;
 
-class AdminModule extends Module
+class AdminModule extends ModuleAbstract
 {
     public $controllerNamespace = 'admin\controllers';
 

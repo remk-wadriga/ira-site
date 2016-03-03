@@ -23,8 +23,6 @@ class MainAsset extends AssetAbstract
 
     public $depends = [
         'yii\web\JqueryAsset',
-        'yii\bootstrap\BootstrapAsset',
-        'yii\bootstrap\BootstrapPluginAsset',
         'yii\web\YiiAsset',
     ];
 }

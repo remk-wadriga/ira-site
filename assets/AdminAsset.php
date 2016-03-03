@@ -21,6 +21,8 @@ class AdminAsset extends AssetAbstract
     ];
 
     public $depends = [
+        'yii\bootstrap\BootstrapAsset',
+        'yii\bootstrap\BootstrapPluginAsset',
         'assets\MainAsset',
     ];
 }
