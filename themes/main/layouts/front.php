@@ -14,13 +14,21 @@ use yii\helpers\Html;
 
 // Register module assets
 if (Yii::$app->controller->module !== null) {
+    $scriptParams = array_merge($this->scriptParams, [
+        'dateFormat' => Yii::$app->params['dateScriptsFormat'],
+        'timeFormat' => Yii::$app->params['timeScriptsFormat'],
+        'dateTimeFormat' => Yii::$app->params['dateTimeScriptsFormat'],
+    ]);
+
     $assetClass = Yii::$app->controller->module->getAssets();
     if (is_array($assetClass)) {
         foreach ($assetClass as $asset) {
             $asset::register($this);
+            $this->registerJs($asset::getScriptsString($scriptParams));
         }
     } else {
         $assetClass::register($this);
+        $this->registerJs($assetClass::getScriptsString($scriptParams));
     }
 }
 ?>

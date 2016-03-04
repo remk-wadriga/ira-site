@@ -7,6 +7,7 @@ return [
     'components' => 'components',
     'models' => 'models',
     'collections' => 'collections',
+    'interfaces' => 'interfaces',
 
     // Modules namespaces
     'front' => 'modules/front',

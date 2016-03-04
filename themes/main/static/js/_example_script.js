@@ -1,15 +1,16 @@
-Main = {
+Example = {
+
     init: function (data) {
         if (data !== undefined) {
             $.each(data, function (index, value) {
-                if (Main[index] !== undefined) {
-                    Main[index] = value;
+                if (Example[index] !== undefined) {
+                    Example[index] = value;
                 }
             });
         }
 
-        Main.setAutoFunctions();
-        Main.setHandlers();
+        Example.setAutoFunctions();
+        Example.setHandlers();
     },
 
     setAutoFunctions: function () {
@@ -44,4 +45,5 @@ Main = {
     // Private functions
 
     // END Private functions
+
 };

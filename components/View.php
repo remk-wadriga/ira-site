@@ -12,8 +12,16 @@ namespace components;
 use Yii;
 use yii\web\View as YiiView;
 
+/**
+ * Class View
+ * @package components
+ *
+ * @property array $scriptParams
+ */
 class View extends YiiView
 {
+    private $_scriptParams = [];
+
     /**
      * Translate string
      *
@@ -55,5 +63,15 @@ class View extends YiiView
     public function getSuccess()
     {
         return Yii::$app->getSession()->getFlash('success');
+    }
+
+    // scriptParams
+    public function setScriptParams($params = [])
+    {
+        $this->_scriptParams = array_merge($this->_scriptParams, $params);
+    }
+    public function getScriptParams()
+    {
+        return $this->_scriptParams;
     }
 }

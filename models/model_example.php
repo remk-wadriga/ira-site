@@ -3,15 +3,13 @@
  * Created by PhpStorm.
  * User: Dima
  * Date: 04.03.2016
- * Time: 14:30
+ * Time: 14:31
  */
 
 namespace models;
 
-use abstracts\ModelAbstract;
-use interfaces\IdentityInterface;
 
-class User extends ModelAbstract implements IdentityInterface
+class _example_model
 {
     public static function tableName()
     {
@@ -82,41 +80,7 @@ class User extends ModelAbstract implements IdentityInterface
     // END Private static methods
 
 
-    // Implements IdentityInterface
+    // Implements <some interface>
 
-    /**
-     * @param int|string $id
-     * @return null|User
-     */
-    public static function findIdentity($id)
-    {
-        return self::findOne($id);
-    }
-
-    /**
-     * @param string $token
-     * @param string $type
-     * @return null|User
-     */
-    public static function findIdentityByAccessToken($token, $type = null)
-    {
-        return null;
-    }
-
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    public function getAuthKey()
-    {
-        return null;
-    }
-
-    public function validateAuthKey($authKey)
-    {
-        return false;
-    }
-
-    // END Implements IdentityInterface
+    // END Implements <some interface>
 }

@@ -25,4 +25,9 @@ class AdminAsset extends AssetAbstract
         'yii\bootstrap\BootstrapPluginAsset',
         'assets\MainAsset',
     ];
+
+    public static function scriptName()
+    {
+        return 'Admin';
+    }
 }

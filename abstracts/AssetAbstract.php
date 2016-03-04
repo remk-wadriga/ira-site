@@ -12,8 +12,16 @@ namespace abstracts;
 use Yii;
 use yii\web\AssetBundle;
 
+/**
+ * Class AssetAbstract
+ * @package abstracts
+ */
 class AssetAbstract extends AssetBundle
 {
+    protected $scriptName;
+
+    protected static $_scripts = [];
+
     public $theme;
     public $path;
 
@@ -34,14 +42,6 @@ class AssetAbstract extends AssetBundle
             }
         }
 
-        $scripts = $this->getScripts();
-        if (!empty($scripts)) {
-            $view = Yii::$app->controller->view;
-            foreach ($scripts as $script) {
-                $view->registerJs($script);
-            }
-        }
-
         if ($this->path !== null) {
             foreach ($this->css as $index => $css) {
                 $this->css[$index] = $this->path . $css;
@@ -51,11 +51,46 @@ class AssetAbstract extends AssetBundle
             }
         }
 
+        self::$_scripts[] = static::scriptName();
+
         $this->sourcePath = $path;
     }
 
-    public function getScripts()
+    public static function getScriptsString($params = [])
+    {
+        $params = array_merge(static::getScriptParams(), $params);
+
+        $paramsString = '';
+        foreach ($params as $name => $value) {
+            $paramsString .= "    {$name}: '{$value}',\n";
+        }
+        $strLen = strlen($paramsString);
+        if ($strLen > 0) {
+            $paramsString = substr($paramsString, 0, $strLen - 1);
+        }
+
+        $scriptString = '';
+        $scripts = array_reverse(static::getScripts());
+        foreach ($scripts as $script) {
+            if ($script !== null) {
+                $scriptString .= "{$script}.init({\n{$paramsString}\n});\n";
+            }
+        }
+        return $scriptString;
+    }
+
+    public static function getScripts()
+    {
+        return static::$_scripts;
+    }
+
+    public static function getScriptParams()
     {
         return [];
+    }
+
+    public static function scriptName()
+    {
+        return null;
     }
 }

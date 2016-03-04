@@ -16,6 +16,8 @@ $config = [
     'components' => $components,
     'params' => $params,
     'modules' => require(__DIR__ . '/modules.php'),
+    'language' => 'ru',
+    'sourceLanguage' => 'en',
 ];
 
 if (YII_ENV_DEV) {

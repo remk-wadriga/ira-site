@@ -16,11 +16,10 @@ use yii\web\User;
  *
  * @property string $role
  * @property bool $isAdmin
+ * @property \interfaces\IdentityInterface $identity
  */
 class UserService extends User
 {
-
-
     // Getters
     public function getRole()
     {

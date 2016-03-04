@@ -23,4 +23,9 @@ class FrontAsset extends AssetAbstract
     public $depends = [
         'assets\MainAsset',
     ];
+
+    public static function scriptName()
+    {
+        return 'Front';
+    }
 }

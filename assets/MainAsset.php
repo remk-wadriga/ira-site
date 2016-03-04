@@ -12,6 +12,7 @@ use abstracts\AssetAbstract;
 class MainAsset extends AssetAbstract
 {
     public $theme = 'main';
+    public $path = 'static/';
 
     public $css = [
         'css/main.css',
@@ -25,4 +26,9 @@ class MainAsset extends AssetAbstract
         'yii\web\JqueryAsset',
         'yii\web\YiiAsset',
     ];
+
+    public static function scriptName()
+    {
+        return 'Main';
+    }
 }

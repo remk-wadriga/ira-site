@@ -34,6 +34,17 @@ return [
         'rules' => $routes,
         'enableStrictParsing' => true,
     ],
+    'i18n' => [
+        'translations' => [
+            '*' => [
+                'class' => 'yii\i18n\PhpMessageSource',
+            ],
+        ],
+    ],
+    'assetManager' => [
+        'appendTimestamp' => true,
+        'forceCopy' => true,
+    ],
 
     'view' => [
         'class' => 'components\View',
