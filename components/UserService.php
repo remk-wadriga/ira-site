@@ -17,6 +17,7 @@ use yii\web\User;
  * @property string $role
  * @property bool $isAdmin
  * @property \interfaces\IdentityInterface $identity
+ * @property string $fullName
  */
 class UserService extends User
 {
@@ -28,6 +29,14 @@ class UserService extends User
     public function getIsAdmin()
     {
         return $this->getRole() == 'admin';
+    }
+    public function getFullName()
+    {
+        if ($this->identity === null) {
+            return 'Guest';
+        }
+
+        return $this->identity->getFirstName() . ' ' . $this->identity->getLastName();
     }
     // END Getters
 }

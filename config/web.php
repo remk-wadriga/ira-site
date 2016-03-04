@@ -10,7 +10,7 @@ foreach($namespaces as $alias => $path){
 }
 
 $config = [
-    'id' => 'basic',
+    'id' => 'Ira',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'components' => $components,

@@ -45,6 +45,12 @@ return [
         'appendTimestamp' => true,
         'forceCopy' => true,
     ],
+    'formatter' => [
+        'class' => 'components\FormatterService',
+        'dateFormat' => 'php:' . $params['dateFormat'],
+        'datetimeFormat' => 'php:' . $params['datetimeFormat'],
+        'timeFormat' => 'php:' . $params['timeFormat'],
+    ],
 
     'view' => [
         'class' => 'components\View',

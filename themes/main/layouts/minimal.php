@@ -11,6 +11,9 @@
  */
 
 use yii\helpers\Html;
+use yii\bootstrap\Nav;
+use yii\bootstrap\NavBar;
+use yii\widgets\Breadcrumbs;
 
 // Register module assets
 if (Yii::$app->controller->module !== null) {
@@ -32,6 +35,25 @@ if (Yii::$app->controller->module !== null) {
     }
 }
 
+$items = [
+    ['label' => $this->t('Home'), 'url' => ['/site/index/index']],
+];
+
+if (Yii::$app->user->isGuest) {
+    $items[] = ['label' => $this->t('Login'), 'url' => ['/site/auth/login']];
+    $items[] = ['label' => $this->t('Register'), 'url' => ['/site/auth/register']];
+} else {
+    $items[] = (
+        '<li>'
+        . Html::beginForm(['/site/auth/logout'], 'post')
+        . Html::submitButton(
+            'Logout (' . Yii::$app->user->fullName . ')',
+            ['class' => 'btn btn-link']
+        )
+        . Html::endForm()
+        . '</li>'
+    );
+}
 ?>
 
 <?php $this->beginPage() ?>
@@ -50,7 +72,37 @@ if (Yii::$app->controller->module !== null) {
     <body>
         <?php $this->beginBody() ?>
 
-        <?= $content ?>
+        <div class="wrap">
+            <?php
+            NavBar::begin([
+                'brandLabel' => Yii::$app->id,
+                'brandUrl' => Yii::$app->homeUrl,
+                'options' => [
+                    'class' => 'navbar-inverse navbar-fixed-top',
+                ],
+            ]);
+            echo Nav::widget([
+                'options' => ['class' => 'navbar-nav navbar-right'],
+                'items' => $items,
+            ]);
+            NavBar::end();
+            ?>
+
+            <div class="container">
+                <?= Breadcrumbs::widget([
+                    'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
+                ]) ?>
+                <?= $content ?>
+            </div>
+        </div>
+
+        <footer class="footer">
+            <div class="container">
+                <p class="pull-left">&copy; <?= Yii::$app->id ?> <?= date('Y') ?></p>
+
+                <p class="pull-right"><?= Yii::powered() ?></p>
+            </div>
+        </footer>
 
         <?php $this->endBody() ?>
     </body>

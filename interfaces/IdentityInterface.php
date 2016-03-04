@@ -24,4 +24,14 @@ interface IdentityInterface extends BaseIdentityInterface
      * @return IdentityInterface
      */
     public static function findIdentityByAccessToken($token, $type = null);
+
+    /**
+     * @return string
+     */
+    public function getFirstName();
+
+    /**
+     * @return string
+     */
+    public function getLastName();
 }
