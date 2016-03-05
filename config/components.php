@@ -62,7 +62,7 @@ return [
         'enableAutoLogin' => true,
         'on afterRegister' => ['site\listeners\UserListener', 'handleUserRegister'],
         'on afterLogin' => ['site\listeners\UserListener', 'handleUserLogin'],
-        'on afterLogout' => ['site\listeners\UserListener', 'handleUserLogout'],
+        'on beforeLogout' => ['site\listeners\UserListener', 'handleUserLogout'],
     ],
     'time' => [
         'class' => 'components\TimeService',

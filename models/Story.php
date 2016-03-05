@@ -198,14 +198,20 @@ class Story extends ModelAbstract
      */
     public static function write(StoryInterface $object)
     {
-        $newStory = new self([
-            'targetID' => $object->getID(),
-            'targetClass' => $object::className(),
-            'action' => $object->getStoryAction(),
-            'fields' => $object->getStoryFields(),
-            'oldValues' => $object->getStoryOldValues(),
-            'newValues' => $object->getStoryNewValues(),
-        ]);
+        $newStory = new self();
+
+        $newStory->targetID = $object->getID();
+        $newStory->targetClass = $object::className();
+        $newStory->action = $object->getStoryAction();
+        if ($fields = $object->getStoryFields()) {
+            $newStory->fields = $fields;
+        }
+        if ($oldValues = $object->getStoryOldValues()) {
+            $newStory->oldValues = $oldValues;
+        }
+        if ($newValues = $object->getStoryNewValues()) {
+            $newStory->newValues = $newValues;
+        }
 
         return $newStory->save();
     }
