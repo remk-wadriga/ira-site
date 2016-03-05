@@ -27,18 +27,41 @@ class AuthController extends ControllerAbstract
 
     public function actionLogin()
     {
-        return $this->render();
+        if (!Yii::$app->user->isGuest) {
+            return $this->goHome();
+        }
+
+        $user = new User();
+
+        if ($user->load($this->post())) {
+            $account = $user->getAccount();
+            if ($account !== null && Yii::$app->user->login($account, $user->getSessionTime())) {
+                return $this->goBack();
+            }
+        }
+
+        return $this->render([
+            'user' => $user,
+        ]);
     }
 
     public function actionRegister()
     {
         $user = new User();
         if ($user->load($this->post()) && $user->save()) {
+            Yii::$app->user->login($user, $user->getSessionTime());
             return $this->redirect(['/front/index/index']);
         }
 
         return $this->render([
             'user' => $user,
         ]);
+    }
+
+    public function actionLogout()
+    {
+        Yii::$app->user->logout();
+
+        return $this->goHome();
     }
 }

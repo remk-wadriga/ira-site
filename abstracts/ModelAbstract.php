@@ -10,8 +10,9 @@ namespace abstracts;
 
 use Yii;
 use yii\db\ActiveRecord;
+use interfaces\ModelInterface;
 
-class ModelAbstract extends ActiveRecord
+class ModelAbstract extends ActiveRecord implements ModelInterface
 {
     private static $_items;
 

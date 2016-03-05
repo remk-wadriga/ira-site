@@ -11,6 +11,7 @@ namespace models;
 use Yii;
 use abstracts\ModelAbstract;
 use interfaces\IdentityInterface;
+use DateTime;
 
 /**
  * This is the model class for table "user".
@@ -43,6 +44,8 @@ class User extends ModelAbstract implements IdentityInterface
     const STATUS_FROZEN = 'frozen';
     const STATUS_BANNED = 'banned';
     const STATUS_DELETED = 'deleted';
+
+    public $rememberMe = true;
 
     private static $_roles = [
         self::ROLE_USER,
@@ -88,7 +91,7 @@ class User extends ModelAbstract implements IdentityInterface
             [['firstName', 'lastName'], 'string', 'max' => 126],
             [['phone'], 'string', 'max' => 24],
             ['info', 'string'],
-            [['dateRegister', 'dateLastLogin'], 'safe'],
+            [['dateRegister', 'dateLastLogin', 'rememberMe'], 'safe'],
         ];
     }
 
@@ -124,7 +127,7 @@ class User extends ModelAbstract implements IdentityInterface
         }
 
         if (!$this->dateRegister) {
-            $this->dateRegister = Yii::$app->formatter->asDatetime();
+            $this->dateRegister = Yii::$app->time->getCurrentDateTime();
         }
         if (!$this->passwordHash) {
             $this->passwordHash = $this->generatePasswordHash();
@@ -140,10 +143,10 @@ class User extends ModelAbstract implements IdentityInterface
         }
 
         if ($this->dateRegister) {
-            $this->dateRegister = Yii::$app->formatter->asDatetime($this->dateRegister);
+            $this->dateRegister = Yii::$app->time->formatDateTime($this->dateRegister);
         }
         if ($this->dateLastLogin) {
-            $this->dateLastLogin = Yii::$app->formatter->asDatetime($this->dateLastLogin);
+            $this->dateLastLogin = Yii::$app->time->formatDateTime($this->dateLastLogin);
         }
 
         return true;
@@ -247,6 +250,41 @@ class User extends ModelAbstract implements IdentityInterface
         return $this->t($name);
     }
 
+    /**
+     * @return null|User
+     */
+    public function getAccount()
+    {
+        if (!$this->email) {
+            $this->addError('email', $this->t('Email can not be empty'));
+            return null;
+        }
+        if (!$this->password) {
+            $this->addError('password', $this->t('Password can not be empty'));
+            return null;
+        }
+
+        $account = self::findOne(['email' => $this->email]);
+        if ($account === null) {
+            $this->addError('email', $this->t('Email or password is incorrect'));
+            return null;
+        }
+
+        $this->dateRegister = $account->dateRegister;
+
+        if ($account->passwordHash != $this->generatePasswordHash()) {
+            $this->addError('email', $this->t('Email or password is incorrect'));
+            return null;
+        }
+
+        return $account;
+    }
+
+    public function getSessionTime()
+    {
+        return $this->rememberMe ? 3600*24*7 : Yii::$app->params['userSessionTime'];
+    }
+
     // END Public methods
 
 
@@ -276,10 +314,9 @@ class User extends ModelAbstract implements IdentityInterface
             return null;
         }
 
-        $date = Yii::$app->formatter->asDatetime($this->dateRegister);
-        $salt = Yii::$app->params['salt'];
+        $date = Yii::$app->time->formatDateTime($this->dateRegister);
 
-        return md5($date . $password . $this->email . $salt);
+        return md5($date . trim($password) . trim($this->email) . Yii::$app->params['salt']);
     }
 
     // END Private methods
@@ -309,11 +346,6 @@ class User extends ModelAbstract implements IdentityInterface
     public static function findIdentityByAccessToken($token, $type = null)
     {
         return null;
-    }
-
-    public function getId()
-    {
-        return $this->id;
     }
 
     public function getAuthKey()

@@ -19,6 +19,8 @@ $messages = [
     'Please fill out the following fields to register'                                                                  => '',
     'Please fill out the following fields to login'                                                                     => '',
     'Home'                                                                                                              => '',
+    'Logout ({name})'                                                                                                   => '',
+    'Are you sure you want to leave the system'                                                                         => '',
 ];
 
 return array_merge($messages, require(__DIR__ . '/error.php'), require(__DIR__ . '/flash.php'));

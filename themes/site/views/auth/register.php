@@ -16,7 +16,7 @@ $this->title = $this->t('Register');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<div class="login-page">
+<div class="register-page">
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p><?= $this->t('Please fill out the following fields to register') ?>:</p>

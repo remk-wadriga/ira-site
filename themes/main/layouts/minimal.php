@@ -36,23 +36,19 @@ if (Yii::$app->controller->module !== null) {
 }
 
 $items = [
-    ['label' => $this->t('Home'), 'url' => ['/site/index/index']],
+    ['label' => $this->t('Home'), 'url' => ['/front/index/index']],
 ];
 
 if (Yii::$app->user->isGuest) {
     $items[] = ['label' => $this->t('Login'), 'url' => ['/site/auth/login']];
     $items[] = ['label' => $this->t('Register'), 'url' => ['/site/auth/register']];
 } else {
-    $items[] = (
-        '<li>'
-        . Html::beginForm(['/site/auth/logout'], 'post')
-        . Html::submitButton(
-            'Logout (' . Yii::$app->user->fullName . ')',
-            ['class' => 'btn btn-link']
-        )
-        . Html::endForm()
-        . '</li>'
-    );
+    $items[] = ['label' => $this->t('Logout ({name})', ['name' => Yii::$app->user->fullName]), 'url' => ['/site/auth/logout'], 'linkOptions' => [
+        'data' => [
+            'type' => 'POST',
+            'confirm' => $this->t('Are you sure you want to leave the system') . '?',
+        ],
+    ]];
 }
 ?>
 
@@ -74,26 +70,30 @@ if (Yii::$app->user->isGuest) {
 
         <div class="wrap">
             <?php
-            NavBar::begin([
-                'brandLabel' => Yii::$app->id,
-                'brandUrl' => Yii::$app->homeUrl,
-                'options' => [
-                    'class' => 'navbar-inverse navbar-fixed-top',
-                ],
-            ]);
-            echo Nav::widget([
-                'options' => ['class' => 'navbar-nav navbar-right'],
-                'items' => $items,
-            ]);
-            NavBar::end();
+                NavBar::begin([
+                    'brandLabel' => Yii::$app->id,
+                    'brandUrl' => Yii::$app->homeUrl,
+                    'options' => [
+                        'class' => 'navbar-inverse navbar-fixed-top',
+                    ],
+                ]);
+                echo Nav::widget([
+                    'options' => ['class' => 'navbar-nav navbar-right'],
+                    'items' => $items,
+                ]);
+                NavBar::end();
             ?>
 
-            <div class="container">
+            <div class="container content-wrap">
                 <?= Breadcrumbs::widget([
+                    'homeLink' => ['label' => $this->t('Home'), 'url' => ['/front/index/index']],
                     'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
                 ]) ?>
-                <?= $content ?>
+                <div class="content">
+                    <?= $content ?>
+                </div>
             </div>
+
         </div>
 
         <footer class="footer">

@@ -48,8 +48,9 @@ return [
     'formatter' => [
         'class' => 'components\FormatterService',
         'dateFormat' => 'php:' . $params['dateFormat'],
-        'datetimeFormat' => 'php:' . $params['datetimeFormat'],
+        'datetimeFormat' => 'php:' . $params['dateTimeFormat'],
         'timeFormat' => 'php:' . $params['timeFormat'],
+        'timeZone' => $params['timeZone'],
     ],
 
     'view' => [
@@ -59,5 +60,11 @@ return [
         'class' => 'components\UserService',
         'identityClass' => 'models\User',
         'enableAutoLogin' => true,
+    ],
+    'time' => [
+        'class' => 'components\TimeService',
+        'dateFormat' => $params['dateFormat'],
+        'dateTimeFormat' => $params['dateTimeFormat'],
+        'timeFormat' => $params['timeFormat'],
     ],
 ];

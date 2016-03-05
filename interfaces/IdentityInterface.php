@@ -34,4 +34,9 @@ interface IdentityInterface extends BaseIdentityInterface
      * @return string
      */
     public function getLastName();
+
+    /**
+     * @return integer
+     */
+    public function getID();
 }
