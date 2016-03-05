@@ -11,5 +11,5 @@
 $this->title = 'TITLE';
 ?>
 
-<h1>Hello World!</h1>
+<h1><?= Yii::$app->user->identity->dateLastlogin ?></h1>
 

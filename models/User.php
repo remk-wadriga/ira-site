@@ -210,18 +210,14 @@ class User extends ModelAbstract implements IdentityInterface, StoryInterface
     public function getDateLastLogin()
     {
         return $this->getRTCItem('date_last_login', function () {
-            $story = (new Query())
-                ->select('date')
+            return (new Query())
                 ->from(Story::tableName())
                 ->where([
                     'target_id' => $this->id,
                     'target_class' => self::className(),
                     'action' => self::STORY_ACTION_LOGIN,
                 ])
-                ->orderBy(['date' => SORT_DESC])
-                ->limit(1)
-                ->one();
-            return !empty($story) ? $story['date'] : null;
+                ->max('date');
         }, null);
     }
     public function setDateLastLogin($date_last_login)
