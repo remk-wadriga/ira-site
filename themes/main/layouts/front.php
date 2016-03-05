@@ -11,9 +11,6 @@
  */
 
 use yii\helpers\Html;
-use yii\bootstrap\Nav;
-use yii\bootstrap\NavBar;
-use yii\widgets\Breadcrumbs;
 
 // Register module assets
 if (Yii::$app->controller->module !== null) {
@@ -35,18 +32,23 @@ if (Yii::$app->controller->module !== null) {
     }
 }
 
-$items = [
+$menuItems = [
     ['label' => $this->t('Home'), 'url' => ['/front/index/index']],
 ];
 
 if (Yii::$app->user->isGuest) {
-    $items[] = ['label' => $this->t('Login'), 'url' => ['/site/auth/login']];
-    $items[] = ['label' => $this->t('Register'), 'url' => ['/site/auth/register']];
+    $menuItems[] = ['label' => $this->t('Login'), 'url' => ['/site/auth/login']];
+    $menuItems[] = ['label' => $this->t('Register'), 'url' => ['/site/auth/register']];
 } else {
-    $items[] = ['label' => $this->t('Logout ({name})', ['name' => Yii::$app->user->fullName]), 'url' => ['/site/auth/logout'], 'linkOptions' => [
-        'data' => [
-            'type' => 'POST',
-            'confirm' => $this->t('Are you sure you want to leave the system') . '?',
+    $menuItems[] = ['label' => $this->t('Account'), 'items' => [
+        [
+            'label' => $this->t('Logout ({name})', ['name' => Yii::$app->user->fullName]),
+            'url' => ['/site/auth/logout'], 'linkOptions' => [
+                'data' => [
+                    'type' => 'POST',
+                    'confirm' => $this->t('Are you sure you want to leave the system') . '?',
+                ],
+            ],
         ],
     ]];
 }
@@ -68,42 +70,19 @@ if (Yii::$app->user->isGuest) {
     <body>
         <?php $this->beginBody() ?>
 
-        <div class="wrap">
-            <?php
-            NavBar::begin([
-                'brandLabel' => Yii::$app->id,
-                'brandUrl' => Yii::$app->homeUrl,
-                'options' => [
-                    'class' => 'navbar-inverse navbar-fixed-top',
-                ],
-            ]);
-            echo Nav::widget([
-                'options' => ['class' => 'navbar-nav navbar-right'],
-                'items' => $items,
-            ]);
-            NavBar::end();
-            ?>
+            <?= $this->render('partials-front/header', ['menuItems' => $menuItems]) ?>
 
-            <div class="container content-wrap">
-                <?= Breadcrumbs::widget([
-                    'homeLink' => ['label' => $this->t('Home'), 'url' => ['/front/index/index']],
-                    'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
-                ]) ?>
-                <div class="content">
-                    <?= $content ?>
-                </div>
-            </div>
+            <?= $this->render('partials-front/content', ['content' => $content]) ?>
 
-        </div>
+            <?= $this->render('partials-front/footer.php') ?>
 
-        <footer class="footer">
-            <div class="container">
-                <p class="pull-left">&copy; <?= Yii::$app->id ?> <?= date('Y') ?></p>
-
-                <p class="pull-right"><?= Yii::powered() ?></p>
-            </div>
-        </footer>
-
+        <?php $this->registerJs('ddsmoothmenu.init({
+            mainmenuid: "templatemo_menu", //menu DIV id
+            orientation: \'h\', //Horizontal or vertical menu: Set to "h" or "v"
+            classname: \'ddsmoothmenu\', //class added to menu\'s outer DIV
+            //customtheme: ["#1c5a80", "#18374a"],
+            contentsource: "markup" //"markup" or ["container_id", "path_to_menu_file"]
+        })') ?>
         <?php $this->endBody() ?>
     </body>
 
