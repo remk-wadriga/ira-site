@@ -21,6 +21,8 @@ use yii\web\User;
  */
 class UserService extends User
 {
+    const EVENT_AFTER_REGISTER = 'afterRegister';
+
     // Getters
     public function getRole()
     {

@@ -11,6 +11,7 @@ namespace site\controllers;
 use Yii;
 use site\abstracts\ControllerAbstract;
 use models\User;
+use yii\web\UserEvent;
 
 class AuthController extends ControllerAbstract
 {
@@ -34,8 +35,11 @@ class AuthController extends ControllerAbstract
         $user = new User();
 
         if ($user->load($this->post())) {
+            $userService = Yii::$app->user;
             $account = $user->getAccount();
-            if ($account !== null && Yii::$app->user->login($account, $user->getSessionTime())) {
+            $account->setStoryAction(User::STORY_ACTION_LOGIN);
+
+            if ($account !== null && $userService->login($account, $user->getSessionTime())) {
                 return $this->goBack();
             }
         }
@@ -48,8 +52,20 @@ class AuthController extends ControllerAbstract
     public function actionRegister()
     {
         $user = new User();
+        $user->load($this->post());
+
         if ($user->load($this->post()) && $user->save()) {
-            Yii::$app->user->login($user, $user->getSessionTime());
+            $user->setStoryAction(User::STORY_ACTION_REGISTRATION);
+
+            $userService = Yii::$app->user;
+            $userService->identity = $user;
+
+            // Create "user register" event
+            $event = new UserEvent();
+            $userService->trigger($userService::EVENT_AFTER_REGISTER, $event);
+
+            $user->setStoryAction(User::STORY_ACTION_LOGIN);
+            $userService->login($user, $user->getSessionTime());
             return $this->redirect(['/front/index/index']);
         }
 
@@ -60,7 +76,10 @@ class AuthController extends ControllerAbstract
 
     public function actionLogout()
     {
-        Yii::$app->user->logout();
+        $userService = Yii::$app->user;
+        $userService->identity->setStoryAction(User::STORY_ACTION_LOGOUT);
+
+        $userService->logout();
 
         return $this->goHome();
     }

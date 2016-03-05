@@ -11,7 +11,9 @@ namespace models;
 use Yii;
 use abstracts\ModelAbstract;
 use interfaces\IdentityInterface;
-use DateTime;
+use interfaces\StoryInterface;
+use yii\db\Query;
+use yii\log\EmailTarget;
 
 /**
  * This is the model class for table "user".
@@ -34,7 +36,7 @@ use DateTime;
  * @property string $roleName
  * @property string $statusName
  */
-class User extends ModelAbstract implements IdentityInterface
+class User extends ModelAbstract implements IdentityInterface, StoryInterface
 {
     const ROLE_GUEST = 'guest';
     const ROLE_USER = 'user';
@@ -44,6 +46,15 @@ class User extends ModelAbstract implements IdentityInterface
     const STATUS_FROZEN = 'frozen';
     const STATUS_BANNED = 'banned';
     const STATUS_DELETED = 'deleted';
+
+    const STORY_ACTION_REGISTRATION = 'Registration';
+    const STORY_ACTION_LOGIN = 'Login';
+    const STORY_ACTION_LOGOUT = 'Logout';
+    const STORY_ACTION_ACTIVATED = 'Activated';
+    const STORY_ACTION_FROZEN = 'Frozen';
+    const STORY_ACTION_BANNED = 'Banned';
+    const STORY_ACTION_DELETED = 'Deleted';
+    const STORY_ACTION_UPDATED = 'Updated';
 
     public $rememberMe = true;
 
@@ -57,6 +68,17 @@ class User extends ModelAbstract implements IdentityInterface
         self::STATUS_FROZEN,
         self::STATUS_BANNED,
         self::STATUS_DELETED,
+    ];
+
+    private static $_storyActions = [
+        self::STORY_ACTION_REGISTRATION,
+        self::STORY_ACTION_LOGIN,
+        self::STORY_ACTION_LOGOUT,
+        self::STORY_ACTION_ACTIVATED,
+        self::STORY_ACTION_FROZEN,
+        self::STORY_ACTION_BANNED,
+        self::STORY_ACTION_DELETED,
+        self::STORY_ACTION_UPDATED,
     ];
 
     private static $_rolesNames = [
@@ -91,7 +113,7 @@ class User extends ModelAbstract implements IdentityInterface
             [['firstName', 'lastName'], 'string', 'max' => 126],
             [['phone'], 'string', 'max' => 24],
             ['info', 'string'],
-            [['dateRegister', 'dateLastLogin', 'rememberMe'], 'safe'],
+            [['dateRegister', 'rememberMe'], 'safe'],
         ];
     }
 
@@ -145,9 +167,6 @@ class User extends ModelAbstract implements IdentityInterface
         if ($this->dateRegister) {
             $this->dateRegister = Yii::$app->time->formatDateTime($this->dateRegister);
         }
-        if ($this->dateLastLogin) {
-            $this->dateLastLogin = Yii::$app->time->formatDateTime($this->dateLastLogin);
-        }
 
         return true;
     }
@@ -190,11 +209,24 @@ class User extends ModelAbstract implements IdentityInterface
     // dateLastLogin
     public function getDateLastLogin()
     {
-        return $this->date_last_login;
+        return $this->getRTCItem('date_last_login', function () {
+            $story = (new Query())
+                ->select('date')
+                ->from(Story::tableName())
+                ->where([
+                    'target_id' => $this->id,
+                    'target_class' => self::className(),
+                    'action' => self::STORY_ACTION_LOGIN,
+                ])
+                ->orderBy(['date' => SORT_DESC])
+                ->limit(1)
+                ->one();
+            return !empty($story) ? $story['date'] : null;
+        }, null);
     }
     public function setDateLastLogin($date_last_login)
     {
-        $this->date_last_login = $date_last_login;
+        $this->setRTC('date_last_login', Yii::$app->time->formatDateTime($date_last_login));
     }
 
     // passwordHash
@@ -285,6 +317,13 @@ class User extends ModelAbstract implements IdentityInterface
         return $this->rememberMe ? 3600*24*7 : Yii::$app->params['userSessionTime'];
     }
 
+    public function setStoryAction($action)
+    {
+        if (in_array($action, self::$_storyActions)) {
+            $this->setRTC('story_action', $action);
+        }
+    }
+
     // END Public methods
 
 
@@ -359,4 +398,38 @@ class User extends ModelAbstract implements IdentityInterface
     }
 
     // END Implements IdentityInterface
+
+
+    // Implements StoryInterface
+
+    public function getStoryAction()
+    {
+        return $this->getRTC('story_action');
+    }
+
+    public function getStoryFields()
+    {
+        if ($this->getStoryAction() == self::STORY_ACTION_UPDATED) {
+            return $this->attributes();
+        }
+        return null;
+    }
+
+    public function getStoryOldValues()
+    {
+        if ($this->getStoryAction() == self::STORY_ACTION_UPDATED) {
+            return $this->getOldAttributes();
+        }
+        return null;
+    }
+
+    public function getStoryNewValues()
+    {
+        if ($this->getStoryAction() == self::STORY_ACTION_UPDATED) {
+            return $this->getAttributes();
+        }
+        return null;
+    }
+
+    // END Implements StoryInterface
 }
