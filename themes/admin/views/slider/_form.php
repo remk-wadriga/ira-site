@@ -6,7 +6,7 @@
  * Time: 2:20
  *
  * @var components\View $this
- * @var models\Slider $model
+ * @var models\Slide $model
  * @var yii\widgets\ActiveForm $form
  */
 
@@ -14,7 +14,7 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 ?>
 
-<div class="slider-form">
+<div class="Slide-form">
 
     <?php $form = ActiveForm::begin(); ?>
 

@@ -6,17 +6,17 @@
  * Time: 2:22
  *
  * @var components\View $this
- * @var models\Slider $model
+ * @var models\Slide $model
  */
 
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 $this->title = $model->title;
-$this->params['breadcrumbs'][] = ['label' => $this->t('Sliders'), 'url' => ['list']];
+$this->params['breadcrumbs'][] = ['label' => $this->t('Slides'), 'url' => ['list']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="slider-view">
+<div class="Slide-view">
 
     <h1><?= Html::encode($this->title) ?></h1>
 

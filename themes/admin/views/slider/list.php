@@ -6,23 +6,23 @@
  * Time: 2:21
  *
  * @var components\View $this
- * @var models\search\SliderSearch $searchModel
+ * @var models\search\SlideSearch $searchModel
  * @var yii\data\ActiveDataProvider $dataProvider
  */
 
 use yii\helpers\Html;
 use yii\grid\GridView;
 
-$this->title = $this->t('Sliders');
+$this->title = $this->t('Slides');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="slider-index">
+<div class="Slide-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
     <p>
-        <?= Html::a($this->t('Create slider'), ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a($this->t('Create Slide'), ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?= GridView::widget([

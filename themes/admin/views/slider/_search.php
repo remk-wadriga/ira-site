@@ -6,7 +6,7 @@
  * Time: 2:20
  *
  * @var components\View $this
- * @var models\search\SliderSearch $model
+ * @var models\search\SlideSearch $model
  * @var yii\widgets\ActiveForm $form
  */
 
@@ -14,7 +14,7 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 ?>
 
-<div class="slider-search">
+<div class="Slide-search">
 
     <?php $form = ActiveForm::begin([
         'action' => ['list'],

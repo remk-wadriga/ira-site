@@ -6,17 +6,17 @@
  * Time: 2:21
  *
  * @var components\View $this
- * @var models\Slider $model
+ * @var models\Slide $model
  */
 
 use yii\helpers\Html;
 
-$this->title = $this->t('Update slider');
-$this->params['breadcrumbs'][] = ['label' => $this->t('Sliders'), 'url' => ['list']];
+$this->title = $this->t('Update Slide');
+$this->params['breadcrumbs'][] = ['label' => $this->t('Slides'), 'url' => ['list']];
 $this->params['breadcrumbs'][] = ['label' => $model->title, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = $this->t('Update');
 ?>
-<div class="slider-update">
+<div class="Slide-update">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
