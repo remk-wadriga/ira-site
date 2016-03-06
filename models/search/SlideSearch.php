@@ -62,7 +62,6 @@ class SlideSearch extends Slide
             ->andFilterWhere(['like', 'link_text', $this->link_text])
             ->andFilterWhere(['like', 'link_title', $this->link_title])
             ->andFilterWhere(['like', 'img_url', $this->img_url])
-            ->andFilterWhere(['like', 'img_file', $this->img_file])
             ->andFilterWhere(['like', 'img_alt', $this->img_alt])
             ->andFilterWhere(['like', 'status', $this->status]);
 

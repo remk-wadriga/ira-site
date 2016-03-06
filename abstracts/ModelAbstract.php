@@ -102,6 +102,18 @@ class ModelAbstract extends ActiveRecord implements ModelInterface
         return $value;
     }
 
+    public function getAttribute($name)
+    {
+        if ($this->hasAttribute($name)) {
+            return parent::getAttribute($name);
+        }
+        $getter = 'get' . ucfirst($name);
+        if (method_exists($this, $getter)) {
+            return $this->$getter();
+        }
+        return parent::getAttribute($name);
+    }
+
     /**
      * Get the typical enum translated names array
      *

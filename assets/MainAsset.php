@@ -20,6 +20,7 @@ class MainAsset extends AssetAbstract
 
     public $js = [
         'js/main.js',
+        'js/api.js',
     ];
 
     public $depends = [

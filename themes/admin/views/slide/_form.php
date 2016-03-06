@@ -12,6 +12,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use bupy7\cropbox\Cropbox;
 ?>
 
 <div class="Slide-form">
@@ -29,18 +30,20 @@ use yii\widgets\ActiveForm;
     ]); ?>
 
     <div class="form-group">
-        <?php if (!$model->isNewRecord) : ?>
-            <div class="row">
-                <?= Html::img($model->imgUrl, [
-                    'height' => $model->imgMinimalHeight,
-                ]) ?>
-            </div>
-        <?php endif ?>
-
-        <br />
 
         <div class="col-lg-6">
-            <?= $form->field($model, 'img')->fileInput() ?>
+            <?= $form->field($model, 'img')->widget(Cropbox::className(), [
+                'attributeCropInfo' => 'cropInfo',
+                'previewImagesUrl' => [$model->imgUrl],
+                'pluginOptions' => [
+                    'variants' => [
+                        [
+                            'width' => $model->imgWidth,
+                            'height' => $model->imgHeight,
+                        ],
+                    ],
+                ],
+            ]) ?>
             <?= $form->field($model, 'imgAlt')->textInput(['maxlength' => true]) ?>
             <?= $form->field($model, 'linkUrl')->textInput(['maxlength' => true]) ?>
             <?= $form->field($model, 'linkText')->textInput(['maxlength' => true]) ?>

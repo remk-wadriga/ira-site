@@ -18,7 +18,7 @@ Admin = {
 
     setHandlers: function () {
 
-    }
+    },
 
 
     // Auto functions
@@ -37,6 +37,24 @@ Admin = {
 
 
     // Public functions
+
+    changeSlideStatus: function (item) {
+        var checked = item.prop('checked');
+
+        var success = function () {
+            if (!checked) {
+                return false;
+            }
+            /*$(Main.checkBoxSwitchID).each(function (index, input) {
+                input = $(input);
+                if (input.attr('id') != item.attr('id')) {
+                    input.bootstrapSwitch('state', false);
+                }
+            });*/
+        };
+
+        Api.ajx(item.data('url'), {isActive: checked}, success, 'GET');
+    }
 
     // END Public functions
 

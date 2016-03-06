@@ -12,6 +12,7 @@ use Yii;
 use models\Slide;
 use models\search\SlideSearch;
 use admin\abstracts\ControllerAbstract;
+use yii\helpers\Json;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
@@ -81,6 +82,35 @@ class SlideController extends ControllerAbstract
         $this->findModel($id)->delete();
 
         return $this->redirect(['list']);
+    }
+
+    public function actionChangeStatus($id)
+    {
+        $slide = $this->findModel($id);
+
+        $status = $this->get('isActive') == 'true' ? Slide::STATUS_ACTIVE : Slide::STATUS_NOT_ACTIVE;
+
+        if ($status == $slide->status) {
+            return Json::encode([
+                'status' => 'OK',
+                'message' => $this->t('Title slide has status "{name}"', ['name' => $slide->getStatusName()]),
+            ]);
+        }
+
+        $slide->status = $status;
+        if ($slide->save()) {
+            $status = 'OK';
+            $message = $status == Slide::STATUS_ACTIVE ? $this->t('Slide successfully activated') : $this->t('Slide successfully deactivated');
+        } else {
+            $status = 'ERROR';
+            Yii::$app->response->setStatusCode(500);
+            $message = $status == Slide::STATUS_ACTIVE ? $this->t('Can not activate slide') : $this->t('Can not deactivate slide');
+        }
+
+        return Json::encode([
+            'status' => $status,
+            'message' => $message,
+        ]);
     }
 
     /**

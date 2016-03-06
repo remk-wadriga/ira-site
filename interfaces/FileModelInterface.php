@@ -30,4 +30,19 @@ interface FileModelInterface extends ModelInterface
      * @param string $fileName
      */
     public function setFileName($fileName);
+
+    /**
+     * @return array
+     */
+    public function getCropInfo();
+
+    /**
+     * @return integer
+     */
+    public function getImgWidth();
+
+    /**
+     * @return integer
+     */
+    public function getImgHeight();
 }

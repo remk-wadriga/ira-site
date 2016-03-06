@@ -10,7 +10,8 @@
  * @var yii\data\ActiveDataProvider $dataProvider
  */
 
-use yii\helpers\Html;
+use yii\helpers\Url;
+use yii\bootstrap\Html;
 use yii\grid\GridView;
 
 $this->title = $this->t('Slides');
@@ -30,19 +31,53 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-
-            'id',
+            [
+                'attribute' => 'img',
+                'value' => function (models\Slide $model) {
+                    return Html::img($model->imgUrl, [
+                        'height' => 100,
+                    ]);
+                },
+                'format' => 'raw',
+            ],
             'title',
-            'text:ntext',
-            'linkUrl',
+            'linkUrl:url',
             'linkText',
-            // 'link_title',
-            // 'img_url:url',
-            // 'img_file',
-            // 'img_alt',
-            // 'status',
-
-            ['class' => 'yii\grid\ActionColumn'],
+            //'text:ntext',
+            [
+                'class' => 'yii\grid\ActionColumn',
+                'template' => '{update} {view} {status}',
+                'buttons' => [
+                    'update' => function ($url, $model, $key) {
+                        $icon = Html::tag('i', null, [
+                            'class' => 'glyphicon glyphicon-pencil',
+                        ]);
+                        return Html::a($icon . ' ' . $this->t('Update'), $url, [
+                            'class' => 'btn btn-primary',
+                            'title' => $this->t('Update'),
+                        ]);
+                    },
+                    'view' => function ($url, $model, $key) {
+                        $icon = Html::tag('i', null, [
+                            'class' => 'glyphicon glyphicon-eye-open',
+                        ]);
+                        return Html::a($icon . ' ' . $this->t('View'), $url, [
+                            'class' => 'btn btn-primary',
+                            'title' => $this->t('View'),
+                        ]);
+                    },
+                    'status' => function ($url, $model, $key) {
+                        return Html::checkbox($model::modelName() . '[status]', $model->isActive, [
+                            'id' => 'change_status_checkbox_' . $model->id,
+                            'class' => 'checkbox-switch',
+                            'data' => [
+                                'url' => Url::to(['/admin/slide/change-status', 'id' => $model->id]),
+                                'onchange' => 'Admin.changeSlideStatus({this})',
+                            ],
+                        ]);
+                    },
+                ],
+            ],
         ],
     ]); ?>
 

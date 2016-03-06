@@ -40,6 +40,13 @@ $messages = [
     'Image alt'                                                                                                         => '',
     'Text'                                                                                                              => '',
     'Status'                                                                                                            => '',
+    'Create new slide'                                                                                                  => '',
+    'Previous'                                                                                                          => '',
+    'Next'                                                                                                              => '',
+    'Play'                                                                                                              => '',
+    'Pause'                                                                                                             => '',
+    'Turn on autoplay'                                                                                                  => '',
+    'Turn off autoplay'                                                                                                 => '',
 ];
 
 return array_merge($messages, require(__DIR__ . '/error.php'), require(__DIR__ . '/flash.php'));

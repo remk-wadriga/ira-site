@@ -29,6 +29,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'method' => 'post',
             ],
         ]) ?>
+        <?= Html::a($this->t('Create new slide'), ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?= DetailView::widget([

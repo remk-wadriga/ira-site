@@ -15,6 +15,11 @@ abstract class ControllerAbstract extends Controller
 {
     protected $disableAssets = false;
 
+    public function t($message, $params = [], $direction = 'app')
+    {
+        return Yii::$app->view->t($message, $params, $direction);
+    }
+
     /**
      * render
      * @param null $view

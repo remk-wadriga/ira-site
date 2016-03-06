@@ -5,6 +5,7 @@ namespace models;
 use Yii;
 use abstracts\ModelAbstract;
 use interfaces\FileModelInterface;
+use yii\helpers\Json;
 use yii\helpers\Url;
 
 /**
@@ -26,8 +27,10 @@ class Slide extends ModelAbstract implements FileModelInterface
     const STATUS_NOT_ACTIVE = 'not_active';
 
     public $img;
+    public $cropInfo;
     public $imgMinimalHeight = 150;
-    public $imgWidth = 400;
+    public $imgWidth = 450;
+    public $imgHeight = 310;
 
     private static $_statuses = [
         self::STATUS_ACTIVE,
@@ -49,11 +52,12 @@ class Slide extends ModelAbstract implements FileModelInterface
         return [
             [['title', 'imgUrl'], 'required'],
             [['text'], 'string'],
-            ['img', 'file'],
+            ['img', 'image', 'extensions' => ['jpg', 'jpeg', 'png', 'gif'], 'mimeTypes' => ['image/jpeg', 'image/pjpeg', 'image/png', 'image/gif']],
             ['status', 'in', 'range' => self::$_statuses],
             [['title'], 'string', 'max' => 255],
             [['linkUrl', 'linkText', 'linkTitle', 'imgAlt'], 'string', 'max' => 126],
-            [['imgUrl'], 'string', 'max' => 512]
+            [['imgUrl'], 'string', 'max' => 512],
+            [['cropInfo'], 'safe']
         ];
     }
 
@@ -206,6 +210,11 @@ class Slide extends ModelAbstract implements FileModelInterface
         return isset(self::$_statusesNames[$status]) ? $this->t(self::$_statusesNames[$status]) : $this->t(self::$_statusesNames[self::STATUS_NOT_ACTIVE]);
     }
 
+    public function getIsActive()
+    {
+        return $this->status == self::STATUS_ACTIVE;
+    }
+
     // END Public methods
 
 
@@ -281,6 +290,21 @@ class Slide extends ModelAbstract implements FileModelInterface
     public function setFileName($fileName)
     {
         $this->imgUrl = $fileName;
+    }
+
+    public function getCropInfo()
+    {
+        return $this->cropInfo !== null ? Json::decode($this->cropInfo)[0] : [];
+    }
+
+    public function getImgWidth()
+    {
+        return $this->imgWidth;
+    }
+
+    public function getImgHeight()
+    {
+        return $this->imgHeight;
     }
 
     // END Implements FileModelInterface

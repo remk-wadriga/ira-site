@@ -76,13 +76,22 @@ if (Yii::$app->user->isGuest) {
 
             <?= $this->render('partials-front/footer.php') ?>
 
-        <?php $this->registerJs('ddsmoothmenu.init({
-            mainmenuid: "templatemo_menu", //menu DIV id
-            orientation: \'h\', //Horizontal or vertical menu: Set to "h" or "v"
-            classname: \'ddsmoothmenu\', //class added to menu\'s outer DIV
-            //customtheme: ["#1c5a80", "#18374a"],
-            contentsource: "markup" //"markup" or ["container_id", "path_to_menu_file"]
-        })') ?>
+            <?php $this->registerJs('ddsmoothmenu.init({
+                mainmenuid: "templatemo_menu", //menu DIV id
+                orientation: \'h\', //Horizontal or vertical menu: Set to "h" or "v"
+                classname: \'ddsmoothmenu\', //class added to menu\'s outer DIV
+                //customtheme: ["#1c5a80", "#18374a"],
+                contentsource: "markup" //"markup" or ["container_id", "path_to_menu_file"]
+            });') ?>
+
+            <?php $this->registerJs('$("#carousel").dualSlider({
+                auto:true,
+                autoDelay: 6000,
+                easingCarousel: "swing",
+                easingDetails: "easeOutBack",
+                durationCarousel: 1000,
+                durationDetails: 600
+            });') ?>
         <?php $this->endBody() ?>
     </body>
 

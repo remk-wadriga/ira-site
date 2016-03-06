@@ -23,13 +23,13 @@ class FrontAsset extends AssetAbstract
         'js/ddsmoothmenu.js',
         'js/jquery.easing.1.3.js',
         'js/jquery.timers-1.2.js',
-        'js/jquery.dualSlider.0.3.js',
+        'js/jquery.dualSlider.0.3.min.js',
         'js/slimbox2.js',
         'js/front.js',
     ];
 
     public $depends = [
-        'assets\MainAsset',
+        'yii\web\JqueryAsset',
     ];
 
     public static function scriptName()
