@@ -21,6 +21,13 @@ $messages = [
     'Home'                                                                                                              => '',
     'Logout ({name})'                                                                                                   => '',
     'Are you sure you want to leave the system'                                                                         => '',
+    'Create slider'                                                                                                     => '',
+    'Sliders'                                                                                                           => '',
+    'Update slider'                                                                                                     => '',
+    'Update'                                                                                                            => '',
+    'Are you sure you want to delete this item'                                                                         => '',
+    'Front'                                                                                                             => '',
+    'Management'                                                                                                        => '',
 ];
 
 return array_merge($messages, require(__DIR__ . '/error.php'), require(__DIR__ . '/flash.php'));

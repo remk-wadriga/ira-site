@@ -11,6 +11,9 @@
  */
 
 use yii\helpers\Html;
+use yii\bootstrap\Nav;
+use yii\bootstrap\NavBar;
+use yii\widgets\Breadcrumbs;
 
 // Register module assets
 if (Yii::$app->controller->module !== null) {
@@ -31,6 +34,20 @@ if (Yii::$app->controller->module !== null) {
         $this->registerJs($assetClass::getScriptsString($scriptParams));
     }
 }
+
+$items = [
+    ['label' => $this->t('Management'), 'items' => [
+        ['label' => $this->t('Sliders'), 'url' => ['/admin/slider/list']],
+    ]],
+    ['label' => $this->t('Home'), 'url' => ['/admin/index/index']],
+    ['label' => $this->t('Front'), 'url' => ['/front/index/index']],
+    ['label' => $this->t('Logout ({name})', ['name' => Yii::$app->user->fullName]), 'url' => ['/site/auth/logout'], 'linkOptions' => [
+        'data' => [
+            'type' => 'POST',
+            'confirm' => $this->t('Are you sure you want to leave the system') . '?',
+        ],
+    ]],
+];
 ?>
 
 <?php $this->beginPage() ?>
@@ -49,7 +66,41 @@ if (Yii::$app->controller->module !== null) {
     <body>
     <?php $this->beginBody() ?>
 
-    <?= $content ?>
+    <div class="wrap">
+        <?php
+        NavBar::begin([
+            'brandLabel' => Yii::$app->id,
+            'brandUrl' => Yii::$app->homeUrl,
+            'options' => [
+                'class' => 'navbar-inverse navbar-fixed-top',
+            ],
+        ]);
+        echo Nav::widget([
+            'options' => ['class' => 'navbar-nav navbar-right'],
+            'items' => $items,
+        ]);
+        NavBar::end();
+        ?>
+
+        <div class="container content-wrap">
+            <?= Breadcrumbs::widget([
+                'homeLink' => ['label' => $this->t('Home'), 'url' => ['/front/index/index']],
+                'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
+            ]) ?>
+            <div class="content">
+                <?= $content ?>
+            </div>
+        </div>
+
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p class="pull-left">&copy; <?= Yii::$app->id ?> <?= date('Y') ?></p>
+
+            <p class="pull-right"><?= Yii::powered() ?></p>
+        </div>
+    </footer>
 
     <?php $this->endBody() ?>
     </body>

@@ -39,4 +39,9 @@ interface IdentityInterface extends BaseIdentityInterface
      * @return integer
      */
     public function getID();
+
+    /**
+     * @return string
+     */
+    public function getRole();
 }

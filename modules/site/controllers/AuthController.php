@@ -28,10 +28,6 @@ class AuthController extends ControllerAbstract
 
     public function actionLogin()
     {
-        if (!Yii::$app->user->isGuest) {
-            return $this->goHome();
-        }
-
         $user = new User();
 
         if ($user->load($this->post())) {

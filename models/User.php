@@ -393,6 +393,11 @@ class User extends ModelAbstract implements IdentityInterface, StoryInterface
         return false;
     }
 
+    public function getRole()
+    {
+        return $this->role;
+    }
+
     // END Implements IdentityInterface
 
 

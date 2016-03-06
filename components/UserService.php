@@ -9,6 +9,7 @@
 namespace components;
 
 use yii\web\User;
+use models\User as Identity;
 
 /**
  * Class UserService
@@ -26,11 +27,11 @@ class UserService extends User
     // Getters
     public function getRole()
     {
-        return 'guest';
+        return $this->identity !== null ? $this->identity->getRole() : Identity::ROLE_GUEST;
     }
     public function getIsAdmin()
     {
-        return $this->getRole() == 'admin';
+        return $this->getRole() == Identity::ROLE_ADMIN;
     }
     public function getFullName()
     {
