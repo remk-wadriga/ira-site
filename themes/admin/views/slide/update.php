@@ -11,12 +11,12 @@
 
 use yii\helpers\Html;
 
-$this->title = $this->t('Update Slide');
+$this->title = $this->t('Update slide "{name}"', ['name' => $model->title]);
 $this->params['breadcrumbs'][] = ['label' => $this->t('Slides'), 'url' => ['list']];
 $this->params['breadcrumbs'][] = ['label' => $model->title, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = $this->t('Update');
 ?>
-<div class="Slide-update">
+<div class="slide-update">
 
     <h1><?= Html::encode($this->title) ?></h1>
 

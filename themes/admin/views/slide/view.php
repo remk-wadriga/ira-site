@@ -9,10 +9,10 @@
  * @var models\Slide $model
  */
 
-use yii\helpers\Html;
+use yii\bootstrap\Html;
 use yii\widgets\DetailView;
 
-$this->title = $model->title;
+$this->title = $this->t('Slide "{name}"', ['name' => $model->title]);
 $this->params['breadcrumbs'][] = ['label' => $this->t('Slides'), 'url' => ['list']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -35,14 +35,22 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'title',
-            'text:ntext',
+            [
+                'value' => Html::img($model->imgUrl, [
+                    'height' => $model->imgMinimalHeight,
+                ]),
+                'attribute' => 'img',
+                'format' => 'raw',
+            ],
             'linkUrl',
             'linkText',
             'linkTitle',
-            'imgUrl',
-            'imgFile',
             'imgAlt',
-            'status',
+            'text:ntext',
+            [
+                'value' => $model->statusName,
+                'attribute' => 'status',
+            ],
         ],
     ]) ?>
 

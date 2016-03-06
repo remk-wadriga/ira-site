@@ -70,4 +70,7 @@ return [
         'dateTimeFormat' => $params['dateTimeFormat'],
         'timeFormat' => $params['timeFormat'],
     ],
+    'file' => [
+        'class' => 'components\FileService',
+    ],
 ];

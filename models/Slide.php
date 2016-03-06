@@ -4,6 +4,8 @@ namespace models;
 
 use Yii;
 use abstracts\ModelAbstract;
+use interfaces\FileModelInterface;
+use yii\helpers\Url;
 
 /**
  * This is the model class for table "slider".
@@ -15,20 +17,26 @@ use abstracts\ModelAbstract;
  * @property string $linkText
  * @property string $linkTitle
  * @property string $imgUrl
- * @property string $imgFile
  * @property string $imgAlt
  * @property string $status
  */
-class Slide extends ModelAbstract
+class Slide extends ModelAbstract implements FileModelInterface
 {
     const STATUS_ACTIVE = 'active';
     const STATUS_NOT_ACTIVE = 'not_active';
 
     public $img;
+    public $imgMinimalHeight = 150;
+    public $imgWidth = 400;
 
     private static $_statuses = [
         self::STATUS_ACTIVE,
         self::STATUS_NOT_ACTIVE,
+    ];
+
+    private static $_statusesNames = [
+        self::STATUS_ACTIVE => 'Active',
+        self::STATUS_NOT_ACTIVE => 'Not active',
     ];
 
     public static function tableName()
@@ -40,22 +48,27 @@ class Slide extends ModelAbstract
     {
         return [
             [['title', 'imgUrl'], 'required'],
-            ['img', 'required', 'when' => function (Slide $model) {
-                return $model->getIsNewRecord();
-            }],
             [['text'], 'string'],
             ['img', 'file'],
             ['status', 'in', 'range' => self::$_statuses],
             [['title'], 'string', 'max' => 255],
             [['linkUrl', 'linkText', 'linkTitle', 'imgAlt'], 'string', 'max' => 126],
-            [['imgUrl', 'imgFile'], 'string', 'max' => 512]
+            [['imgUrl'], 'string', 'max' => 512]
         ];
     }
 
     public function attributeLabels()
     {
         return [
-
+            'title' => $this->t('Title'),
+            'img' => $this->t('Image'),
+            'imgUrl' => $this->t('Image url'),
+            'linkUrl' => $this->t('Link url'),
+            'linkText' => $this->t('Link text'),
+            'linkTitle' => $this->t('Link title'),
+            'imgAlt' => $this->t('Image alt'),
+            'text' => $this->t('Text'),
+            'status' => $this->t('Status'),
         ];
     }
 
@@ -81,6 +94,10 @@ class Slide extends ModelAbstract
             $this->status = self::STATUS_ACTIVE;
         }
 
+        if (!Yii::$app->file->loadFile($this)) {
+            return false;
+        }
+
         return true;
     }
 
@@ -90,9 +107,21 @@ class Slide extends ModelAbstract
             return false;
         }
 
-        echo '<pre>'; var_dump($this->img); exit('</pre>');
+        if (!$this->linkTitle) {
+            $this->linkTitle = $this->linkText;
+        }
+
+        if ($this->linkUrl && strpos($this->linkUrl, 'http') === false) {
+            $this->createLinkUrl();
+        }
 
         return true;
+    }
+
+    public function afterFind()
+    {
+        parent::afterFind();
+        $this->setRTC('oldImgUrl', $this->imgUrl);
     }
 
     // END Event handlers
@@ -140,16 +169,6 @@ class Slide extends ModelAbstract
         $this->img_url = $img_url;
     }
 
-    // imgFile
-    public function getImgFile()
-    {
-        return $this->img_file;
-    }
-    public function setImgFile($img_file)
-    {
-        $this->img_file = $img_file;
-    }
-
     // imgAlt
     public function getImgAlt()
     {
@@ -164,6 +183,28 @@ class Slide extends ModelAbstract
 
 
     // Public methods
+
+    public function init()
+    {
+        parent::init();
+
+        if ($this->status === null) {
+            $this->status = self::STATUS_ACTIVE;
+        }
+    }
+
+    public function getStatusItems()
+    {
+        return $this->getEnumNames(self::$_statusesNames, 'statusesItems');
+    }
+
+    public function getStatusName($status = null)
+    {
+        if ($status === null) {
+            $status = $this->status;
+        }
+        return isset(self::$_statusesNames[$status]) ? $this->t(self::$_statusesNames[$status]) : $this->t(self::$_statusesNames[self::STATUS_NOT_ACTIVE]);
+    }
 
     // END Public methods
 
@@ -185,6 +226,33 @@ class Slide extends ModelAbstract
 
     // Private methods
 
+    private function createLinkUrl()
+    {
+        $url = $this->linkUrl;
+        $parts = explode(' ', $url);
+        $url = array_shift($parts);
+
+        $modulePos = strpos($url, 'front/');
+        if ($modulePos === false) {
+            $url = '/front/' . $url;
+        } elseif ($modulePos === 0) {
+            $url = '/' . $url;
+        }
+
+        $url = [str_replace('//', '/', $url)];
+
+        foreach ($parts as $part) {
+            $param = explode('=', $part);
+            if (count($param) == 2) {
+                $url[$param[0]] = $param[1];
+            } elseif (count($param) == 1) {
+                $url['ids'] = $param[0];
+            }
+        }
+
+        $this->linkUrl = Url::to($url);
+    }
+
     // END Private methods
 
 
@@ -193,7 +261,27 @@ class Slide extends ModelAbstract
     // END Private static methods
 
 
-    // Implements <some interface>
+    // Implements FileModelInterface
 
-    // END Implements <some interface>
+    public function getFileAttributeName()
+    {
+        return 'img';
+    }
+
+    public function getModelInstance()
+    {
+        return $this;
+    }
+
+    public function getOldFileName()
+    {
+        return $this->getRTC('oldImgUrl');
+    }
+
+    public function setFileName($fileName)
+    {
+        $this->imgUrl = $fileName;
+    }
+
+    // END Implements FileModelInterface
 }
