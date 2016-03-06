@@ -9,16 +9,16 @@
 namespace admin\controllers;
 
 use Yii;
-use models\Slider;
-use models\search\SliderSearch;
+use models\Slide;
+use models\search\SlideSearch;
 use admin\abstracts\ControllerAbstract;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * SliderController implements the CRUD actions for Slider model.
+ * SlideController implements the CRUD actions for Slide model.
  */
-class SliderController extends ControllerAbstract
+class SlideController extends ControllerAbstract
 {
     public function behaviors()
     {
@@ -34,7 +34,7 @@ class SliderController extends ControllerAbstract
 
     public function actionList()
     {
-        $searchModel = new SliderSearch();
+        $searchModel = new SlideSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render([
@@ -52,7 +52,7 @@ class SliderController extends ControllerAbstract
 
     public function actionCreate()
     {
-        $model = new Slider();
+        $model = new Slide();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -84,15 +84,15 @@ class SliderController extends ControllerAbstract
     }
 
     /**
-     * Finds the Slider model based on its primary key value.
+     * Finds the Slide model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param string $id
-     * @return Slider the loaded model
+     * @return Slide the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Slider::findOne($id)) !== null) {
+        if (($model = Slide::findOne($id)) !== null) {
             return $model;
         } else {
             throw new NotFoundHttpException('The requested page does not exist.');

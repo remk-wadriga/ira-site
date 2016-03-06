@@ -3,6 +3,7 @@
 namespace models;
 
 use Yii;
+use abstracts\ModelAbstract;
 
 /**
  * This is the model class for table "slider".
@@ -18,18 +19,33 @@ use Yii;
  * @property string $imgAlt
  * @property string $status
  */
-class Slider extends \abstracts\ModelAbstract
+class Slide extends ModelAbstract
 {
+    const STATUS_ACTIVE = 'active';
+    const STATUS_NOT_ACTIVE = 'not_active';
+
+    public $img;
+
+    private static $_statuses = [
+        self::STATUS_ACTIVE,
+        self::STATUS_NOT_ACTIVE,
+    ];
+
     public static function tableName()
     {
-        return 'slider';
+        return 'slide';
     }
 
     public function rules()
     {
         return [
             [['title', 'imgUrl'], 'required'],
-            [['text', 'status'], 'string'],
+            ['img', 'required', 'when' => function (Slide $model) {
+                return $model->getIsNewRecord();
+            }],
+            [['text'], 'string'],
+            ['img', 'file'],
+            ['status', 'in', 'range' => self::$_statuses],
             [['title'], 'string', 'max' => 255],
             [['linkUrl', 'linkText', 'linkTitle', 'imgAlt'], 'string', 'max' => 126],
             [['imgUrl', 'imgFile'], 'string', 'max' => 512]
@@ -54,6 +70,30 @@ class Slider extends \abstracts\ModelAbstract
 
 
     // Event handlers
+
+    public function beforeValidate()
+    {
+        if (!parent::beforeValidate()) {
+            return false;
+        }
+
+        if (!$this->status) {
+            $this->status = self::STATUS_ACTIVE;
+        }
+
+        return true;
+    }
+
+    public function beforeSave($insert)
+    {
+        if (!parent::beforeSave($insert)) {
+            return false;
+        }
+
+        echo '<pre>'; var_dump($this->img); exit('</pre>');
+
+        return true;
+    }
 
     // END Event handlers
 

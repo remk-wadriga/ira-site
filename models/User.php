@@ -56,6 +56,7 @@ class User extends ModelAbstract implements IdentityInterface, StoryInterface
     const STORY_ACTION_DELETED = 'Deleted';
     const STORY_ACTION_UPDATED = 'Updated';
 
+    public $password;
     public $rememberMe = true;
 
     private static $_roles = [
@@ -235,16 +236,6 @@ class User extends ModelAbstract implements IdentityInterface, StoryInterface
         $this->password_hash = $password_hash;
     }
 
-    // password
-    public function getPassword()
-    {
-        return $this->getRTC('password');
-    }
-    public function setPassword($password)
-    {
-        $this->setRTC('password', $password);
-    }
-
     // passwordRepeat
     public function getPasswordRepeat()
     {
@@ -343,7 +334,7 @@ class User extends ModelAbstract implements IdentityInterface, StoryInterface
     private function generatePasswordHash($password = null)
     {
         if ($password === null) {
-            $password = $this->getPassword();
+            $password = $this->password;
         }
         if (!$password) {
             return null;

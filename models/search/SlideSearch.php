@@ -11,12 +11,12 @@ namespace models\search;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use models\Slider;
+use models\Slide;
 
 /**
- * SliderSearch represents the model behind the search form about `models\Slider`.
+ * SlideSearch represents the model behind the search form about `models\Slide`.
  */
-class SliderSearch extends Slider
+class SlideSearch extends Slide
 {
     public function rules()
     {
@@ -40,7 +40,7 @@ class SliderSearch extends Slider
      */
     public function search($params)
     {
-        $query = Slider::find();
+        $query = Slide::find();
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
