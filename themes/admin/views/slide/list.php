@@ -35,28 +35,25 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'img',
                 'value' => function (models\Slide $model) {
                     return Html::img($model->imgUrl, [
-                        'height' => 100,
+                        'height' => $model->imgMinimalHeight,
                     ]);
                 },
                 'format' => 'raw',
             ],
             'title',
-            'linkUrl:url',
-            'linkText',
-            //'text:ntext',
+            //'linkUrl:url',
+            //'linkText',
+            [
+                'attribute' => 'text',
+                'format' => 'ntext',
+                'options' => [
+                    'width' => '300px',
+                ],
+            ],
             [
                 'class' => 'yii\grid\ActionColumn',
-                'template' => '{update} {view} {status}',
+                'template' => '{view} {update} {delete} {status}',
                 'buttons' => [
-                    'update' => function ($url, $model, $key) {
-                        $icon = Html::tag('i', null, [
-                            'class' => 'glyphicon glyphicon-pencil',
-                        ]);
-                        return Html::a($icon . ' ' . $this->t('Update'), $url, [
-                            'class' => 'btn btn-primary',
-                            'title' => $this->t('Update'),
-                        ]);
-                    },
                     'view' => function ($url, $model, $key) {
                         $icon = Html::tag('i', null, [
                             'class' => 'glyphicon glyphicon-eye-open',
@@ -64,6 +61,28 @@ $this->params['breadcrumbs'][] = $this->title;
                         return Html::a($icon . ' ' . $this->t('View'), $url, [
                             'class' => 'btn btn-primary',
                             'title' => $this->t('View'),
+                        ]);
+                    },
+                    'update' => function ($url, $model, $key) {
+                        $icon = Html::tag('i', null, [
+                            'class' => 'glyphicon glyphicon-pencil',
+                        ]);
+                        return Html::a($icon . ' ' . $this->t('Update'), $url, [
+                            'class' => 'btn btn-success',
+                            'title' => $this->t('Update'),
+                        ]);
+                    },
+                    'delete' => function ($url, $model, $key) {
+                        $icon = Html::tag('i', null, [
+                            'class' => 'glyphicon glyphicon-trash',
+                        ]);
+                        return Html::a($icon . ' ' . $this->t('Delete'), $url, [
+                            'class' => 'btn btn-danger',
+                            'title' => $this->t('Delete'),
+                            'data' => [
+                                'method' => 'post',
+                                'confirm' => $this->getConfirmDeleteText(),
+                            ],
                         ]);
                     },
                     'status' => function ($url, $model, $key) {

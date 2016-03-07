@@ -1,0 +1,6 @@
+img.img-thumbnail, img.big-img{
+    max-height: 400px;
+}
+.field-slide-img .cropbox, .text-center-align{
+    text-align: center;
+}

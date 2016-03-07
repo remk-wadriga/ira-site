@@ -29,10 +29,28 @@ use bupy7\cropbox\Cropbox;
         ],
     ]); ?>
 
-    <div class="form-group">
+    <div class="from-group" id="crop_result">
 
-        <div class="col-lg-6">
-            <?= $form->field($model, 'img')->widget(Cropbox::className(), [
+    </div>
+
+    <div class="form-group">
+        <?= $form->field($model, 'img', [
+            'template' => "{input}\n<p>{error}",
+        ])->widget(Cropbox::className(), [
+            'attributeCropInfo' => 'cropInfo',
+            'previewImagesUrl' => [$model->imgUrl],
+            'pluginOptions' => [
+                'variants' => [
+                    [
+                        'width' => $model->imgWidth,
+                        'height' => $model->imgHeight,
+                    ],
+                ],
+            ],
+        ]) ?>
+
+        <!--<div class="col-lg-6">
+            <?/*= $form->field($model, 'img')->widget(Cropbox::className(), [
                 'attributeCropInfo' => 'cropInfo',
                 'previewImagesUrl' => [$model->imgUrl],
                 'pluginOptions' => [
@@ -41,20 +59,30 @@ use bupy7\cropbox\Cropbox;
                             'width' => $model->imgWidth,
                             'height' => $model->imgHeight,
                         ],
+                        'resultContainer' => '#crop_result',
                     ],
                 ],
-            ]) ?>
-            <?= $form->field($model, 'imgAlt')->textInput(['maxlength' => true]) ?>
-            <?= $form->field($model, 'linkUrl')->textInput(['maxlength' => true]) ?>
-            <?= $form->field($model, 'linkText')->textInput(['maxlength' => true]) ?>
-            <?= $form->field($model, 'linkTitle')->textInput(['maxlength' => true]) ?>
-        </div>
+            ]) */?>
+        </div>-->
 
-        <div class="col-lg-6">
+        <div class="form-group">
             <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
             <?= $form->field($model, 'text')->textarea(['rows' => 6]) ?>
             <?= $form->field($model, 'status')->dropDownList($model->getStatusItems(), ['prompt' => '']) ?>
         </div>
+
+        <!--<div class="col-lg-6">
+            <?/*= $form->field($model, 'title')->textInput(['maxlength' => true]) */?>
+            <?/*= $form->field($model, 'text')->textarea(['rows' => 6]) */?>
+            <?/*= $form->field($model, 'status')->dropDownList($model->getStatusItems(), ['prompt' => '']) */?>
+        </div>
+
+        <div class="col-lg-6">
+            <?/*= $form->field($model, 'imgAlt')->textInput(['maxlength' => true]) */?>
+            <?/*= $form->field($model, 'linkUrl')->textInput(['maxlength' => true]) */?>
+            <?/*= $form->field($model, 'linkText')->textInput(['maxlength' => true]) */?>
+            <?/*= $form->field($model, 'linkTitle')->textInput(['maxlength' => true]) */?>
+        </div>-->
 
     </div>
 

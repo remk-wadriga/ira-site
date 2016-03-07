@@ -16,7 +16,7 @@ $this->title = $this->t('Slide "{name}"', ['name' => $model->title]);
 $this->params['breadcrumbs'][] = ['label' => $this->t('Slides'), 'url' => ['list']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="Slide-view">
+<div class="slide-view">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
@@ -32,26 +32,27 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= Html::a($this->t('Create new slide'), ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
+    <div class="text-center-align">
+        <?= Html::img($model->imgUrl, [
+            'class' => 'big-img',
+        ]) ?>
+    </div>
+
+    <br />
+
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
             'title',
-            [
-                'value' => Html::img($model->imgUrl, [
-                    'height' => $model->imgMinimalHeight,
-                ]),
-                'attribute' => 'img',
-                'format' => 'raw',
-            ],
-            'linkUrl',
-            'linkText',
-            'linkTitle',
-            'imgAlt',
             'text:ntext',
             [
                 'value' => $model->statusName,
                 'attribute' => 'status',
             ],
+            'linkUrl',
+            'linkText',
+            'linkTitle',
+            'imgAlt',
         ],
     ]) ?>
 

@@ -28,9 +28,9 @@ class Slide extends ModelAbstract implements FileModelInterface
 
     public $img;
     public $cropInfo;
-    public $imgMinimalHeight = 150;
-    public $imgWidth = 450;
-    public $imgHeight = 310;
+    public $imgMinimalHeight = 100;
+    public $imgWidth = 1280;
+    public $imgHeight = 847;
 
     private static $_statuses = [
         self::STATUS_ACTIVE,
@@ -294,7 +294,10 @@ class Slide extends ModelAbstract implements FileModelInterface
 
     public function getCropInfo()
     {
-        return $this->cropInfo !== null ? Json::decode($this->cropInfo)[0] : [];
+        if ($this->cropInfo !== null) {
+            $this->cropInfo = Json::decode($this->cropInfo);
+        }
+        return $this->cropInfo;
     }
 
     public function getImgWidth()
