@@ -9,7 +9,7 @@
  * @var string $content
  */
 
-use yii\helpers\Html;
+use yii\bootstrap\Html;
 ?>
 
 <?= $content ?>

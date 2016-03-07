@@ -44,6 +44,14 @@ return [
     'assetManager' => [
         'appendTimestamp' => true,
         'forceCopy' => true,
+        'bundles' => [
+            'yii\web\JqueryAsset' => [
+                //'sourcePath' => null,   // do not publish the bundle
+                'js' => [
+                    '//code.jquery.com/jquery-1.11.0.min.js',  // use custom jquery
+                ]
+            ],
+        ],
     ],
     'formatter' => [
         'class' => 'components\FormatterService',
