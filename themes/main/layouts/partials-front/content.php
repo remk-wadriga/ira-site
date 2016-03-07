@@ -12,8 +12,4 @@
 use yii\helpers\Html;
 ?>
 
-<div id="templatemo_main">
-
-    <?= $content ?>
-
-</div> <!-- END of main -->
+<?= $content ?>

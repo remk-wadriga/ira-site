@@ -21,8 +21,6 @@ class AuthController extends ControllerAbstract
             return false;
         }
 
-        $this->layout = 'minimal';
-
         return true;
     }
 
