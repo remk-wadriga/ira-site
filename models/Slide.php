@@ -32,6 +32,7 @@ class Slide extends ModelAbstract implements FileModelInterface
     public $imgMinimalHeight = 100;
     public $imgWidth = 1280;
     public $imgHeight = 847;
+    public $addUrl = false;
 
     private static $_statuses = [
         self::STATUS_ACTIVE,
@@ -58,7 +59,7 @@ class Slide extends ModelAbstract implements FileModelInterface
             [['title', 'subTitle'], 'string', 'max' => 255],
             [['linkUrl', 'linkText', 'linkTitle', 'imgAlt'], 'string', 'max' => 126],
             [['imgUrl'], 'string', 'max' => 512],
-            [['cropInfo'], 'safe']
+            [['cropInfo', 'addUrl'], 'safe']
         ];
     }
 
@@ -75,6 +76,7 @@ class Slide extends ModelAbstract implements FileModelInterface
             'imgAlt' => $this->t('Image alt'),
             'text' => $this->t('Text'),
             'status' => $this->t('Status'),
+            'addUrl' => $this->t('Add url'),
         ];
     }
 
@@ -128,6 +130,7 @@ class Slide extends ModelAbstract implements FileModelInterface
     {
         parent::afterFind();
         $this->setRTC('oldImgUrl', $this->imgUrl);
+        $this->addUrl = (bool)$this->linkUrl;
     }
 
     // END Event handlers

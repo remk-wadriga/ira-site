@@ -1,6 +1,7 @@
 Main = {
 
     checkBoxSwitchID: '.checkbox-switch',
+    toggleElementID: '.toggle-element',
 
     init: function (data) {
         if (data !== undefined) {
@@ -16,6 +17,17 @@ Main = {
     },
 
     setAutoFunctions: function () {
+        Main.initCheckboxSwitch();
+    },
+
+    setHandlers: function () {
+        Main.clickToggleElement();
+    },
+
+
+    // Auto functions
+
+    initCheckboxSwitch: function () {
         $(Main.checkBoxSwitchID).bootstrapSwitch().on('switchChange.bootstrapSwitch', function () {
             var item = $(this);
             var onChangeCallback = item.data('onchange');
@@ -29,17 +41,20 @@ Main = {
         });
     },
 
-    setHandlers: function () {
-
-    }
-
-
-    // Auto functions
-
     // END Auto functions
 
 
     // Event handlers
+
+    clickToggleElement: function () {
+        $(Main.toggleElementID).on('click', function () {
+            var item = $(this);
+            $(item.data('target')).toggleClass('hide');
+            if (item.attr('href') != undefined) {
+                return false;
+            }
+        });
+    }
 
     // END Event handlers
 

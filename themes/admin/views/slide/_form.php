@@ -10,8 +10,8 @@
  * @var yii\widgets\ActiveForm $form
  */
 
-use yii\helpers\Html;
-use yii\widgets\ActiveForm;
+use yii\bootstrap\Html;
+use yii\bootstrap\ActiveForm;
 use bupy7\cropbox\Cropbox;
 ?>
 
@@ -24,8 +24,8 @@ use bupy7\cropbox\Cropbox;
             'enctype' => 'multipart/form-data',
         ],
         'fieldConfig' => [
-            'template' => "{label}\n<div class=\"col-lg-11\">{input}\n<p>{error}</p></div>",
-            'labelOptions' => ['class' => 'col-lg-1 control-label'],
+            'template' => "{label}\n<div class=\"col-lg-10\">{input}\n<p>{error}</p></div>",
+            'labelOptions' => ['class' => 'col-lg-2 control-label'],
         ],
     ]); ?>
 
@@ -66,23 +66,26 @@ use bupy7\cropbox\Cropbox;
         </div>-->
 
         <div class="form-group">
-            <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
-            <?= $form->field($model, 'text')->textarea(['rows' => 6]) ?>
-            <?= $form->field($model, 'status')->dropDownList($model->getStatusItems(), ['prompt' => '']) ?>
+            <div class="col-lg-6" >
+                <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
+                <?= $form->field($model, 'subTitle')->textInput(['maxlength' => true]) ?>
+                <?= $form->field($model, 'text')->textarea(['rows' => 5]) ?>
+                <?= $form->field($model, 'status')->dropDownList($model->getStatusItems(), ['prompt' => '']) ?>
+            </div>
+            <div class="col-lg-6" >
+                <?= $form->field($model, 'addUrl')->checkbox([
+                    'class' => 'form-group field-slide-addurl toggle-element',
+                    'data' => [
+                        'target' => '#slide_url_fields',
+                    ],
+                ]) ?>
+                <div id="slide_url_fields" class="slide-url-fields<?= !$model->addUrl ? ' hide' : '' ?>">
+                    <?= $form->field($model, 'linkUrl')->textInput(['maxlength' => true]) ?>
+                    <?= $form->field($model, 'linkText')->textInput(['maxlength' => true]) ?>
+                    <?= $form->field($model, 'linkTitle')->textInput(['maxlength' => true]) ?>
+                </div>
+            </div>
         </div>
-
-        <!--<div class="col-lg-6">
-            <?/*= $form->field($model, 'title')->textInput(['maxlength' => true]) */?>
-            <?/*= $form->field($model, 'text')->textarea(['rows' => 6]) */?>
-            <?/*= $form->field($model, 'status')->dropDownList($model->getStatusItems(), ['prompt' => '']) */?>
-        </div>
-
-        <div class="col-lg-6">
-            <?/*= $form->field($model, 'imgAlt')->textInput(['maxlength' => true]) */?>
-            <?/*= $form->field($model, 'linkUrl')->textInput(['maxlength' => true]) */?>
-            <?/*= $form->field($model, 'linkText')->textInput(['maxlength' => true]) */?>
-            <?/*= $form->field($model, 'linkTitle')->textInput(['maxlength' => true]) */?>
-        </div>-->
 
     </div>
 
