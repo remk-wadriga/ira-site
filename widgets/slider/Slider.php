@@ -24,6 +24,11 @@ class Slider extends Widget
 
     public $backgroundImage = '@web/img/design/transparent.png';
 
+    public function getId($autoGenerate = false)
+    {
+        return parent::getId($autoGenerate);
+    }
+
     public function run()
     {
         parent::run();
@@ -66,7 +71,7 @@ class Slider extends Widget
 
         return $this->render('slider-view', [
             'slides' => $slides,
-            'id' => isset($this->options['sliderId']) ? $this->options['sliderId'] : 'masterslider',
+            'id' => isset($this->options['id']) ? $this->options['id'] : 'masterslider',
             'class' => isset($this->options['class']) ? $this->options['class'] : 'master-slider',
             'dataHeight' => isset($this->options['dataHeight']) ? $this->options['dataHeight'] : 'fullscreen',
             'slideClass' => isset($this->options['slideClass']) ? $this->options['slideClass'] : 'ms-slide',

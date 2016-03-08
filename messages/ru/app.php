@@ -42,6 +42,8 @@ $messages = [
     'Status'                                                                                                            => '',
     'Create new slide'                                                                                                  => '',
     'Delete'                                                                                                            => '',
+    'Submit'                                                                                                            => '',
+    'Type then press enter...'                                                                                          => '',
 ];
 
 return array_merge($messages, require(__DIR__ . '/error.php'), require(__DIR__ . '/flash.php'));

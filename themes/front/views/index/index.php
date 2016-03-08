@@ -11,6 +11,7 @@
 use yii\helpers\Html;
 
 $this->title = 'TITLE';
+$this->params['showMainSlider'] = false;
 ?>
 
 <section class="content-section" id="firstSection">

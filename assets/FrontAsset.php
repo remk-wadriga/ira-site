@@ -53,6 +53,7 @@ class FrontAsset extends AssetAbstract
 
     public $depends = [
         'yii\bootstrap\BootstrapPluginAsset',
+        'yii\web\YiiAsset',
     ];
 
     public static function scriptName()

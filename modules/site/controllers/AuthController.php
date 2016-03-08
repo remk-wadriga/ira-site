@@ -21,6 +21,8 @@ class AuthController extends ControllerAbstract
             return false;
         }
 
+        $this->layout = 'site';
+
         return true;
     }
 

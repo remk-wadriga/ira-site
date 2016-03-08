@@ -11,8 +11,6 @@
  */
 
 use yii\helpers\Html;
-use models\Slide;
-use widgets\slider\Slider;
 
 // Register module assets
 if (Yii::$app->controller->module !== null) {
@@ -45,7 +43,8 @@ if (Yii::$app->user->isGuest) {
     $menuItems[] = ['label' => $this->t('Account'), 'items' => [
         [
             'label' => $this->t('Logout ({name})', ['name' => Yii::$app->user->fullName]),
-            'url' => ['/site/auth/logout'], 'linkOptions' => [
+            'url' => ['/site/auth/logout'],
+            'linkOptions' => [
                 'data' => [
                     'type' => 'POST',
                     'confirm' => $this->t('Are you sure you want to leave the system') . '?',
@@ -72,129 +71,9 @@ if (Yii::$app->user->isGuest) {
     <body>
         <?php $this->beginBody() ?>
 
-
-        <div class="slider-wrapper">
-
-            <?= Slider::widget([
-                'modelClass' => Slide::className(),
-            ]) ?>
-
-            <a href="#firstSection"><i class="fa fa-chevron-down" id="go-down"></i></a>
-
-        </div><!-- end of slider-wrapper -->
-
-        <span id="nav-begins"></span><!-- place before navigation bar-->
-        <div class="container-wrapper navigation">
-            <nav class="navbar navbar-default" role="navigation">
-
-                <div class="container">
-
-                    <div class="navbar-header">
-                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="">
-                            <i class="fa fa-bars"></i>
-                        </button>
-                        <a class="navbar-brand" href="index.html">
-                            <img src="/img/logo.jpg" />
-                        </a>
-                        <ul class="mini"></ul><!-- mobile navigation -->
-                    </div><!-- .navbar-header -->
-
-                    <div class="collapse navbar-collapse">
-                        <div class="right">
-                            <ul class="nav navbar-nav">
-                                <li class="active dropdown h">
-                                    <a href="#">Home</a>
-                                    <ul class="dropdown-menu">
-                                        <li><a href="#">Badass</a></li>
-                                        <li><a href="#">Dropdown</a></li>
-                                        <li><a href="#">Menu</a></li>
-                                    </ul>
-                                </li>
-                                <li class="dropdown h">
-                                    <a href="#">Pages</a>
-                                    <ul class="dropdown-menu">
-                                        <li><a href="about.html">About</a></li>
-                                        <li><a href="contact.html">Contact</a></li>
-                                        <li><a href="blog.html">Blog</a></li>
-                                        <li><a href="single.html">Single</a></li>
-                                        <li><a href="footer-alternate.html">Footer 2</a></li>
-                                    </ul>
-                                </li>
-
-                                <li class="dropdown h full">
-                                    <a href="#">Features</a>
-                                    <section class="container dropdown-menu">
-                                	<span class="wrapper">
-                                    	<div class="clear-wrapper">
-                                            <article>
-                                                <strong>PAGE STRUCTURE</strong>
-                                                <ul>
-                                                    <li><a href="#"><i class="fa fa-video-camera"></i>Video Backgrounds</a></li>
-                                                    <li><a href="#"><i class="fa fa-picture-o"></i>Parallax Backgrounds</a></li>
-                                                    <li><a href="#"><i class="fa fa-sun-o"></i>Light Background</a></li>
-                                                    <li><a href="#"><i class="fa fa-moon-o"></i>Dark Background</a></li>
-                                                </ul>
-                                            </article>
-
-                                            <span class="divider"></span>
-
-                                            <article>
-                                                <strong>PAGE ELEMENTS</strong>
-                                                <ul>
-                                                    <li><a href="#"><i class="fa fa-video-camera"></i>Lorem Ipsum</a></li>
-                                                    <li><a href="#"><i class="fa fa-picture-o"></i>Dolar Sit</a></li>
-                                                    <li><a href="#"><i class="fa fa-sun-o"></i>Amet</a></li>
-                                                    <li><a href="#"><i class="fa fa-moon-o"></i>Varun Sitrem</a></li>
-                                                </ul>
-                                            </article>
-
-                                            <span class="divider"></span>
-
-                                            <article>
-                                                <strong>SOME MORE STUFF</strong>
-                                                <ul>
-                                                    <li><a href="#"><i class="fa fa-video-camera"></i>Pricing</a></li>
-                                                    <li><a href="#"><i class="fa fa-picture-o"></i>Content</a></li>
-                                                    <li><a href="#"><i class="fa fa-sun-o"></i>Features</a></li>
-                                                    <li><a href="#"><i class="fa fa-moon-o"></i>Typography</a></li>
-                                                </ul>
-                                            </article>
-                                        </div><!-- .clear-wrapper -->
-
-                                        <div class="color-wrapper">
-                                            <strong>FRESH FROM THE BLOG</strong>
-                                            <div class="nivo-wrapper">
-                                                <div id="slider" class="nivoSlider">
-                                                    <img src="/img/citydown.jpg" alt="" name="" width="310" height="150" />
-                                                    <img src="/img/oceanscene.jpg" alt="" name="" width="310" height="150" />
-                                                </div>
-                                            </div>
-                                            <p><a href="#">To see more, check out our portfolio page! Prepare to be impressed.</a></p>
-                                        </div><!-- .color-wrapper -->
-                                    </span>
-                                    </section><!-- .container.dropdown-menu -->
-                                </li><!-- .dropdown.full -->
-
-                                <li><a href="portfolio-1.html">Portfolio</a></li>
-                                <li><a href="blog.html">Blog</a></li>
-                            </ul>
-                            <div class="navbar-form navbar-left">
-                                <i class="fa fa-times"></i>
-                                <i class="fa fa-search"></i>
-                            </div>
-                        </div>
-                    </div><!-- /.navbar-collapse -->
-                </div><!-- /.container-fluid -->
-                <div class="search-field">
-                    <div class="container">
-                        <form method="get" role="search">
-                            <input type="text" name="s" placeholder="Type then press enter..." />
-                            <button type="submit" class="hidden btn btn-default">Submit</button>
-                        </form>
-                    </div>
-                </div><!-- search-field -->
-            </nav>
-        </div>
+        <?= $this->render('partials-front/header', [
+            'menuItems' => $menuItems,
+        ]) ?>
 
         <section class="content-section" id="firstSection">
             <div class="container">
@@ -823,51 +702,53 @@ if (Yii::$app->user->isGuest) {
 
         <?php $this->endBody() ?>
 
-        <?php $this->registerJs('jQuery(document).ready(function($) {
-            /************************
-            ****** MasterSlider *****
-            *************************/
-            // Calibrate slider\'s height
-            var sliderHeight = 790; // Smallest hieght allowed (default height)
-            if ( $(\'#masterslider\').data(\'height\') == \'fullscreen\' ) {
-                var winHeight = $(window).height();
-                sliderHeight = winHeight > sliderHeight ? winHeight : sliderHeight;
-            }
+        <?php if (isset($this->params['showMainSlider']) && $this->params['showMainSlider']) : ?>
+            <?php $this->registerJs('jQuery(document).ready(function($) {
+                /************************
+                ****** MasterSlider *****
+                *************************/
+                // Calibrate slider\'s height
+                var sliderHeight = 790; // Smallest hieght allowed (default height)
+                if ( $(\'#masterslider\').data(\'height\') == \'fullscreen\' ) {
+                    var winHeight = $(window).height();
+                    sliderHeight = winHeight > sliderHeight ? winHeight : sliderHeight;
+                }
 
-            // Initialize the main slider
-            var slider = new MasterSlider();
-            slider.setup(\'masterslider\', {
-                space:0,
-                fullwidth:true,
-                autoplay:true,
-                overPause:false,
-                width:1024,
-                height:sliderHeight
-            });
-            // adds Arrows navigation control to the slider.
-            slider.control(\'bullets\',{autohide:false  , dir:"h"});
+                // Initialize the main slider
+                var slider = new MasterSlider();
+                slider.setup(\'masterslider\', {
+                    space:0,
+                    fullwidth:true,
+                    autoplay:true,
+                    overPause:false,
+                    width:1024,
+                    height:sliderHeight
+                });
+                // adds Arrows navigation control to the slider.
+                slider.control(\'bullets\',{autohide:false  , dir:"h"});
 
-            var teamslider = new MasterSlider();
-            teamslider.setup(\'teamslider\' , {
-                loop:true,
-                width:300,
-                height:290,
-                speed:20,
-                view:\'stffade\',
-                grabCursor:false,
-                preload:0,
-                space:29
-            });
-            teamslider.control(\'slideinfo\',{insertTo:\'#staff-info\'});
+                var teamslider = new MasterSlider();
+                teamslider.setup(\'teamslider\' , {
+                    loop:true,
+                    width:300,
+                    height:290,
+                    speed:20,
+                    view:\'stffade\',
+                    grabCursor:false,
+                    preload:0,
+                    space:29
+                });
+                teamslider.control(\'slideinfo\',{insertTo:\'#staff-info\'});
 
-            $(".team .ms-nav-next").click(function() {
-                teamslider.api.next();
-            });
+                $(".team .ms-nav-next").click(function() {
+                    teamslider.api.next();
+                });
 
-            $(".team .ms-nav-prev").click(function() {
-                teamslider.api.previous();
-            });
-        });') ?>
+                $(".team .ms-nav-prev").click(function() {
+                    teamslider.api.previous();
+                });
+            });') ?>
+        <?php endif ?>
     </body>
 
 </html>
