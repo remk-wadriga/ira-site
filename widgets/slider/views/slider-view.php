@@ -23,6 +23,8 @@
             'class' => $slideClass,
         ]) ?>
     <?php endforeach ?>
-</div><!-- end of masterslider -->
+
+</div>
+<!-- end of masterslider -->
 
 

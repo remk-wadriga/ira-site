@@ -15,7 +15,7 @@ use yii\bootstrap\Html;
 ?>
 
 <!-- Slide <?= $index ?> -->
-<div class="<?= $class ?> slide-<?= $index ?>" style="z-index: 10" data-delay="8">
+<div class="<?= $class ?>">
 
     <!-- slide background -->
     <?= Html::img($slide['backgroundImage'], [
@@ -25,38 +25,28 @@ use yii\bootstrap\Html;
         ],
     ]) ?>
 
-    <h1 class="ms-layer center" style="left:0; top:25px;"
-        data-effect="rotatetop(-40,60,l)"
-        data-duration="3500"
-        data-delay="0"
-        data-ease="easeOutExpo"
-    ><?= $slide['title'] ?></h1>
+    <!-- slide text layer -->
+    <div class="ms-layer ms-caption" style="top:400px; left:30px;">
 
-    <?php if ($slide['subTitle']) : ?>
-        <h2 class="ms-layer center"  style="left:0; top:156px"
-            data-effect="left(short)"
-            data-duration="3500"
-            data-delay="300"
-            data-ease="easeOutExpo"
-        ><?= $slide['subTitle'] ?></h2>
-    <?php endif ?>
+        <?php if ($slide['title']) : ?>
+            <h2><?= $slide['title'] ?></h2>
+        <?php endif ?>
 
-    <?php if ($slide['text']) : ?>
-        <p class="ms-layer h4" style="left:7px; top:415px; width:460px;"
-           data-effect="bottom(short)"
-           data-duration="1200"
-           data-delay="600"
-           data-ease="300"
-        ><?= $slide['text'] ?></p>
-    <?php endif ?>
+        <?php if ($slide['subTitle']) : ?>
+            <h1><?= $slide['subTitle'] ?></h1>
+        <?php endif ?>
 
-    <?php if ($slide['linkUrl']) : ?>
-        <?= Html::a($this->t($slide['linkText']), $slide['linkUrl'], [
-            'class' => 'btn btn-bordered white anim',
-            'style' => 'left:7px; top:460px;',
-            'role' => 'button',
-        ]) ?>
-    <?php endif ?>
+        <?php if ($slide['text']) : ?>
+            <p class="h4">
+                <?= $slide['text'] ?>
+            </p>
+        <?php endif ?>
+
+        <!-- linked slide -->
+        <?php if ($slide['linkUrl']) : ?>
+            <?= Html::a($this->t($slide['linkText']), $slide['linkUrl'], ['class' => 'btn btn-bordered white anim animated']) ?>
+        <?php endif ?>
+    </div>
 
 </div>
 <!-- end of slide -->

@@ -66,7 +66,7 @@ class Slider extends Widget
 
         return $this->render('slider-view', [
             'slides' => $slides,
-            'id' => isset($this->options['id']) ? $this->options['id'] : 'masterslider',
+            'id' => isset($this->options['sliderId']) ? $this->options['sliderId'] : 'masterslider',
             'class' => isset($this->options['class']) ? $this->options['class'] : 'master-slider',
             'dataHeight' => isset($this->options['dataHeight']) ? $this->options['dataHeight'] : 'fullscreen',
             'slideClass' => isset($this->options['slideClass']) ? $this->options['slideClass'] : 'ms-slide',
