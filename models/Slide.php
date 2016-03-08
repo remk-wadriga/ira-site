@@ -13,6 +13,7 @@ use yii\helpers\Url;
  *
  * @property string $id
  * @property string $title
+ * @property string $subTitle
  * @property string $text
  * @property string $linkUrl
  * @property string $linkText
@@ -54,7 +55,7 @@ class Slide extends ModelAbstract implements FileModelInterface
             [['text'], 'string'],
             ['img', 'image', 'extensions' => ['jpg', 'jpeg', 'png', 'gif'], 'mimeTypes' => ['image/jpeg', 'image/pjpeg', 'image/png', 'image/gif']],
             ['status', 'in', 'range' => self::$_statuses],
-            [['title'], 'string', 'max' => 255],
+            [['title', 'subTitle'], 'string', 'max' => 255],
             [['linkUrl', 'linkText', 'linkTitle', 'imgAlt'], 'string', 'max' => 126],
             [['imgUrl'], 'string', 'max' => 512],
             [['cropInfo'], 'safe']
@@ -65,6 +66,7 @@ class Slide extends ModelAbstract implements FileModelInterface
     {
         return [
             'title' => $this->t('Title'),
+            'subTitle' => $this->t('Subtitle'),
             'img' => $this->t('Image'),
             'imgUrl' => $this->t('Image url'),
             'linkUrl' => $this->t('Link url'),
@@ -181,6 +183,16 @@ class Slide extends ModelAbstract implements FileModelInterface
     public function setImgAlt($img_alt)
     {
         $this->img_alt = $img_alt;
+    }
+
+    // subTitle
+    public function getSubTitle()
+    {
+        return $this->sub_title;
+    }
+    public function setSubTitle($sub_title)
+    {
+        $this->sub_title = $sub_title;
     }
 
     // END Getters and setters

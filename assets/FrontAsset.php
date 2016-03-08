@@ -13,7 +13,7 @@ use abstracts\AssetAbstract;
 class FrontAsset extends AssetAbstract
 {
     public $css = [
-        'css/bootstrap.css',
+        //'css/bootstrap.css',
         'css/style.css',
         'css/masterslider/masterslider.css',
         'css/masterslider/skins/black-1/style.css',
@@ -30,7 +30,7 @@ class FrontAsset extends AssetAbstract
     public $js = [
         //'js/jquery-1.11.0.min.js',
         'js/jquery.easing.1.3.js',
-        'js/bootstrap.min.js',
+        //'js/bootstrap.min.js',
         'js/masterslider.min.js',
         'js/masterslider.staff.carousel.dev.js',
         'js/wow.min.js',
@@ -52,7 +52,7 @@ class FrontAsset extends AssetAbstract
     ];
 
     public $depends = [
-        'yii\web\JqueryAsset',
+        'yii\bootstrap\BootstrapPluginAsset',
     ];
 
     public static function scriptName()
