@@ -10,9 +10,13 @@ namespace admin\abstracts;
 
 use Yii;
 use abstracts\ControllerAbstract as BaseController;
+use yii\helpers\Json;
 
 abstract class ControllerAbstract extends BaseController
 {
+    const AJX_STATUS_OK = 'OK';
+    const AJX_STATUS_ERROR = 'ERROR';
+
     public function beforeAction($action)
     {
         if (!parent::beforeAction($action)) {
@@ -30,5 +34,28 @@ abstract class ControllerAbstract extends BaseController
     {
         Yii::$app->user->setReturnUrl(Yii::$app->request->url);
         return parent::redirect($url, $statusCode);
+    }
+
+    public function renderAjx($view = null, $message = null, $status = null, $params = [])
+    {
+        if ($status === null) {
+            $status = self::AJX_STATUS_OK;
+        }
+        if ($message === null) {
+            $message = 'SUCCESS';
+        }
+
+        if ($view === null) {
+            return Json::encode(array_merge($params, [
+                'status' => $status,
+                'message' => $message,
+            ]));
+        } else {
+            return Json::encode([
+                'status' => $status,
+                'message' => $message,
+                'content' => $content = $this->renderPartial($view, $params),
+            ]);
+        }
     }
 }

@@ -12,6 +12,7 @@ use Yii;
 use models\Event;
 use models\search\EventSearch;
 use admin\abstracts\ControllerAbstract;
+use yii\helpers\Json;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
@@ -81,6 +82,24 @@ class EventController extends ControllerAbstract
         $this->findModel($id)->delete();
 
         return $this->redirect(['list']);
+    }
+
+    public function actionChangeStatus($id)
+    {
+        $event = $this->findModel($id);
+        $event->status = $this->get('status');
+        $event->setStoryAction();
+        $event->setStoryFields('status');
+
+        if ($event->save()) {
+            $status = self::AJX_STATUS_OK;
+            $message = $this->t('Event status changed');
+        } else {
+            $status = self::AJX_STATUS_ERROR;
+            $message = $this->t('Can not change event status');
+        }
+
+        return $this->renderAjx(null, $message, $status);
     }
 
     /**

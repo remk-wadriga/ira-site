@@ -114,6 +114,19 @@ class ModelAbstract extends ActiveRecord implements ModelInterface
         return parent::getAttribute($name);
     }
 
+    public function getOldAttributes($names = [])
+    {
+        if (empty($names)) {
+            return parent::getOldAttributes();
+        } else {
+            $attributes = [];
+            foreach ($names as $name) {
+                $attributes[$name] = $this->getOldAttribute($name);
+            }
+            return $attributes;
+        }
+    }
+
     /**
      * Get the typical enum translated names array
      *
@@ -178,7 +191,6 @@ class ModelAbstract extends ActiveRecord implements ModelInterface
 
         return self::$_items[$key];
     }
-
 
     protected static function getItemsNames()
     {

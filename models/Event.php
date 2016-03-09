@@ -408,11 +408,35 @@ class Event extends ModelAbstract implements StoryInterface
         return parent::getEnumNames(self::$_userComeStatusesNames, 'userComeStatusesItems', $firstElement);
     }
 
-    public function setStoryAction($action)
+    public function setStoryAction($action = null)
     {
+        if ($action === null) {
+            switch ($this->status) {
+                case self::STATUS_CURRENT:
+                    $action = self::STORY_ACTION_STARTED;
+                    break;
+                case self::STATUS_PAST:
+                    $action = self::STORY_ACTION_STOPPED;
+                    break;
+                case self::STATUS_CANCELED:
+                    $action = self::STORY_ACTION_CANCELED;
+                    break;
+            }
+        }
+
         if (in_array($action, self::$_storyActions)) {
             $this->setRTC('storyAction', $action);
         }
+    }
+
+    public function setStoryFields($fields)
+    {
+        if (!is_array($fields)) {
+            $fields = [$fields];
+        }
+        $this->setRTC('storyFields', $fields);
+        $this->setRTC('storyOldValues', $this->getOldAttributes($fields));
+        $this->setRTC('storyNewValues', $this->getAttributes($fields));
     }
 
     public function getStatusName($status = null)
@@ -476,24 +500,27 @@ class Event extends ModelAbstract implements StoryInterface
     {
         if ($this->getStoryAction() == self::STORY_ACTION_UPDATED) {
             return $this->attributes();
+        } else {
+            return $this->getRTC('storyFields');
         }
-        return null;
     }
 
     public function getStoryOldValues()
     {
         if ($this->getStoryAction() == self::STORY_ACTION_UPDATED) {
             return $this->getOldAttributes();
+        } else {
+            return $this->getRTC('storyOldValues');
         }
-        return null;
     }
 
     public function getStoryNewValues()
     {
         if ($this->getStoryAction() == self::STORY_ACTION_UPDATED) {
             return $this->getAttributes();
+        } else {
+            return $this->getRTC('storyNewValues');
         }
-        return null;
     }
 
     // END Implements StoryInterface

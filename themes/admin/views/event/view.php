@@ -40,9 +40,9 @@ $this->params['breadcrumbs'][] = $this->title;
             'description:ntext',
             'membersCount',
             'address',
-            'price',
-            'profit',
-            'cost',
+            'price:number',
+            'profit:number',
+            'cost:number',
             [
                 'attribute' => 'type',
                 'value' => $model->typeName,

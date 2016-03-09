@@ -1,4 +1,7 @@
 Admin = {
+
+    changeEventStatusDropdownID: '#change_event_status_dropdown',
+
     init: function (data) {
         if (data !== undefined) {
             $.each(data, function (index, value) {
@@ -17,7 +20,7 @@ Admin = {
     },
 
     setHandlers: function () {
-
+        Admin.changeEventStatusDropdownSwich();
     },
 
 
@@ -27,6 +30,20 @@ Admin = {
 
 
     // Event handlers
+
+    changeEventStatusDropdownSwich: function () {
+        $(Admin.changeEventStatusDropdownID).on('change', function () {
+            var item = $(this);
+
+            var success = function () {
+                if (!checked) {
+                    return false;
+                }
+            };
+
+            Api.ajx(item.data('url'), {status: item.val()}, success, 'GET');
+        });
+    },
 
     // END Event handlers
 
@@ -45,12 +62,6 @@ Admin = {
             if (!checked) {
                 return false;
             }
-            /*$(Main.checkBoxSwitchID).each(function (index, input) {
-                input = $(input);
-                if (input.attr('id') != item.attr('id')) {
-                    input.bootstrapSwitch('state', false);
-                }
-            });*/
         };
 
         Api.ajx(item.data('url'), {isActive: checked}, success, 'GET');

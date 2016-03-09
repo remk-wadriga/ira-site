@@ -11,6 +11,7 @@
  */
 
 use yii\bootstrap\Html;
+use yii\helpers\Url;
 use yii\grid\GridView;
 
 $this->title = $this->t('Events');
@@ -32,12 +33,10 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             'name',
-            'ownerID',
             'ownerName',
-            'description:ntext',
-            'price',
-            'profit',
-            'cost',
+            'price:number',
+            'cost:number',
+            'profit:number',
             'membersCount',
             [
                 'attribute' => 'type',
@@ -48,8 +47,15 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'status',
                 'value' => function ($model) {
-                    return $model->statusName;
+                    return Html::activeDropDownList($model, 'status', $model->getStatusesItems(), [
+                        'id' => 'change_event_status_dropdown',
+                        'class' => 'form-group',
+                        'data' => [
+                            'url' => Url::to(['/admin/event/change-status', 'id' => $model->id]),
+                        ],
+                    ]);
                 },
+                'format' => 'raw',
             ],
             [
                 'attribute' => 'dateStart',

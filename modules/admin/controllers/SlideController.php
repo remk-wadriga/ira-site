@@ -99,18 +99,15 @@ class SlideController extends ControllerAbstract
 
         $slide->status = $status;
         if ($slide->save()) {
-            $status = 'OK';
+            $status = self::AJX_STATUS_OK;
             $message = $status == Slide::STATUS_ACTIVE ? $this->t('Slide successfully activated') : $this->t('Slide successfully deactivated');
         } else {
-            $status = 'ERROR';
+            $status = self::AJX_STATUS_ERROR;
             Yii::$app->response->setStatusCode(500);
             $message = $status == Slide::STATUS_ACTIVE ? $this->t('Can not activate slide') : $this->t('Can not deactivate slide');
         }
 
-        return Json::encode([
-            'status' => $status,
-            'message' => $message,
-        ]);
+        return $this->renderAjx(null, $message, $status);
     }
 
     /**

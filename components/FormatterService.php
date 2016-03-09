@@ -17,4 +17,9 @@ class FormatterService extends Formatter
     {
         return parent::asDatetime($value, $format);
     }
+
+    public function asNumber($value)
+    {
+        return round($value, 2);
+    }
 }
