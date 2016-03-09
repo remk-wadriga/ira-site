@@ -1,6 +1,6 @@
 <?php
 
-return [
+$baseRoutes = [
 // Landing page
     '/'                                                                             => 'front/index/index',
     'login'                                                                         => 'site/auth/login',
@@ -21,3 +21,5 @@ return [
     '<controller>/<action>'                                                         => 'front/<controller>/<action>',
     '<controller>s'                                                                 => 'front/<controller>/list',
 ];
+
+return array_merge(require(__DIR__ . '/../modules/front/config/routes.php'), $baseRoutes);
