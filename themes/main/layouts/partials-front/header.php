@@ -18,6 +18,8 @@ use widgets\nav\NavBar;
     <div class="slider-wrapper">
         <?= Slider::widget([
             'modelClass' => Slide::className(),
+            'conditions' => ['status' => Slide::STATUS_ACTIVE],
+            'with' => ['mainImage'],
         ]) ?>
 
         <a href="#firstSection"><i class="fa fa-chevron-down" id="go-down"></i></a>

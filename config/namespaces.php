@@ -9,6 +9,7 @@ return [
     'collections' => 'collections',
     'interfaces' => 'interfaces',
     'widgets' => 'widgets',
+    'events' => 'events',
 
     // Modules namespaces
     'front' => 'modules/front',

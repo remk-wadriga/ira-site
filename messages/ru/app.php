@@ -45,6 +45,7 @@ $messages = [
     'Submit'                                                                                                            => '',
     'Type then press enter...'                                                                                          => '',
     'Add url'                                                                                                           => '',
+    'Can not upload image'                                                                                              => '',
 ];
 
 return array_merge($messages, require(__DIR__ . '/error.php'), require(__DIR__ . '/flash.php'));

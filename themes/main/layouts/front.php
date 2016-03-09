@@ -77,7 +77,9 @@ if (Yii::$app->user->isGuest) {
             ]) ?>
 
             <!-- Content -->
-            <?= $this->render('partials-front/content') ?>
+            <?= $this->render('partials-front/content', [
+                'content' => $content,
+            ]) ?>
 
             <!-- Footer -->
             <?= $this->render('partials-front/footer') ?>

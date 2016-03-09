@@ -40,7 +40,8 @@ class SlideSearch extends Slide
      */
     public function search($params)
     {
-        $query = Slide::find();
+        $query = Slide::find()
+            ->with(['mainImage']);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -61,8 +62,6 @@ class SlideSearch extends Slide
             ->andFilterWhere(['like', 'link_url', $this->link_url])
             ->andFilterWhere(['like', 'link_text', $this->link_text])
             ->andFilterWhere(['like', 'link_title', $this->link_title])
-            ->andFilterWhere(['like', 'img_url', $this->img_url])
-            ->andFilterWhere(['like', 'img_alt', $this->img_alt])
             ->andFilterWhere(['like', 'status', $this->status]);
 
         return $dataProvider;

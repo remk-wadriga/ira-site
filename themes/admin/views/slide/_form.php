@@ -49,22 +49,6 @@ use bupy7\cropbox\Cropbox;
             ],
         ]) ?>
 
-        <!--<div class="col-lg-6">
-            <?/*= $form->field($model, 'img')->widget(Cropbox::className(), [
-                'attributeCropInfo' => 'cropInfo',
-                'previewImagesUrl' => [$model->imgUrl],
-                'pluginOptions' => [
-                    'variants' => [
-                        [
-                            'width' => $model->imgWidth,
-                            'height' => $model->imgHeight,
-                        ],
-                        'resultContainer' => '#crop_result',
-                    ],
-                ],
-            ]) */?>
-        </div>-->
-
         <div class="form-group">
             <div class="col-lg-6" >
                 <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>

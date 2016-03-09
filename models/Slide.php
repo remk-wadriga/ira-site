@@ -2,11 +2,15 @@
 
 namespace models;
 
+use admin\listeners\SlideListener;
+use events\SlideEvent;
 use Yii;
 use abstracts\ModelAbstract;
 use interfaces\FileModelInterface;
+use interfaces\ImagedEntityInterface;
 use yii\helpers\Json;
 use yii\helpers\Url;
+use yii\db\ActiveQuery;
 
 /**
  * This is the model class for table "slider".
@@ -21,11 +25,16 @@ use yii\helpers\Url;
  * @property string $imgUrl
  * @property string $imgAlt
  * @property string $status
+ *
+ * @property Image[] $images
+ * @property Image $mainImage
  */
-class Slide extends ModelAbstract implements FileModelInterface
+class Slide extends ModelAbstract implements FileModelInterface, ImagedEntityInterface
 {
     const STATUS_ACTIVE = 'active';
     const STATUS_NOT_ACTIVE = 'not_active';
+
+    const EVENT_SAVED = 'event_saved';
 
     public $img;
     public $cropInfo;
@@ -52,13 +61,12 @@ class Slide extends ModelAbstract implements FileModelInterface
     public function rules()
     {
         return [
-            [['title', 'imgUrl'], 'required'],
+            [['title'], 'required'],
             [['text'], 'string'],
             ['img', 'image', 'extensions' => ['jpg', 'jpeg', 'png', 'gif'], 'mimeTypes' => ['image/jpeg', 'image/pjpeg', 'image/png', 'image/gif']],
             ['status', 'in', 'range' => self::$_statuses],
             [['title', 'subTitle'], 'string', 'max' => 255],
-            [['linkUrl', 'linkText', 'linkTitle', 'imgAlt'], 'string', 'max' => 126],
-            [['imgUrl'], 'string', 'max' => 512],
+            [['linkUrl', 'linkText', 'linkTitle'], 'string', 'max' => 126],
             [['cropInfo', 'addUrl'], 'safe']
         ];
     }
@@ -87,6 +95,39 @@ class Slide extends ModelAbstract implements FileModelInterface
 
     // Depending
 
+    /**
+     * @return ActiveQuery
+     */
+    public function getMainImage()
+    {
+        return $this->hasOne(Image::className(), ['id' => 'image_id'])->viaTable(Image::entityImageTableName(), [
+            'entity_id' => 'id',
+        ], function (ActiveQuery $query) {
+            $query
+                ->select(['entity_id', 'image_id'])
+                ->andWhere([
+                    'entity_class' => Slide::className(),
+                    'is_main' => 1,
+                ]);
+        });
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getImages()
+    {
+        return $this->hasMany(Image::className(), ['id' => 'image_id'])->viaTable(Image::entityImageTableName(), [
+            'entity_id' => 'id',
+        ], function (ActiveQuery $query) {
+            $query
+                ->select(['entity_id', 'image_id'])
+                ->andWhere([
+                    'entity_class' => Slide::className(),
+                ]);
+        });
+    }
+
     // END Depending
 
 
@@ -100,10 +141,6 @@ class Slide extends ModelAbstract implements FileModelInterface
 
         if (!$this->status) {
             $this->status = self::STATUS_ACTIVE;
-        }
-
-        if (!Yii::$app->file->loadFile($this)) {
-            return false;
         }
 
         return true;
@@ -171,21 +208,25 @@ class Slide extends ModelAbstract implements FileModelInterface
     // imgUrl
     public function getImgUrl()
     {
-        return $this->img_url;
+        return $this->getRTCItem('image_url', function () {
+            return $this->mainImage !== null ? $this->mainImage->url : null;
+        }, null);
     }
     public function setImgUrl($img_url)
     {
-        $this->img_url = $img_url;
+        $this->setRTC('image_url', $img_url);
     }
 
     // imgAlt
     public function getImgAlt()
     {
-        return $this->img_alt;
+        return $this->getRTCItem('image_alt', function () {
+            return $this->mainImage !== null ? $this->mainImage->alt : null;
+        }, null);
     }
     public function setImgAlt($img_alt)
     {
-        $this->img_alt = $img_alt;
+        $this->setRTC('image_alt', $img_alt);
     }
 
     // subTitle
@@ -210,6 +251,33 @@ class Slide extends ModelAbstract implements FileModelInterface
         if ($this->status === null) {
             $this->status = self::STATUS_ACTIVE;
         }
+
+        $this->on(self::EVENT_SAVED, [SlideListener::className(), 'handleSlideSaved']);
+    }
+
+    public function save($runValidation = true, $attributeNames = null)
+    {
+        $db = Yii::$app->getDb();
+        //$isNew = $this->getIsNewRecord();
+        $transaction = $db->beginTransaction();
+
+        if (!parent::save($runValidation, $attributeNames)) {
+            $transaction->rollBack();
+            return false;
+        }
+
+        // Create "Slide saved" event
+        $event = new SlideEvent();
+        $this->trigger(self::EVENT_SAVED, $event);
+
+        if (!$event->isValid) {
+            $transaction->rollBack();
+            $this->addError('img', $event->message);
+            return false;
+        }
+
+        $transaction->commit();
+        return true;
     }
 
     public function getStatusItems()
@@ -228,6 +296,16 @@ class Slide extends ModelAbstract implements FileModelInterface
     public function getIsActive()
     {
         return $this->status == self::STATUS_ACTIVE;
+    }
+
+    public function setIsMainImage($val)
+    {
+        $this->setRTC('isMainImage', (bool)$val);
+    }
+
+    public function isImageChanged()
+    {
+        return $this->imgUrl != $this->getOldFileName();
     }
 
     // END Public methods
@@ -326,4 +404,19 @@ class Slide extends ModelAbstract implements FileModelInterface
     }
 
     // END Implements FileModelInterface
+
+
+    // Implements ImagedEntityInterface
+
+    public function isMainImage()
+    {
+        return $this->getRTC('isMainImage');
+    }
+
+    public function getImageID()
+    {
+        return $this->getRTC('imageID');
+    }
+
+    // END Implements ImagedEntityInterface
 }

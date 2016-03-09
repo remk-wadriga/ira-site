@@ -20,6 +20,8 @@ class Slider extends Widget
 
     public $conditions = [];
 
+    public $with = [];
+
     public $orderBy;
 
     public $backgroundImage = '@web/img/design/transparent.png';
@@ -39,6 +41,9 @@ class Slider extends Widget
 
         $model = $this->modelClass;
         $query = $model::find();
+        if (!empty($this->with)) {
+            $query->with($this->with);
+        }
         if (!empty($this->conditions)) {
             $query->where($this->conditions);
         }
