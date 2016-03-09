@@ -38,6 +38,7 @@ if (Yii::$app->controller->module !== null) {
 $items = [
     ['label' => $this->t('Management'), 'items' => [
         ['label' => $this->t('Slides'), 'url' => ['/admin/slide/list']],
+        ['label' => $this->t('Events'), 'url' => ['/admin/event/list']],
     ]],
     ['label' => $this->t('Home'), 'url' => ['/admin/index/index']],
     ['label' => $this->t('Front'), 'url' => ['/front/index/index']],

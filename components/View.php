@@ -70,6 +70,11 @@ class View extends YiiView
         return $this->t('Are you sure you want to delete this item') . '?';
     }
 
+    public function dateTime($dateTime)
+    {
+        return Yii::$app->time->formatDateTime($dateTime);
+    }
+
     // scriptParams
     public function setScriptParams($params = [])
     {

@@ -33,6 +33,8 @@ use yii\log\EmailTarget;
  * @property string $dateLastLogin
  * @property string $passwordRepeat
  *
+ * @property string $fullName
+ *
  * @property string $roleName
  * @property string $statusName
  */
@@ -41,6 +43,7 @@ class User extends ModelAbstract implements IdentityInterface, StoryInterface
     const ROLE_GUEST = 'guest';
     const ROLE_USER = 'user';
     const ROLE_ADMIN = 'admin';
+    const ROLE_TRAINER = 'trainer';
 
     const STATUS_ACTIVE = 'active';
     const STATUS_FROZEN = 'frozen';
@@ -62,6 +65,7 @@ class User extends ModelAbstract implements IdentityInterface, StoryInterface
     private static $_roles = [
         self::ROLE_USER,
         self::ROLE_ADMIN,
+        self::ROLE_TRAINER,
     ];
 
     private static $_statuses = [
@@ -85,6 +89,7 @@ class User extends ModelAbstract implements IdentityInterface, StoryInterface
     private static $_rolesNames = [
         self::ROLE_USER => 'User',
         self::ROLE_ADMIN => 'Admin',
+        self::ROLE_TRAINER => 'Trainer',
     ];
 
     private static $_statusesNames = [
@@ -197,6 +202,22 @@ class User extends ModelAbstract implements IdentityInterface, StoryInterface
         $this->last_name = $last_name;
     }
 
+    // fullName
+    public function getFullName()
+    {
+        return $this->getRTCItem('fullName', function () {
+            $name = $this->firstName;
+            if ($this->lastName) {
+                $name .= ' ' . $this->lastName;
+            }
+            return $name;
+        }, null);
+    }
+    public function setFullName($full_name)
+    {
+        $this->setRTC('fullName', $full_name);
+    }
+
     // dateRegister
     public function getDateRegister()
     {
@@ -307,8 +328,13 @@ class User extends ModelAbstract implements IdentityInterface, StoryInterface
     public function setStoryAction($action)
     {
         if (in_array($action, self::$_storyActions)) {
-            $this->setRTC('story_action', $action);
+            $this->setRTC('storyAction', $action);
         }
+    }
+
+    public function getRolesItems($firstElement = null)
+    {
+        return $this->getEnumNames(self::$_rolesNames, 'roles_items', $firstElement);
     }
 
     // END Public methods
@@ -325,6 +351,14 @@ class User extends ModelAbstract implements IdentityInterface, StoryInterface
 
 
     // Protected static methods
+
+    protected static function getItemsNames()
+    {
+        return [
+            'id',
+            'name' => 'CONCAT_WS(\' \', `first_name`, `last_name`)',
+        ];
+    }
 
     // END Protected static methods
 
@@ -396,7 +430,7 @@ class User extends ModelAbstract implements IdentityInterface, StoryInterface
 
     public function getStoryAction()
     {
-        return $this->getRTC('story_action');
+        return $this->getRTC('storyAction');
     }
 
     public function getStoryFields()

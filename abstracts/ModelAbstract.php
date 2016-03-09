@@ -156,17 +156,23 @@ class ModelAbstract extends ActiveRecord implements ModelInterface
         }
 
         self::$_items[$key] = [];
-        self::$_items[$key][] = $firstElement;
+        if ($firstElement !== null) {
+            self::$_items[$key][] = $firstElement;
+        }
         $items = static::getItemsNames();
+        $itemsKeys = array_keys($items);
+        $lastItemKey = end($itemsKeys);
+        $orderBy = is_integer($lastItemKey) ? $items[$lastItemKey] : $lastItemKey;
+
         $itemsList = static::find()
             ->select($items)
-            ->orderBy($items[1])
+            ->orderBy($orderBy)
             ->where($where)
             ->asArray()
             ->all();
         if (!empty($itemsList)) {
             foreach ($itemsList as $item) {
-                self::$_items[$key][$item['id']] = trim($item[$items[1]]);
+                self::$_items[$key][$item['id']] = trim($item[$lastItemKey]);
             }
         }
 

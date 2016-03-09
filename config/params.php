@@ -11,4 +11,5 @@ return [
     'timeZone'                                              => 'Europe/Kiev',
     'salt'                                                  => 'UI8997YU45JK098UIY87Ri445TY',
     'userSessionTime'                                       => '3600',
+    'mainAddress'                                           => 'Киев, ул. Регенератораная, 4, корп. 2, оф. 396',
 ];

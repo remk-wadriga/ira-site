@@ -2,18 +2,18 @@
 /**
  * Created by PhpStorm.
  * User: Dima
- * Date: 08.03.2016
- * Time: 23:01
+ * Date: 09.03.2016
+ * Time: 18:11
  */
 
 namespace events;
 
 use abstracts\ModelEventAbstract;
 
-class SlideEvent extends ModelEventAbstract
+class EventEvent extends ModelEventAbstract
 {
     /**
-     * @var \models\Slide
+     * @var \models\Event
      */
     public $sender;
 }
