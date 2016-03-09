@@ -75,6 +75,7 @@ $messages = [
     'Trainer'                                                                                                           => '',
     'Registered user'                                                                                                   => '',
     'Event owner'                                                                                                       => '',
+    'Add image'                                                                                                         => '',
 ];
 
 return array_merge($messages, require(__DIR__ . '/error.php'), require(__DIR__ . '/flash.php'));

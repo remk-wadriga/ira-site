@@ -75,7 +75,7 @@ use bupy7\cropbox\Cropbox;
 
 
     <div class="form-group">
-        <?= Html::submitButton($model->isNewRecord ? $this->t('Create') : $this->t('Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+        <?= Html::submitButton($model->isNewRecord ? $this->t('Create') : $this->t('Update'), ['class' => $model->isNewRecord ? 'btn btn-success btn-lg' : 'btn btn-primary btn-lg']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

@@ -2,6 +2,7 @@ Main = {
 
     checkBoxSwitchID: '.checkbox-switch',
     toggleElementID: '.toggle-element',
+    ajxContentBtnID: '.ajx-content-btn',
 
     init: function (data) {
         if (data !== undefined) {
@@ -22,6 +23,7 @@ Main = {
 
     setHandlers: function () {
         Main.clickToggleElement();
+        Main.clickAjxContentBtn();
     },
 
 
@@ -53,6 +55,16 @@ Main = {
             if (item.attr('href') != undefined) {
                 return false;
             }
+        });
+    },
+
+    clickAjxContentBtn: function () {
+        $(Main.ajxContentBtnID).on('click', function () {
+            var item = $(this);
+
+            console.log(item);
+
+            return false;
         });
     }
 

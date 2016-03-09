@@ -10,9 +10,12 @@
  * @var yii\bootstrap\ActiveForm $form
  */
 
+use yii\helpers\Url;
 use yii\bootstrap\Html;
 use yii\bootstrap\ActiveForm;
 use models\User;
+use dosamigos\fileupload\FileUpload;
+use dosamigos\fileupload\FileUploadUI;
 ?>
 
 <div class="event-form">
@@ -72,7 +75,19 @@ use models\User;
     </div>
 
     <div class="form-group">
-        <?= Html::submitButton($model->isNewRecord ? $this->t('Create') : $this->t('Update'), ['class' => $model->isNewRecord ? 'btn btn-success' : 'btn btn-primary']) ?>
+
+        <?= FileUploadUI::widget([
+            'model' => $model,
+            'attribute' => 'img',
+            'url' => ['/admin/api/upload-image', 'modelClass' => $model::className(), 'id' => $model->id],
+            'gallery' => true,
+        ]) ?>
+
+    </div>
+
+
+    <div class="form-group">
+        <?= Html::submitButton($model->isNewRecord ? $this->t('Create') : $this->t('Update'), ['class' => $model->isNewRecord ? 'btn btn-success btn-lg' : 'btn btn-primary btn-lg']) ?>
     </div>
 
     <?php ActiveForm::end(); ?>

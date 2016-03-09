@@ -6,6 +6,8 @@ use Yii;
 use abstracts\ModelAbstract;
 use yii\db\ActiveQuery;
 use interfaces\StoryInterface;
+use interfaces\FileModelInterface;
+use interfaces\ImagedEntityInterface;
 use admin\listeners\EventListener;
 use events\EventEvent;
 
@@ -38,7 +40,7 @@ use events\EventEvent;
  * @property User[] $comeUsers
  * @property User[] $notComeUsers
  */
-class Event extends ModelAbstract implements StoryInterface
+class Event extends ModelAbstract implements StoryInterface, FileModelInterface, ImagedEntityInterface
 {
     const EVENT_STORY_CHANGED = 'story_changed';
 
@@ -119,6 +121,9 @@ class Event extends ModelAbstract implements StoryInterface
     ];
 
     public $hasOwner = false;
+    public $loadImages = true;
+    public $img;
+    public $cropInfo;
 
     public static function tableName()
     {
@@ -137,7 +142,7 @@ class Event extends ModelAbstract implements StoryInterface
             [['ownerID', 'membersCount', 'inMainSlider'], 'integer'],
             [['description', 'type'], 'string'],
             [['price', 'profit', 'cost'], 'number'],
-            [['dateStart', 'dateEnd', 'hasOwner'], 'safe'],
+            [['dateStart', 'dateEnd', 'hasOwner', 'img'], 'safe'],
             [['name', 'ownerName'], 'string', 'max' => 255],
             [['address'], 'string', 'max' => 512],
             ['type', 'in', 'range' => self::$_types],
@@ -524,4 +529,73 @@ class Event extends ModelAbstract implements StoryInterface
     }
 
     // END Implements StoryInterface
+
+
+    // Implements FileModelInterface
+
+    public function getFileAttributeName()
+    {
+        return 'img';
+    }
+
+
+    public function getModelInstance()
+    {
+        return $this;
+    }
+
+    public function getOldFileName()
+    {
+        return null;
+    }
+
+    public function setFileName($fileName)
+    {
+        $this->img = $fileName;
+    }
+
+    public function getCropInfo()
+    {
+        return [
+            'dWidth' => $this->getImgWidth(),
+            'dHeight' => $this->getImgHeight(),
+        ];
+    }
+
+    public function getImgWidth()
+    {
+        return 320;
+    }
+
+    public function getImgHeight()
+    {
+        return 160;
+    }
+
+    // END Implements FileModelInterface
+
+
+    // Implements ImagedEntityInterface
+
+    public function getImgUrl()
+    {
+        return $this->img;
+    }
+
+    public function getImgAlt()
+    {
+        return null;
+    }
+
+    public function isMainImage()
+    {
+        return false;
+    }
+
+    public function getImageID()
+    {
+        return null;
+    }
+
+    // END Implements ImagedEntityInterface
 }
