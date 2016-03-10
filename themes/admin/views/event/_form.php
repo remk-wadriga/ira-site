@@ -14,8 +14,8 @@ use yii\helpers\Url;
 use yii\bootstrap\Html;
 use yii\bootstrap\ActiveForm;
 use models\User;
-use dosamigos\fileupload\FileUpload;
-use dosamigos\fileupload\FileUploadUI;
+//use dosamigos\fileupload\FileUploadUI;
+use bupy7\cropbox\Cropbox;
 ?>
 
 <div class="event-form">
@@ -33,6 +33,21 @@ use dosamigos\fileupload\FileUploadUI;
     ]); ?>
 
     <div class="form-group">
+        <?= $form->field($model, 'img', [
+            'template' => "{input}\n<p>{error}",
+        ])->widget(Cropbox::className(), [
+            'attributeCropInfo' => 'cropInfo',
+            'previewImagesUrl' => [$model->img],
+            'pluginOptions' => [
+                'variants' => [
+                    [
+                        'width' => $model->imgWidth,
+                        'height' => $model->imgHeight,
+                    ],
+                ],
+            ],
+        ]) ?>
+
         <div class="col-lg-6">
             <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
@@ -48,11 +63,6 @@ use dosamigos\fileupload\FileUploadUI;
 
             <?= $form->field($model, 'membersCount')->textInput() ?>
 
-            <?= $form->field($model, 'type')->dropDownList($model->getTypesItems($this->t('Select type'))) ?>
-
-            <?= $form->field($model, 'address')->textInput(['maxlength' => true]) ?>
-
-            <?= $form->field($model, 'status')->dropDownList($model->getStatusesItems()) ?>
         </div>
 
         <div class="col-lg-6">
@@ -61,30 +71,45 @@ use dosamigos\fileupload\FileUploadUI;
             <?= $form->field($model, 'hasOwner')->checkbox([
                 'class' => 'form-group field-event-hasowner toggle-element',
                 'data' => [
-                    'target' => '#user_owner_id_field,#user_owner_name_field',
+                    'target' => '#event_owner_id_field,#event_owner_name_field',
                 ],
             ]) ?>
 
-            <div id="user_owner_id_field" class="user-owner-id-field<?= !$model->hasOwner ? ' hide' : '' ?>">
+            <div id="event_owner_id_field" class="user-owner-id-field<?= !$model->hasOwner ? ' hide' : '' ?>">
                 <?= $form->field($model, 'ownerID')->dropDownList(User::getItems(['role' => [User::ROLE_ADMIN, User::ROLE_TRAINER]], $this->t('Select owner'))) ?>
             </div>
-            <div id="user_owner_name_field" class="user-owner-id-field<?= $model->hasOwner ? ' hide' : '' ?>">
+            <div id="event_owner_name_field" class="user-owner-id-field<?= $model->hasOwner ? ' hide' : '' ?>">
                 <?= $form->field($model, 'ownerName')->textInput(['maxlength' => true]) ?>
             </div>
+
+            <?= $form->field($model, 'type')->dropDownList($model->getTypesItems($this->t('Select type'))) ?>
+
+            <?= $form->field($model, 'address')->textInput(['maxlength' => true]) ?>
+
+            <?= $form->field($model, 'status')->dropDownList($model->getStatusesItems()) ?>
         </div>
     </div>
 
     <div class="form-group">
-
-        <?= FileUploadUI::widget([
-            'model' => $model,
-            'attribute' => 'img',
-            'url' => ['/admin/api/upload-image', 'modelClass' => $model::className(), 'id' => $model->id],
-            'gallery' => true,
+        <?= $form->field($model, 'hasFiles')->checkbox([
+            'id' => 'event_load_files_checkbox',
+            'class' => 'form-group field-event-hasofiles',
+            'data' => [
+                'target' => '#event_files_block',
+                'url' => Url::to(['/admin/api/upload-images-block', 'modelClass' => $model::className(), 'id' => $model->id]),
+            ],
         ]) ?>
 
-    </div>
+        <div id="event_files_block" class="event-files-block">
+            <?/*= FileUploadUI::widget([
+                'model' => $model,
+                'attribute' => 'img',
+                'url' => ['/admin/api/upload-image', 'modelClass' => $model::className(), 'id' => $model->id],
+                'gallery' => false,
+            ]) */?>
+        </div>
 
+    </div>
 
     <div class="form-group">
         <?= Html::submitButton($model->isNewRecord ? $this->t('Create') : $this->t('Update'), ['class' => $model->isNewRecord ? 'btn btn-success btn-lg' : 'btn btn-primary btn-lg']) ?>

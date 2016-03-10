@@ -10,6 +10,7 @@ use interfaces\FileModelInterface;
 use interfaces\ImagedEntityInterface;
 use admin\listeners\EventListener;
 use events\EventEvent;
+use yii\helpers\Json;
 
 /**
  * This is the model class for table "event".
@@ -33,12 +34,15 @@ use events\EventEvent;
  * @property string $defaultAddress
  * @property string $statusName
  * @property string $typeName
+ * @property array $imagesUrls
  *
  * @property User $owner
  * @property User[] $users
  * @property User[] $recordedUsers
  * @property User[] $comeUsers
  * @property User[] $notComeUsers
+ * @property Image[] $images
+ * @property Image $mainImage
  */
 class Event extends ModelAbstract implements StoryInterface, FileModelInterface, ImagedEntityInterface
 {
@@ -121,9 +125,11 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
     ];
 
     public $hasOwner = false;
-    public $loadImages = true;
+    public $hasFiles = false;
     public $img;
     public $cropInfo;
+    public $imgWidth = 540;
+    public $imgHeight = 320;
 
     public static function tableName()
     {
@@ -140,13 +146,14 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
         return [
             [['name', 'price', 'type', 'status', 'dateStart'], 'required'],
             [['ownerID', 'membersCount', 'inMainSlider'], 'integer'],
-            [['description', 'type'], 'string'],
+            [['description', 'type', 'img'], 'string'],
             [['price', 'profit', 'cost'], 'number'],
-            [['dateStart', 'dateEnd', 'hasOwner', 'img'], 'safe'],
+            [['dateStart', 'dateEnd', 'hasOwner', 'cropInfo'], 'safe'],
             [['name', 'ownerName'], 'string', 'max' => 255],
             [['address'], 'string', 'max' => 512],
             ['type', 'in', 'range' => self::$_types],
             ['status', 'in', 'range' => self::$_statuses],
+            ['img', 'image', 'extensions' => ['jpg', 'jpeg', 'png', 'gif'], 'mimeTypes' => ['image/jpeg', 'image/pjpeg', 'image/png', 'image/gif']],
         ];
     }
 
@@ -221,6 +228,25 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
         });
     }
 
+    public function getImages()
+    {
+        return $this->hasMany(Image::className(), ['id' => 'image_id'])->viaTable(Image::entityImageTableName(), ['entity_id' => 'id'], function (ActiveQuery $query) {
+            $query->andWhere([
+                'entity_class' => self::className(),
+            ]);
+        });
+    }
+
+    public function getMainImage()
+    {
+        return $this->hasOne(Image::className(), ['id' => 'image_id'])->viaTable(Image::entityImageTableName(), ['entity_id' => 'id'], function (ActiveQuery $query) {
+            $query->andWhere([
+                'entity_class' => self::className(),
+                'is_main' => 1,
+            ]);
+        });
+    }
+
     // END Depending
 
 
@@ -234,6 +260,7 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
         if ($this->status == self::STATUS_PAST && $this->profit == 0) {
             $this->profit = ($this->membersCount * $this->price) - $this->cost;
         }
+        $this->setRTC('oldImg', $this->img);
     }
 
     public function beforeValidate()
@@ -290,10 +317,6 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
     public function afterSave($insert, $changedAttributes)
     {
         parent::afterSave($insert, $changedAttributes);
-
-        // Create "event story changed" event
-        $event = new EventEvent();
-        $this->trigger(self::EVENT_STORY_CHANGED, $event);
     }
 
     // END Event handlers
@@ -379,10 +402,45 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
         $this->setRTC('defaultAddress', $default_address);
     }
 
+    // imagesUrls
+    public function getImagesUrls()
+    {
+        return (array)$this->getRTC('imagesUrls');
+    }
+    public function setImagesUrls($images_urls)
+    {
+        $this->setRTC('imagesUrls', (array)$images_urls);
+    }
+
     // END Getters and setters
 
 
     // Public methods
+
+    public function save($runValidation = true, $attributeNames = null)
+    {
+        $db = Yii::$app->getDb();
+        //$isNew = $this->getIsNewRecord();
+        $transaction = $db->beginTransaction();
+
+        if (!parent::save($runValidation, $attributeNames)) {
+            $transaction->rollBack();
+            return false;
+        }
+
+        // Create "Event story changed" event
+        $event = new EventEvent();
+        $this->trigger(self::EVENT_STORY_CHANGED, $event);
+
+        if (!$event->isValid) {
+            $transaction->rollBack();
+            $this->addError('img', $event->message);
+            return false;
+        }
+
+        $transaction->commit();
+        return true;
+    }
 
     public function init()
     {
@@ -466,6 +524,16 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
         return $this->t(self::$_typesNames[$type]);
     }
 
+    public function isImageChanged()
+    {
+        return $this->getRTC('oldImg') == $this->img;
+    }
+
+    public function setIsMainImage($isMain)
+    {
+        $this->setRTC('isMainImg', $isMain);
+    }
+
     // END Public methods
 
 
@@ -538,7 +606,6 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
         return 'img';
     }
 
-
     public function getModelInstance()
     {
         return $this;
@@ -556,20 +623,20 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
 
     public function getCropInfo()
     {
-        return [
-            'dWidth' => $this->getImgWidth(),
-            'dHeight' => $this->getImgHeight(),
+        return $this->cropInfo ? Json::decode($this->cropInfo)[0] : [
+            'dWidth' => 320,
+            'dHeight' => 160,
         ];
     }
 
     public function getImgWidth()
     {
-        return 320;
+        return $this->cropInfo ? $this->imgWidth : 320;
     }
 
     public function getImgHeight()
     {
-        return 160;
+        return $this->cropInfo ? $this->imgHeight : 160;
     }
 
     // END Implements FileModelInterface
@@ -589,12 +656,17 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
 
     public function isMainImage()
     {
-        return false;
+        return (bool)$this->getRTC('isMainImg');
     }
 
-    public function getImageID()
+    public function getImgID()
     {
-        return null;
+        return $this->getRTC('imgID');
+    }
+
+    public function setImgID($ID)
+    {
+        $this->setRTC('imgID', $ID);
     }
 
     // END Implements ImagedEntityInterface

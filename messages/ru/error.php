@@ -7,4 +7,5 @@ return [
     'Title slide has status "{name}"'                                                                                   => '',
     'Can not save image'                                                                                                => '',
     'Can not upload image'                                                                                              => '',
+    'Can not remove image'                                                                                              => '',
 ];

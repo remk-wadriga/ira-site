@@ -34,7 +34,12 @@ interface ImagedEntityInterface
     /**
      * @return integer
      */
-    public function getImageID();
+    public function getImgID();
+
+    /**
+     * @param $id
+     */
+    public function setImgID($id);
 
     /**
      * @return string

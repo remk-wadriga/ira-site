@@ -55,7 +55,13 @@ class EventController extends ControllerAbstract
     {
         $model = new Event();
 
+        // Add to Event saved in session (and already uploaded) images urls
+        $model->imagesUrls = $this->getUploadedImagesFromSession($model::className());
+
         if ($model->load($this->post()) && $model->save()) {
+            // Remove form session uploaded images urls
+            $this->removeUploadedImagesFromSession($model::className());
+
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render([
@@ -68,7 +74,13 @@ class EventController extends ControllerAbstract
     {
         $model = $this->findModel($id);
 
+        // Add to Event saved in session (and already uploaded) images urls
+        $model->imagesUrls = $this->getUploadedImagesFromSession($model::className());
+
         if ($model->load($this->post()) && $model->save()) {
+            // Remove form session uploaded images urls
+            $this->removeUploadedImagesFromSession($model::className());
+
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render([

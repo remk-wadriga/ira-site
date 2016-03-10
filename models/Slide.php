@@ -413,9 +413,14 @@ class Slide extends ModelAbstract implements FileModelInterface, ImagedEntityInt
         return $this->getRTC('isMainImage');
     }
 
-    public function getImageID()
+    public function getImgID()
     {
-        return $this->getRTC('imageID');
+        return $this->getRTC('imgID');
+    }
+
+    public function setImgID($ID)
+    {
+        $this->setRTC('imgID', $ID);
     }
 
     // END Implements ImagedEntityInterface

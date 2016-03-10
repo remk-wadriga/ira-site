@@ -16,7 +16,7 @@ $this->title = $model->name;
 $this->params['breadcrumbs'][] = ['label' => $this->t('Events'), 'url' => ['list']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="event-view">
+<p class="event-view">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
@@ -32,6 +32,13 @@ $this->params['breadcrumbs'][] = $this->title;
         ]) ?>
     </p>
 
+    <?php if ($model->mainImage !== null) : ?>
+        <p>
+            <?= Html::img($model->mainImage->url, ['class' => 'big-img']) ?>
+        </p>
+    <?php endif ?>
+
+    <h3><?= $this->t('Info') ?>:</h3>
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
@@ -57,5 +64,12 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
         ],
     ]) ?>
+
+    <h3><?= $this->t('Images') ?>:</h3>
+    <p>
+        <?php foreach ($model->images as $image) : ?>
+            <?= Html::img($image->url, ['class' => 'small-img']) ?>
+        <?php endforeach ?>
+    </p>
 
 </div>

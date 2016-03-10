@@ -160,8 +160,8 @@ class Image extends ModelAbstract
      */
     public static function findEntityMainImage(ImagedEntityInterface $entity)
     {
-        if ($entity->getImageID() > 0) {
-            return self::findOne($entity->getImageID());
+        if ($entity->getImgID() > 0) {
+            return self::findOne($entity->getImgID());
         } else {
             $command = (new Query())
                 ->select('image_id')
@@ -191,8 +191,8 @@ class Image extends ModelAbstract
      */
     public static function findEntityImages(ImagedEntityInterface $entity)
     {
-        if ($entity->getImageID() > 0) {
-            return self::findAll($entity->getImageID());
+        if ($entity->getImgID() > 0) {
+            return self::findAll($entity->getImgID());
         } else {
             $command = (new Query())
                 ->select('image_id')
@@ -211,6 +211,31 @@ class Image extends ModelAbstract
                 ->params($params)
                 ->all();
         }
+    }
+
+    /**
+     * @param string $image
+     * @param string $entityClass
+     * @param integer $entityID
+     * @return bool
+     * @throws \Exception
+     * @throws \yii\db\Exception
+     */
+    public static function removeImage($image, $entityClass = null, $entityID = null)
+    {
+        $image = self::findOne(['url' => $image]);
+        if ($image === null) {
+            return true;
+        }
+        $conditions = ['image_id' => $image->id];
+        if ($entityClass !== null) {
+            $conditions['entity_class'] = $entityClass;
+        }
+        if ($entityID !== null) {
+            $conditions['entity_id'] = $entityID;
+        }
+        Yii::$app->db->createCommand()->delete(self::entityImageTableName(), $conditions)->execute();
+        return $image->delete();
     }
 
     // END Public static methods

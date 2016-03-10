@@ -22,6 +22,8 @@ class FileService extends Component
 {
     public $filePath = 'files';
     public $removeOldFile = true;
+    public $fileName;
+    public $fileSize;
 
     /**
      * @param FileModelInterface $model
@@ -30,9 +32,13 @@ class FileService extends Component
     public function loadFile($model)
     {
         $file = UploadedFile::getInstance($model->getModelInstance(), $model->getFileAttributeName());
+        echo '<pre>'; print_r($file); exit('</pre>');
         if ($file === null) {
             return true;
         }
+
+        $this->fileName = $file->name;
+        $this->fileSize = $file->size;
 
         // Create path for uploading file
         list($path, $url) = $this->createPath($file->name);
@@ -80,6 +86,20 @@ class FileService extends Component
         $model->setFileName($url);
 
         return true;
+    }
+
+    /**
+     * @param string $path
+     * @return bool
+     */
+    public function removeFile($path)
+    {
+        $file = Yii::getAlias('@webroot' . $path);
+        if (file_exists($file)) {
+            return (bool)unlink($file);
+        } else {
+            return true;
+        }
     }
 
     /**
