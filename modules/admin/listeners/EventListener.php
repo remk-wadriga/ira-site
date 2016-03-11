@@ -19,17 +19,17 @@ class EventListener extends ListenerAbstract
     public static function handleEventStoryChanged(EventEvent $event)
     {
         $eventModel = $event->sender;
-        $fileService = Yii::$app->file;
-        $fileService->removeOldFile = $eventModel->isImageChanged();
-        if (!Yii::$app->file->loadFile($eventModel)) {
-            $event->isValid = false;
-            $event->message = Yii::$app->view->t('Can not upload image');
-        } elseif ($eventModel->isImageChanged()) {
-            $eventModel->setIsMainImage(true);
-            // Save the event image
-            $event->isValid = Image::createImage($eventModel);
-            $event->message = Yii::$app->view->t('Can not save image');
-            $eventModel->setIsMainImage(false);
+        if ($eventModel->isImageChanged()) {
+            if (!Yii::$app->file->loadFile($eventModel)) {
+                $event->isValid = false;
+                $event->message = Yii::$app->view->t('Can not upload image');
+            } elseif ($eventModel->isImageChanged()) {
+                $eventModel->setIsMainImage(true);
+                // Save the event image
+                $event->isValid = Image::createImage($eventModel);
+                $event->message = Yii::$app->view->t('Can not save image');
+                $eventModel->setIsMainImage(false);
+            }
         }
 
         if ($event->isValid) {

@@ -554,7 +554,7 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
 
     public function isImageChanged()
     {
-        return $this->getRTC('oldImg') != $this->img;
+        return !empty($this->cropInfo) || $this->getRTC('oldImg') != $this->img;
     }
 
     public function setIsMainImage($isMain)
