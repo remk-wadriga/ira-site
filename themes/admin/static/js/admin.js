@@ -48,16 +48,13 @@ Admin = {
     },
 
     clickEventLoadFieldsCheckbox: function () {
-        $(Main.eventLoadFilesCheckBoxID).on('change', function () {
+        $(Admin.eventLoadFilesCheckBoxID).on('change', function () {
             var item = $(this);
             var isChecked = item.prop('checked');
-            var target = $(item.attr('target'));
-            console.log(item);
+            var target = $(item.data('target'));
             if (isChecked) {
-                var success = function (html) {
-                    if (!checked) {
-                        target.html(html);
-                    }
+                var success = function (json) {
+                    target.html(json.responseText);
                 };
                 Api.ajx(item.data('url'), {}, success, 'GET');
             } else {
