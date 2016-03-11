@@ -10,11 +10,10 @@
  * @var yii\bootstrap\ActiveForm $form
  */
 
-use yii\helpers\Url;
 use yii\bootstrap\Html;
 use yii\bootstrap\ActiveForm;
 use models\User;
-//use dosamigos\fileupload\FileUploadUI;
+use dosamigos\fileupload\FileUploadUI;
 use bupy7\cropbox\Cropbox;
 ?>
 
@@ -37,7 +36,7 @@ use bupy7\cropbox\Cropbox;
             'template' => "{input}\n<p>{error}",
         ])->widget(Cropbox::className(), [
             'attributeCropInfo' => 'cropInfo',
-            'previewImagesUrl' => [$model->img],
+            'previewImagesUrl' => [$model->getMainIMageUrl()],
             'pluginOptions' => [
                 'variants' => [
                     [
@@ -91,22 +90,16 @@ use bupy7\cropbox\Cropbox;
     </div>
 
     <div class="form-group">
-        <?= $form->field($model, 'hasFiles')->checkbox([
-            'id' => 'event_load_files_checkbox',
-            'class' => 'form-group field-event-hasofiles',
-            'data' => [
-                'target' => '#event_files_block',
-                'url' => Url::to(['/admin/api/upload-images-block', 'modelClass' => $model::className(), 'id' => $model->id]),
-            ],
-        ]) ?>
-
-        <div id="event_files_block" class="event-files-block">
-            <?/*= FileUploadUI::widget([
+        <div id="event_files_block" class="event-files-block file-upload-files-block">
+            <?= FileUploadUI::widget([
                 'model' => $model,
                 'attribute' => 'img',
                 'url' => ['/admin/api/upload-image', 'modelClass' => $model::className(), 'id' => $model->id],
-                'gallery' => false,
-            ]) */?>
+                'load' => true,
+                'clientOptions' => [
+                    'previewMaxWidth' => 50,
+                ],
+            ]) ?>
         </div>
 
     </div>

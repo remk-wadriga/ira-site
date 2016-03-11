@@ -4,6 +4,9 @@ img.img-thumbnail, img.big-img{
 img.small-img{
     max-height: 200px;
 }
+img.micro-img, .file-upload-files-block img{
+    max-height: 100px;
+}
 .field-slide-img .cropbox, .text-center-align{
     text-align: center;
 }

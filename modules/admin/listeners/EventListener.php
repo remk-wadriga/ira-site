@@ -8,18 +8,19 @@
 
 namespace admin\listeners;
 
-use models\Image;
 use Yii;
 use abstracts\ListenerAbstract;
 use events\EventEvent;
 use models\Story;
+use models\Image;
 
 class EventListener extends ListenerAbstract
 {
     public static function handleEventStoryChanged(EventEvent $event)
     {
         $eventModel = $event->sender;
-
+        $fileService = Yii::$app->file;
+        $fileService->removeOldFile = $eventModel->isImageChanged();
         if (!Yii::$app->file->loadFile($eventModel)) {
             $event->isValid = false;
             $event->message = Yii::$app->view->t('Can not upload image');
@@ -40,6 +41,29 @@ class EventListener extends ListenerAbstract
                 $eventModel->img = $imgUrl;
                 Image::createImage($eventModel);
             }
+        }
+    }
+
+    public static function handleEventDeleted(EventEvent $event)
+    {
+        $eventModel = $event->sender;
+        $eventModel->setStoryAction($eventModel::STORY_ACTION_DELETED);
+
+        // Write the story
+        Story::write($eventModel);
+
+        $transaction = Yii::$app->db->beginTransaction();
+        foreach ($eventModel->allImages as $image) {
+            if (!$image->delete()) {
+                $transaction->rollBack();
+                $event->isValid = false;
+                $event->message = 'can not delete the image';
+                break;
+            }
+        }
+
+        if ($event->isValid) {
+            $transaction->commit();
         }
     }
 }

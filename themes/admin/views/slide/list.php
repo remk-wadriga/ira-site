@@ -35,14 +35,12 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'img',
                 'value' => function (models\Slide $model) {
                     return Html::img($model->imgUrl, [
-                        'height' => $model->imgMinimalHeight,
+                        'class' => 'micro-img',
                     ]);
                 },
                 'format' => 'raw',
             ],
             'title',
-            //'linkUrl:url',
-            //'linkText',
             [
                 'attribute' => 'text',
                 'format' => 'ntext',

@@ -32,7 +32,11 @@ class FileService extends Component
     public function loadFile($model)
     {
         $file = UploadedFile::getInstance($model->getModelInstance(), $model->getFileAttributeName());
-        echo '<pre>'; print_r($file); exit('</pre>');
+        $cropInfo = $model->getCropInfo();
+        if (!empty($cropInfo) && isset($cropInfo['image'])) {
+            $file = $this->createFileInstanceFromBase64data($cropInfo['image']);
+            //$cropInfo = null;
+        }
         if ($file === null) {
             return true;
         }
@@ -43,7 +47,6 @@ class FileService extends Component
         // Create path for uploading file
         list($path, $url) = $this->createPath($file->name);
 
-        $cropInfo = $model->getCropInfo();
         if (!empty($cropInfo)) {
             Image::$driver = Image::DRIVER_GD2;
 
@@ -65,7 +68,6 @@ class FileService extends Component
                 ->resize($newSizeThumb)
                 ->crop($cropPointThumb, $cropSizeThumb)
                 ->save($path, ['quality' => 100]);
-
             if (!$result) {
                 return false;
             }
@@ -145,5 +147,28 @@ class FileService extends Component
         if (!is_dir($path) && !mkdir($path, 0755, true)) {
             throw new FileUploadException($this->t('Не удалось создать директорию {dirName}', ['dirName' => $path]));
         }
+    }
+
+    private function createFileInstanceFromBase64data($data)
+    {
+        list($type, $data) = explode(';', $data);
+        list(, $ext) = explode('/', $type);
+        list(, $data) = explode(',', $data);
+        $data = base64_decode($data);
+
+        $fileName = 'file_' . Yii::$app->security->generateRandomString(4) . '.' . $ext;
+        $filePath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $fileName;
+
+        if (!$size = file_put_contents($filePath, $data)) {
+            return null;
+        }
+
+        return new UploadedFile([
+            'name' => $fileName,
+            'tempName' => $filePath,
+            'type' => $type,
+            'size' => $size,
+            'error' => UPLOAD_ERR_OK,
+        ]);
     }
 }

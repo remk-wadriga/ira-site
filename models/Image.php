@@ -2,10 +2,12 @@
 
 namespace models;
 
+use events\ImageEvent;
 use Yii;
 use abstracts\ModelAbstract;
 use interfaces\ImagedEntityInterface;
 use yii\db\Query;
+use admin\listeners\ImageListener;
 
 /**
  * This is the model class for table "image".
@@ -19,6 +21,8 @@ use yii\db\Query;
  */
 class Image extends ModelAbstract
 {
+    const EVENT_IMAGE_DELETED = 'image_deleted';
+
     public static function tableName()
     {
         return 'image';
@@ -91,6 +95,40 @@ class Image extends ModelAbstract
 
 
     // Public methods
+
+    public function init()
+    {
+        parent::init();
+
+        $this->on(self::EVENT_IMAGE_DELETED, [ImageListener::className(), 'handleImageDeleted']);
+    }
+
+    public function delete()
+    {
+        // Create "Image deleted event"
+        $event = new ImageEvent();
+        $this->trigger(self::EVENT_IMAGE_DELETED, $event);
+        if (!$event->isValid) {
+            $this->addError(null, $event->message);
+            return false;
+        }
+
+        return parent::delete();
+    }
+
+    public function isMain(ImagedEntityInterface $entity)
+    {
+        $isMain = (new Query())
+            ->select(['isMain' => 'is_main'])
+            ->from(self::entityImageTableName())
+            ->where([
+                'image_id' => $this->id,
+                'entity_class' => $entity::className(),
+                'is_main' => 1,
+            ])
+            ->one();
+        return !empty($isMain);
+    }
 
     // END Public methods
 
@@ -236,6 +274,11 @@ class Image extends ModelAbstract
         }
         Yii::$app->db->createCommand()->delete(self::entityImageTableName(), $conditions)->execute();
         return $image->delete();
+    }
+
+    public static function removeEntityImage($ID)
+    {
+        return (bool)Yii::$app->db->createCommand()->delete(self::entityImageTableName(), ['image_id' => $ID])->execute();
     }
 
     // END Public static methods

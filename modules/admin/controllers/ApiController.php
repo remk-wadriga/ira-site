@@ -31,6 +31,38 @@ class ApiController extends ControllerAbstract
         $service = Yii::$app->file;
 
         if (Yii::$app->file->loadFile($model)) {
+            if (!$service->fileName && $this->get('id') > 0) {
+                $model = $modelClass::findOne($this->get('id'));
+                if ($model === null) {
+                    throw new BadRequestHttpException();
+                }
+                if ($images = Image::findEntityImages($model)) {
+                    $files = [];
+                    foreach ($images as $image) {
+                        if (!$image->isMain($model)) {
+                            $nameParts = explode('/', $image->url);
+                            $files[] = [
+                                'name' => end($nameParts),
+                                'size' => 1500,
+                                'url' => $image->url,
+                                'thumbnailUrl' => $image->url,
+                                'deleteUrl' => Url::to(['/admin/api/remove-image', 'image' => $image->url, 'modelClass' => $modelClass, 'id' => $model->id]),
+                                'deleteType' => 'POST',
+                            ];
+                        }
+                    }
+                    return Json::encode([
+                        'files' => $files,
+                    ]);
+                } else {
+                    return Json::encode([]);
+                }
+            }
+
+            if (!$service->fileName) {
+                return Json::encode([]);
+            }
+
             $this->addUploadedImagesToSession($modelClass, $model->getImgUrl());
             return Json::encode([
                 'files' => [[

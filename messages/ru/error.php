@@ -8,4 +8,5 @@ return [
     'Can not save image'                                                                                                => '',
     'Can not upload image'                                                                                              => '',
     'Can not remove image'                                                                                              => '',
+    'Can not delete {name} records'                                                                                     => '',
 ];

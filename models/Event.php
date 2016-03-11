@@ -35,6 +35,7 @@ use yii\helpers\Json;
  * @property string $statusName
  * @property string $typeName
  * @property array $imagesUrls
+ * @property string $mainImageUrl
  *
  * @property User $owner
  * @property User[] $users
@@ -42,11 +43,13 @@ use yii\helpers\Json;
  * @property User[] $comeUsers
  * @property User[] $notComeUsers
  * @property Image[] $images
+ * @property Image[] $allImages
  * @property Image $mainImage
  */
 class Event extends ModelAbstract implements StoryInterface, FileModelInterface, ImagedEntityInterface
 {
     const EVENT_STORY_CHANGED = 'story_changed';
+    const EVENT_EVENT_DELETED = 'event_event_deleted';
 
     const TYPE_TRAINING = 'training';
     const TYPE_THERAPEUTIC_GROUP = 'therapeutic_group';
@@ -172,6 +175,7 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
             'ownerName' => $this->t('Owner name'),
             'membersCount' => $this->t('Members count'),
             'hasOwner' => $this->t('Registered user'),
+            'mainImageUrl' => $this->t('Image'),
         ];
     }
 
@@ -229,6 +233,16 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
     }
 
     public function getImages()
+    {
+        return $this->hasMany(Image::className(), ['id' => 'image_id'])->viaTable(Image::entityImageTableName(), ['entity_id' => 'id'], function (ActiveQuery $query) {
+            $query->andWhere([
+                'entity_class' => self::className(),
+                'is_main' => 0,
+            ]);
+        });
+    }
+
+    public function getAllImages()
     {
         return $this->hasMany(Image::className(), ['id' => 'image_id'])->viaTable(Image::entityImageTableName(), ['entity_id' => 'id'], function (ActiveQuery $query) {
             $query->andWhere([
@@ -417,6 +431,18 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
 
     // Public methods
 
+    public function init()
+    {
+        parent::init();
+
+        if ($this->address === null) {
+            $this->address = $this->getDefaultAddress();
+        }
+
+        $this->on(self::EVENT_STORY_CHANGED, [EventListener::className(), 'handleEventStoryChanged']);
+        $this->on(self::EVENT_EVENT_DELETED, [EventListener::className(), 'handleEventDeleted']);
+    }
+
     public function save($runValidation = true, $attributeNames = null)
     {
         $db = Yii::$app->getDb();
@@ -442,15 +468,17 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
         return true;
     }
 
-    public function init()
+    public function delete()
     {
-        parent::init();
-
-        if ($this->address === null) {
-            $this->address = $this->getDefaultAddress();
+        // Create "Event deleted" event
+        $event = new EventEvent();
+        $this->trigger(self::EVENT_EVENT_DELETED, $event);
+        if (!$event->isValid) {
+            $this->addError(null, $event->message);
+            return false;
         }
 
-        $this->on(self::EVENT_STORY_CHANGED, [EventListener::className(), 'handleEventStoryChanged']);
+        return parent::delete();
     }
 
     public function getTypesItems($firstElement = null)
@@ -526,12 +554,19 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
 
     public function isImageChanged()
     {
-        return $this->getRTC('oldImg') == $this->img;
+        return $this->getRTC('oldImg') != $this->img;
     }
 
     public function setIsMainImage($isMain)
     {
         $this->setRTC('isMainImg', $isMain);
+    }
+
+    public function getMainIMageUrl()
+    {
+        return $this->getRTCItem('mainImageUrl', function () {
+            return $this->mainImage !== null ? $this->mainImage->url : false;
+        }, false);
     }
 
     // END Public methods

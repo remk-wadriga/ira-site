@@ -12,7 +12,6 @@ use Yii;
 use models\Event;
 use models\search\EventSearch;
 use admin\abstracts\ControllerAbstract;
-use yii\helpers\Json;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 

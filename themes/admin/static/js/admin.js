@@ -1,7 +1,6 @@
 Admin = {
 
     changeEventStatusDropdownID: '#change_event_status_dropdown',
-    eventLoadFilesCheckBoxID: '#event_load_files_checkbox',
 
     init: function (data) {
         if (data !== undefined) {
@@ -44,22 +43,6 @@ Admin = {
             };
 
             Api.ajx(item.data('url'), {status: item.val()}, success, 'GET');
-        });
-    },
-
-    clickEventLoadFieldsCheckbox: function () {
-        $(Admin.eventLoadFilesCheckBoxID).on('change', function () {
-            var item = $(this);
-            var isChecked = item.prop('checked');
-            var target = $(item.data('target'));
-            if (isChecked) {
-                var success = function (json) {
-                    target.html(json.responseText);
-                };
-                Api.ajx(item.data('url'), {}, success, 'GET');
-            } else {
-                target.html(' ');
-            }
         });
     },
 

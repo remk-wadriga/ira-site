@@ -32,12 +32,18 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
+            [
+                'attribute' => 'mainImageUrl',
+                'value' => function (models\Event $model) {
+                    return Html::img($model->mainImageUrl, [
+                        'class' => 'micro-img',
+                    ]);
+                },
+                'format' => 'raw',
+            ],
             'name',
             'ownerName',
             'price:number',
-            'cost:number',
-            'profit:number',
-            'membersCount',
             [
                 'attribute' => 'type',
                 'value' => function ($model) {
