@@ -1,6 +1,7 @@
 Front = {
 
     eventFilterBtnID: '.event-filter-btn',
+    toggleElementID: '.toggle-element',
 
     init: function (data) {
         if (data !== undefined) {
@@ -20,6 +21,7 @@ Front = {
     },
 
     setHandlers: function () {
+        Front.clickToggleElement();
         Front.clickEventFilterBtn();
     },
 
@@ -30,6 +32,16 @@ Front = {
 
 
     // Event handlers
+
+    clickToggleElement: function () {
+        $(Front.toggleElementID).on('click', function () {
+            var item = $(this);
+            $(item.data('target')).toggleClass('hide');
+            if (item.attr('href') != undefined) {
+                return false;
+            }
+        });
+    },
 
     clickEventFilterBtn: function () {
         $(Front.eventFilterBtnID).on('click', function () {

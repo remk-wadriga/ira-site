@@ -12,7 +12,7 @@
 use yii\bootstrap\Html;
 ?>
 
-<?= Html::a($this->t('Register') . ' <i class="glyphicon glyphicon-registration-mark"></i>', ['/front/event/view', 'id' => $model->id], [
+<?= Html::a($this->t('Register') . ' <i class="glyphicon glyphicon-registration-mark"></i>', ['/front/event/register', 'id' => $model->id], [
     'class' => 'btn btn-sm btn-primary icon',
     'role' => 'button',
     'data' => [

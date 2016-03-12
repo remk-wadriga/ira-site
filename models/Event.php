@@ -36,9 +36,18 @@ use yii\helpers\Json;
  * @property string $typeName
  * @property array $imagesUrls
  * @property string $mainImageUrl
+ * @property integer $actualUsersCount
+ * @property integer $recordedUsersCount
+ * @property integer $comeUsersCount
+ * @property integer $notComeUsersCount
+ * @property integer $allUsersCount
  *
  * @property User $owner
  * @property User[] $users
+ * @property EventUser[] $usersAllRecords
+ * @property EventUser[] $usersActiveRecords
+ * @property EventUser[] $usersComeRecords
+ * @property EventUser[] $usersNotComeRecords
  * @property User[] $recordedUsers
  * @property User[] $comeUsers
  * @property User[] $notComeUsers
@@ -56,16 +65,13 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
     const TYPE_WORKSHOP = 'workshop';
     const TYPE_PSYCHOLOGICAL_GAME = 'psychological_game';
     const TYPE_LECTURE = 'lecture';
-    const TYPE_GROUP = 'study_group';
+    const TYPE_STUDY_GROUP = 'study_group';
 
     const STATUS_NEW = 'new';
     const STATUS_CURRENT = 'current';
     const STATUS_PAST = 'past';
     const STATUS_CANCELED = 'canceled';
 
-    const USER_RECORDED_STATUS = 'recorded';
-    const USER_COME_STATUS = 'come';
-    const USER_NOT_COME_STATUS = 'not_come';
 
     const STORY_ACTION_CREATED = 'Created';
     const STORY_ACTION_UPDATED = 'Updated';
@@ -80,7 +86,7 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
         self::TYPE_WORKSHOP,
         self::TYPE_PSYCHOLOGICAL_GAME,
         self::TYPE_LECTURE,
-        self::TYPE_GROUP,
+        self::TYPE_STUDY_GROUP,
     ];
 
     protected static $_statuses = [
@@ -90,19 +96,13 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
         self::STATUS_CANCELED,
     ];
 
-    protected static $_userComeStatuses = [
-        self::USER_RECORDED_STATUS,
-        self::USER_COME_STATUS,
-        self::USER_NOT_COME_STATUS,
-    ];
-
     protected static $_typesNames = [
         self::TYPE_TRAINING => 'Training',
         self::TYPE_THERAPEUTIC_GROUP => 'Therapeutic group',
         self::TYPE_WORKSHOP => 'Workshop',
         self::TYPE_PSYCHOLOGICAL_GAME => 'Psychological game',
         self::TYPE_LECTURE => 'Lecture',
-        self::TYPE_GROUP => 'Study group',
+        self::TYPE_STUDY_GROUP => 'Study group',
     ];
 
     protected static $_statusesNames = [
@@ -110,12 +110,6 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
         self::STATUS_CURRENT => 'Current',
         self::STATUS_PAST => 'Past',
         self::STATUS_CANCELED => 'Canceled',
-    ];
-
-    protected static $_userComeStatusesNames = [
-        self::USER_RECORDED_STATUS => 'Recorded',
-        self::USER_COME_STATUS => 'Come',
-        self::USER_NOT_COME_STATUS => 'Not come',
     ];
 
     protected static $_storyActions = [
@@ -176,6 +170,7 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
             'membersCount' => $this->t('Members count'),
             'hasOwner' => $this->t('Registered user'),
             'mainImageUrl' => $this->t('Image'),
+            'actualUsersCount' => $this->getActualUsersCountLabel(),
         ];
     }
 
@@ -197,9 +192,41 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
     /**
      * @return ActiveQuery
      */
+    public function getUsersActiveRecords()
+    {
+        return $this->hasMany(EventUser::className(), ['event_id' => 'id'])->andWhere(['status' => EventUser::STATUS_RECORDED]);
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getUsersComeRecords()
+    {
+        return $this->hasMany(EventUser::className(), ['event_id' => 'id'])->andWhere(['status' => EventUser::STATUS_COME]);
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getUsersNotComeRecords()
+    {
+        return $this->hasMany(EventUser::className(), ['event_id' => 'id'])->andWhere(['status' => EventUser::STATUS_NOT_COME]);
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getUsersAllRecords()
+    {
+        return $this->hasMany(EventUser::className(), ['event_id' => 'id']);
+    }
+
+    /**
+     * @return ActiveQuery
+     */
     public function getUsers()
     {
-        return $this->hasMany(User::className(), ['id' => 'user_id'])->viaTable(self::eventUserTableName(), ['event_id' => 'id']);
+        return $this->hasMany(User::className(), ['id' => 'user_id'])->via('usersAllRecords');
     }
 
     /**
@@ -207,9 +234,7 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
      */
     public function getRecordedUsers()
     {
-        return $this->hasMany(User::className(), ['id' => 'user_id'])->viaTable(self::eventUserTableName(), ['event_id' => 'id'], function (ActiveQuery $query) {
-            $query->andWhere(['status' => self::USER_RECORDED_STATUS]);
-        });
+        return $this->hasMany(User::className(), ['id' => 'user_id'])->via('usersActiveRecords');
     }
 
     /**
@@ -217,9 +242,7 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
      */
     public function getComeUsers()
     {
-        return $this->hasMany(User::className(), ['id' => 'user_id'])->viaTable(self::eventUserTableName(), ['event_id' => 'id'], function (ActiveQuery $query) {
-            $query->andWhere(['status' => self::USER_COME_STATUS]);
-        });
+        return $this->hasMany(User::className(), ['id' => 'user_id'])->via('usersComeRecords');
     }
 
     /**
@@ -227,11 +250,12 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
      */
     public function getNotComeUsers()
     {
-        return $this->hasMany(User::className(), ['id' => 'user_id'])->viaTable(self::eventUserTableName(), ['event_id' => 'id'], function (ActiveQuery $query) {
-            $query->andWhere(['status' => self::USER_NOT_COME_STATUS]);
-        });
+        return $this->hasMany(User::className(), ['id' => 'user_id'])->via('usersNotComeRecords');
     }
 
+    /**
+     * @return ActiveQuery
+     */
     public function getImages()
     {
         return $this->hasMany(Image::className(), ['id' => 'image_id'])->viaTable(Image::entityImageTableName(), ['entity_id' => 'id'], function (ActiveQuery $query) {
@@ -242,6 +266,9 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
         });
     }
 
+    /**
+     * @return ActiveQuery
+     */
     public function getAllImages()
     {
         return $this->hasMany(Image::className(), ['id' => 'image_id'])->viaTable(Image::entityImageTableName(), ['entity_id' => 'id'], function (ActiveQuery $query) {
@@ -251,6 +278,9 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
         });
     }
 
+    /**
+     * @return ActiveQuery
+     */
     public function getMainImage()
     {
         return $this->hasOne(Image::className(), ['id' => 'image_id'])->viaTable(Image::entityImageTableName(), ['entity_id' => 'id'], function (ActiveQuery $query) {
@@ -343,6 +373,7 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
     {
         return $this->owner_id;
     }
+
     public function setOwnerID($owner_id)
     {
         $this->owner_id = $owner_id;
@@ -356,6 +387,7 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
         }
         return $this->owner_name;
     }
+
     public function setOwnerName($owner_name)
     {
         $this->owner_name = $owner_name;
@@ -366,6 +398,7 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
     {
         return $this->members_count;
     }
+
     public function setMembersCount($members_count)
     {
         $this->members_count = $members_count;
@@ -376,6 +409,7 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
     {
         return $this->date_start;
     }
+
     public function setDateStart($date_start)
     {
         $this->date_start = $date_start;
@@ -386,6 +420,7 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
     {
         return $this->date_end;
     }
+
     public function setDateEnd($date_end)
     {
         $this->date_end = $date_end;
@@ -396,6 +431,7 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
     {
         return $this->in_main_slider;
     }
+
     public function setInMainSlider($in_main_slider)
     {
         $this->in_main_slider = $in_main_slider;
@@ -411,6 +447,7 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
         }
         return $address;
     }
+
     public function setDefaultAddress($default_address)
     {
         $this->setRTC('defaultAddress', $default_address);
@@ -421,6 +458,7 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
     {
         return (array)$this->getRTC('imagesUrls');
     }
+
     public function setImagesUrls($images_urls)
     {
         $this->setRTC('imagesUrls', (array)$images_urls);
@@ -567,6 +605,77 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
         return $this->getRTCItem('mainImageUrl', function () {
             return $this->mainImage !== null ? $this->mainImage->url : false;
         }, false);
+    }
+
+    public function canUserRegister($userID = null)
+    {
+        if ($userID === null) {
+            $userID = Yii::$app->user->id;
+        }
+
+        if (in_array($this->status, [self::STATUS_PAST, self::STATUS_CANCELED])) {
+            return false;
+        }
+        if ($this->status == self::STATUS_CURRENT && !in_array($this->type, [self::TYPE_STUDY_GROUP, self::TYPE_LECTURE])) {
+            return false;
+        }
+
+        $conditions = [
+            'event_id' => $this->id,
+            'user_id' => $userID,
+        ];
+
+        return EventUser::getCount($conditions) == 0;
+    }
+
+
+    // actualUsersCount
+    public function getActualUsersCount()
+    {
+        return $this->getRTCItem('actualUsersCount', function () {
+            if ($this->status == self::STATUS_PAST) {
+                return $this->getComeUsersCount();
+            } else {
+                return $this->getRecordedUsersCount();
+            }
+        }, 0);
+    }
+    // recordedUsersCount
+    public function getRecordedUsersCount()
+    {
+        return $this->getRTCItem('recordedUsersCount', function () {
+            return $this->getUsersActiveRecords()->count();
+        }, 0);
+    }
+    // comeUsersCount
+    public function getComeUsersCount()
+    {
+        return $this->getRTCItem('comeUsersCount', function () {
+            return $this->getUsersComeRecords()->count();
+        }, 0);
+    }
+    // notComeUsersCount
+    public function getNotComeUsersCount()
+    {
+        return $this->getRTCItem('notComeUsersCount', function () {
+            return $this->getUsersNotComeRecords()->count();
+        }, 0);
+    }
+    // allUsersCount
+    public function getAllUsersCount()
+    {
+        return $this->getRTCItem('allUsersCount', function () {
+            return $this->getUsersAllRecords()->count();
+        }, 0);
+    }
+
+    public function getActualUsersCountLabel()
+    {
+        $label = 'Recorded users';
+        if ($this->status == self::STATUS_PAST) {
+            $label = 'Came users';
+        }
+        return $this->t($label);
     }
 
     // END Public methods

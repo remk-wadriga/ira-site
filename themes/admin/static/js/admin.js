@@ -21,7 +21,6 @@ Admin = {
 
     setHandlers: function () {
         Admin.changeEventStatusDropdownSwich();
-        Admin.clickEventLoadFieldsCheckbox();
     },
 
 
@@ -37,9 +36,7 @@ Admin = {
             var item = $(this);
 
             var success = function () {
-                if (!checked) {
-                    return false;
-                }
+
             };
 
             Api.ajx(item.data('url'), {status: item.val()}, success, 'GET');

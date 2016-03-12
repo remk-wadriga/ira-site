@@ -34,6 +34,7 @@ class Slider extends Widget
     public function run()
     {
         parent::run();
+        //$this->registerAsset();
 
         if ($this->modelClass === null) {
             return null;
@@ -81,5 +82,56 @@ class Slider extends Widget
             'dataHeight' => isset($this->options['dataHeight']) ? $this->options['dataHeight'] : 'fullscreen',
             'slideClass' => isset($this->options['slideClass']) ? $this->options['slideClass'] : 'ms-slide',
         ]);
+    }
+
+    private function registerAsset()
+    {
+        SliderAsset::register(Yii::$app->view);
+
+        Yii::$app->view->registerJs('jQuery(document).ready(function($) {
+                /************************
+                ****** MasterSlider *****
+                *************************/
+                // Calibrate slider\'s height
+                var sliderHeight = 790; // Smallest hieght allowed (default height)
+                if ( $(\'#masterslider\').data(\'height\') == \'fullscreen\' ) {
+                    var winHeight = $(window).height();
+                    sliderHeight = winHeight > sliderHeight ? winHeight : sliderHeight;
+                }
+
+                // Initialize the main slider
+                var slider = new MasterSlider();
+                slider.setup(\'masterslider\', {
+                    space:0,
+                    fullwidth:true,
+                    autoplay:true,
+                    overPause:false,
+                    width:1024,
+                    height:sliderHeight
+                });
+                // adds Arrows navigation control to the slider.
+                slider.control(\'bullets\',{autohide:false  , dir:"h"});
+
+                var teamslider = new MasterSlider();
+                teamslider.setup(\'teamslider\' , {
+                    loop:true,
+                    width:300,
+                    height:290,
+                    speed:20,
+                    view:\'stffade\',
+                    grabCursor:false,
+                    preload:0,
+                    space:29
+                });
+                teamslider.control(\'slideinfo\',{insertTo:\'#staff-info\'});
+
+                $(".team .ms-nav-next").click(function() {
+                    teamslider.api.next();
+                });
+
+                $(".team .ms-nav-prev").click(function() {
+                    teamslider.api.previous();
+                });
+            });');
     }
 }

@@ -22,6 +22,7 @@ class AssetAbstract extends AssetBundle
 
     protected static $_scripts = [];
 
+
     public $theme;
     public $path;
 

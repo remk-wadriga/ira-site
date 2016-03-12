@@ -50,6 +50,8 @@ $this->params['breadcrumbs'][] = $this->title;
                     return $model->typeName;
                 },
             ],
+            'membersCount',
+            'actualUsersCount',
             [
                 'attribute' => 'status',
                 'value' => function ($model) {

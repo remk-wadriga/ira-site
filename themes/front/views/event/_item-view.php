@@ -49,7 +49,9 @@ use yii\bootstrap\Html;
         ],
     ]) ?>
 
-    <?= $this->render('_register-button', ['model' => $model]) ?>
+    <?php if ($model->canUserRegister()) : ?>
+        <?= $this->render('_register-button', ['model' => $model]) ?>
+    <?php endif ?>
 
     <div class="clearfix"></div>
 

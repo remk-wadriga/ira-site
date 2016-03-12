@@ -80,6 +80,13 @@ $messages = [
     'Search'                                                                                                            => '',
     'Enter the event name'                                                                                              => '',
     'All'                                                                                                               => '',
+    'Register to {type}'                                                                                                => 'Регистриция на {type}',
+    'Event'                                                                                                             => '',
+    'Complete the registration form'                                                                                    => '',
+    'Comment'                                                                                                           => '',
+    'Register in site'                                                                                                  => '',
+    'Recorded users'                                                                                                    => '',
+    'Came users'                                                                                                        => '',
 ];
 
 return array_merge($messages, require(__DIR__ . '/error.php'), require(__DIR__ . '/flash.php'));

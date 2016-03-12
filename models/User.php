@@ -423,6 +423,16 @@ class User extends ModelAbstract implements IdentityInterface, StoryInterface
         return $this->role;
     }
 
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    public function getPhone()
+    {
+        return $this->phone;
+    }
+
     // END Implements IdentityInterface
 
 

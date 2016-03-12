@@ -11,6 +11,7 @@ namespace abstracts;
 use Yii;
 use yii\db\ActiveRecord;
 use interfaces\ModelInterface;
+use yii\db\Query;
 
 class ModelAbstract extends ActiveRecord implements ModelInterface
 {
@@ -190,6 +191,14 @@ class ModelAbstract extends ActiveRecord implements ModelInterface
         }
 
         return self::$_items[$key];
+    }
+
+    public static function getCount($conditions)
+    {
+        if (!is_array($conditions)) {
+            $conditions = ['id' => (int)$conditions];
+        }
+        return (new Query())->from(static::tableName())->where($conditions)->count();
     }
 
     protected static function getItemsNames()

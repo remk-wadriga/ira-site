@@ -8,15 +8,34 @@
 
 namespace assets;
 
+use Yii;
 use abstracts\AssetAbstract;
 
 class FrontAsset extends AssetAbstract
 {
+    public function init()
+    {
+        parent::init();
+
+        $view = Yii::$app->view;
+        if (isset($view->params['showMainSlider']) && !empty($view->params['showMainSlider'])) {
+            $this->css = array_merge($this->css, [
+                'css/masterslider/masterslider.css',
+                'css/masterslider/skins/black-1/style.css',
+            ]);
+
+            $this->js = array_merge($this->js, [
+                'js/masterslider.min.js',
+                'js/masterslider.staff.carousel.dev.js',
+            ]);
+        }
+    }
+
     public $css = [
         //'css/bootstrap.css',
         'css/style.css',
-        'css/masterslider/masterslider.css',
-        'css/masterslider/skins/black-1/style.css',
+        //'css/masterslider/masterslider.css',
+        //'css/masterslider/skins/black-1/style.css',
         'css/font-awesome.min.css',
         'css/animate.css',
         'css/nivo-slider.css',
@@ -31,8 +50,8 @@ class FrontAsset extends AssetAbstract
         //'js/jquery-1.11.0.min.js',
         'js/jquery.easing.1.3.js',
         //'js/bootstrap.min.js',
-        'js/masterslider.min.js',
-        'js/masterslider.staff.carousel.dev.js',
+        //'js/masterslider.min.js',
+        //'js/masterslider.staff.carousel.dev.js',
         'js/wow.min.js',
         'js/waypoints.min.js',
         'js/underscore-min.js',

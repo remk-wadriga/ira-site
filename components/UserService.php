@@ -19,6 +19,8 @@ use models\User as Identity;
  * @property bool $isAdmin
  * @property \interfaces\IdentityInterface $identity
  * @property string $fullName
+ * @property string $email
+ * @property string $phone
  */
 class UserService extends User
 {
@@ -40,6 +42,14 @@ class UserService extends User
         }
 
         return $this->identity->getFirstName() . ' ' . $this->identity->getLastName();
+    }
+    public function getEmail()
+    {
+        return $this->identity !== null ? $this->identity->getEmail() : null;
+    }
+    public function getPhone()
+    {
+        return $this->identity !== null ? $this->identity->getPhone() : null;
     }
     // END Getters
 }

@@ -44,4 +44,14 @@ interface IdentityInterface extends BaseIdentityInterface
      * @return string
      */
     public function getRole();
+
+    /**
+     * @return string
+     */
+    public function getEmail();
+
+    /**
+     * @return string
+     */
+    public function getPhone();
 }
