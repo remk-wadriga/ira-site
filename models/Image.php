@@ -144,13 +144,7 @@ class Image extends ModelAbstract
      */
     public static function createImage(ImagedEntityInterface $entity)
     {
-        $image = self::findEntityMainImage($entity);
-        if ($image === null) {
-            $image = new self();
-        }
-
-        $isNew = $image->getIsNewRecord();
-
+        $image = new self();
         $image->url = $entity->getImgUrl();
         $image->alt = $entity->getImgAlt();
 
@@ -162,28 +156,16 @@ class Image extends ModelAbstract
             return false;
         }
 
-        if ($isNew) {
-            $params = [
-                'entity_id' => $entity->getID(),
-                'image_id' => $image->id,
-                'entity_class' => $entity::className(),
-                'is_main' => $entity->isMainImage(),
-            ];
-            $result = $db->createCommand()->insert(self::entityImageTableName(), $params)->execute() > 0;
-            if (!$result) {
-                $transaction->rollBack();
-                return false;
-            }
-        } else {
-            $params = [
-                'entity_class' => $entity::className(),
-                'is_main' => $entity->isMainImage(),
-            ];
-            $conditions = [
-                'entity_id' => $entity->getID(),
-                'image_id' => $image->id,
-            ];
-            $db->createCommand()->update(self::entityImageTableName(), $params, $conditions)->execute();
+        $params = [
+            'entity_id' => $entity->getID(),
+            'image_id' => $image->id,
+            'entity_class' => $entity::className(),
+            'is_main' => $entity->isMainImage(),
+        ];
+        $result = $db->createCommand()->insert(self::entityImageTableName(), $params)->execute() > 0;
+        if (!$result) {
+            $transaction->rollBack();
+            return false;
         }
 
         $transaction->commit();

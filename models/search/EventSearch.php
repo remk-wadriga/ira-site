@@ -40,7 +40,8 @@ class EventSearch extends Event
      */
     public function search($params)
     {
-        $query = Event::find();
+        $query = Event::find()
+            ->with(['mainImage']);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
