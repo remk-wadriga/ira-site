@@ -10,11 +10,19 @@ namespace front\controllers;
 
 use Yii;
 use front\abstracts\ControllerAbstract;
+use models\search\EventSearch;
 
 class EventController extends ControllerAbstract
 {
     public function actionList()
     {
-        return $this->render();
+        $searchModel = new EventSearch();
+        $params = $this->params();
+        $dataProvider = $searchModel->search($params);
+
+        return $this->render([
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
     }
 }

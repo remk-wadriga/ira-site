@@ -76,6 +76,10 @@ $messages = [
     'Registered user'                                                                                                   => '',
     'Event owner'                                                                                                       => '',
     'Add image'                                                                                                         => '',
+    'Tags'                                                                                                              => '',
+    'Search'                                                                                                            => '',
+    'Enter the event name'                                                                                              => '',
+    'All'                                                                                                               => '',
 ];
 
 return array_merge($messages, require(__DIR__ . '/error.php'), require(__DIR__ . '/flash.php'));

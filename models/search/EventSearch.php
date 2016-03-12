@@ -18,10 +18,14 @@ use models\Event;
  */
 class EventSearch extends Event
 {
+    public $searchText;
+    public $filterType;
+
     public function rules()
     {
         return [
-
+            [['searchText'], 'string', 'max' => 126],
+            ['filterType', 'in', 'range' => self::$_types],
         ];
     }
 
@@ -45,21 +49,27 @@ class EventSearch extends Event
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort' => [
+                'defaultOrder' => ['date_start' => SORT_DESC],
+            ],
         ]);
 
         $this->load($params);
+
+        if (!$this->filterType) {
+            $this->filterType = null;
+        }
 
         if (!$this->validate()) {
             // uncomment the following line if you do not want to return any records when validation fails
             // $query->where('0=1');
             return $dataProvider;
         }
-
         $query->andFilterWhere([
-
+            'type' => $this->filterType,
         ]);
 
-        $query->andFilterWhere(['like', 'name', $this->name]);
+        $query->andFilterWhere(['like', 'name', $this->searchText]);
 
         return $dataProvider;
     }

@@ -1,4 +1,7 @@
 Front = {
+
+    eventFilterBtnID: '.event-filter-btn',
+
     init: function (data) {
         if (data !== undefined) {
             $.each(data, function (index, value) {
@@ -17,8 +20,8 @@ Front = {
     },
 
     setHandlers: function () {
-
-    }
+        Front.clickEventFilterBtn();
+    },
 
 
     // Auto functions
@@ -27,6 +30,18 @@ Front = {
 
 
     // Event handlers
+
+    clickEventFilterBtn: function () {
+        $(Front.eventFilterBtnID).on('click', function () {
+            var item = $(this);
+            var formID = item.data('form');
+
+            $(formID + ' input:text').val(item.data('filter'));
+            $(formID).submit();
+
+            return false;
+        });
+    }
 
     // END Event handlers
 

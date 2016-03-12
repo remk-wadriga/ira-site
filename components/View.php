@@ -22,6 +22,8 @@ class View extends YiiView
 {
     private $_scriptParams = [];
 
+    public $subtitle;
+
     /**
      * Translate string
      *
@@ -73,6 +75,16 @@ class View extends YiiView
     public function dateTime($dateTime)
     {
         return Yii::$app->time->formatDateTime($dateTime);
+    }
+
+    public function day($dateTime)
+    {
+        return Yii::$app->time->formatDateTime($dateTime, 'd');
+    }
+
+    public function month($dateTime)
+    {
+        return strtoupper(Yii::$app->time->formatDateTime($dateTime, 'M'));
     }
 
     // scriptParams

@@ -944,9 +944,9 @@ h6 {
 .blog .btn {
 	display:block;
 	float:left;
-	clear:both;
 	margin-top:20px;
-	margin-bottom:30px;	
+	margin-bottom:30px;
+	margin-right:30px;
 }
 
 ul.pagination {
@@ -3175,6 +3175,10 @@ ul.info-list li i.fa {
 
 .btn.icon {
 	padding-left:17px;
+}
+
+.btn i.glyphicon {
+	right:-8px;
 }
 
 /* Filters */

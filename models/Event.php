@@ -74,7 +74,7 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
     const STORY_ACTION_CANCELED = 'Canceled';
     const STORY_ACTION_DELETED = 'Deleted';
 
-    private static $_types = [
+    protected static $_types = [
         self::TYPE_TRAINING,
         self::TYPE_THERAPEUTIC_GROUP,
         self::TYPE_WORKSHOP,
@@ -83,20 +83,20 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
         self::TYPE_GROUP,
     ];
 
-    private static $_statuses = [
+    protected static $_statuses = [
         self::STATUS_NEW,
         self::STATUS_CURRENT,
         self::STATUS_PAST,
         self::STATUS_CANCELED,
     ];
 
-    private static $_userComeStatuses = [
+    protected static $_userComeStatuses = [
         self::USER_RECORDED_STATUS,
         self::USER_COME_STATUS,
         self::USER_NOT_COME_STATUS,
     ];
 
-    private static $_typesNames = [
+    protected static $_typesNames = [
         self::TYPE_TRAINING => 'Training',
         self::TYPE_THERAPEUTIC_GROUP => 'Therapeutic group',
         self::TYPE_WORKSHOP => 'Workshop',
@@ -105,20 +105,20 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
         self::TYPE_GROUP => 'Study group',
     ];
 
-    private static $_statusesNames = [
+    protected static $_statusesNames = [
         self::STATUS_NEW => 'New',
         self::STATUS_CURRENT => 'Current',
         self::STATUS_PAST => 'Past',
         self::STATUS_CANCELED => 'Canceled',
     ];
 
-    private static $_userComeStatusesNames = [
+    protected static $_userComeStatusesNames = [
         self::USER_RECORDED_STATUS => 'Recorded',
         self::USER_COME_STATUS => 'Come',
         self::USER_NOT_COME_STATUS => 'Not come',
     ];
 
-    private static $_storyActions = [
+    protected static $_storyActions = [
         self::STORY_ACTION_CREATED,
         self::STORY_ACTION_UPDATED,
         self::STORY_ACTION_STARTED,
