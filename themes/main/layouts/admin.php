@@ -103,6 +103,7 @@ $items = [
         </div>
     </footer>
 
+    <?= $this->render('partials-admin/_modal-window') ?>
     <?php $this->endBody() ?>
     </body>
 

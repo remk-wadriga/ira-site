@@ -13,4 +13,10 @@ return [
     'Can not find ghe event'                                                                                            => '',
     'Can not register the user'                                                                                         => '',
     'Can not login the user'                                                                                            => '',
+    'Record not found'                                                                                                  => '',
+    'User already registered'                                                                                           => '',
+    'Can not save the record'                                                                                           => '',
+    'Event not found'                                                                                                   => '',
+    'User not found'                                                                                                    => '',
+    'Status already is "{status}"'                                                                                      => '',
 ];

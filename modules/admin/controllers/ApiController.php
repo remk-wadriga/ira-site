@@ -8,6 +8,8 @@
 
 namespace admin\controllers;
 
+use models\Event;
+use models\EventUser;
 use Yii;
 use admin\abstracts\ControllerAbstract;
 use yii\base\ErrorException;
@@ -15,6 +17,8 @@ use yii\helpers\Json;
 use yii\helpers\Url;
 use yii\web\BadRequestHttpException;
 use models\Image;
+use yii\web\NotFoundHttpException;
+use models\User;
 
 class ApiController extends ControllerAbstract
 {
@@ -97,19 +101,117 @@ class ApiController extends ControllerAbstract
         ]);
     }
 
-    public function actionUploadImagesBlock()
+    public function actionRegisterUserByEventRecord($id)
     {
-        /** @var \interfaces\FileModelInterface|\interfaces\ImagedEntityInterface static */
-        $modelClass = $this->get('modelClass');
-
-        if ($modelClass === null || !class_exists($modelClass)) {
+        if (!$this->isAjax()) {
             throw new BadRequestHttpException();
         }
-        /** @var \interfaces\FileModelInterface|\interfaces\ImagedEntityInterface */
-        $model = new $modelClass();
+        /** @var \models\EventUser */
+        $record = EventUser::findOne($id);
+        if ($record === null) {
+            throw new NotFoundHttpException($this->t('Record not found'));
+        }
+        if ($record->isRegisteredUser()) {
+            return $this->renderAjx(null, $this->t('User already registered'), self::AJX_STATUS_OK);
+        }
 
-        return $this->renderAjax('upload-images-block', [
-            'model' => $model,
+        $status = self::AJX_STATUS_OK;
+
+        $user = new User();
+        $nameParts = explode(' ', $record->name);
+        $user->email = $record->email;
+        $user->phone = $record->phone;
+        $user->firstName = $nameParts[0];
+        if (isset($nameParts[1])) {
+            $user->lastName = $nameParts[1];
+        }
+
+        if ($user->load($this->post())) {
+            $user->setStoryAction($user::STORY_ACTION_CREATED_BY_EVENT_RECORD);
+            if (!$user->save()) {
+                $status = self::AJX_STATUS_ERROR;
+            } else {
+                return $this->renderAjx(null, $this->t('User successfully registered'), self::AJX_STATUS_OK);
+            }
+        }
+
+        return $this->renderAjx('@siteViews/auth/_register-form', '', $status, [
+            'user' => $user,
+            'title' => $this->t('Register user'),
         ]);
+    }
+
+    public function actionAddUserToEvent($eventID)
+    {
+        if (!$this->isAjax()) {
+            throw new BadRequestHttpException();
+        }
+        /** @var \models\Event */
+        $event = Event::findOne($eventID);
+        if ($event === null) {
+            throw new NotFoundHttpException($this->t('Event not found'));
+        }
+
+        $user = new User();
+        $status = self::AJX_STATUS_OK;
+
+        if ($user->load($this->post())) {
+            $user->setStoryAction($user::STORY_ACTION_CREATED);
+            if (!$user->save()) {
+                $status = self::AJX_STATUS_ERROR;
+            }
+        } elseif ($event->load($this->post())) {
+            $user = User::findOne($event->userID);
+            if ($user === null) {
+                throw new NotFoundHttpException('User not found');
+            }
+        }
+
+        if ($this->isPost() && $status == self::AJX_STATUS_OK) {
+            $record = new EventUser();
+            $record->eventID = $event->id;
+            $record->userID = $user->id;
+            $record->email = $user->email;
+            $record->name = $user->fullName;
+            $record->phone = $user->phone;
+            if ($record->save()) {
+                return $this->renderAjx('@adminViews/event/_registered-user-item', $this->t('User successfully created'), self::AJX_STATUS_OK, [
+                    'record' => $record,
+                ]);
+            } else {
+                $status = self::AJX_STATUS_ERROR;
+            }
+        }
+
+        return $this->renderAjx('_add-user-to-event', '', $status, [
+            'event' => $event,
+            'user' => $user,
+            'title' => $this->t('Add user'),
+        ]);
+    }
+
+    public function actionSetUserEventRecordStatus($id)
+    {
+        if (!$this->isAjax()) {
+            throw new BadRequestHttpException();
+        }
+        /** @var \models\EventUser */
+        $record = EventUser::findOne($id);
+        if ($record === null) {
+            throw new NotFoundHttpException($this->t('Record not found'));
+        }
+
+        $status = $this->get('status') == 'true' ? EventUser::STATUS_CAME : EventUser::STATUS_NOT_CAME;
+        if ($status == $record->status) {
+            return $this->renderAjx(null, $this->t('Status already is "{status}"', ['status' => $status]), self::AJX_STATUS_OK);
+        }
+
+        $record->status = $status;
+
+        if ($record->save()) {
+            return $this->renderAjx(null, $this->t('Status successfully changed'), self::AJX_STATUS_OK);
+        } else {
+            return $this->renderAjx(null, $record->errors, self::AJX_STATUS_ERROR);
+        }
     }
 }

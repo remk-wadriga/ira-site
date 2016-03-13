@@ -2,11 +2,16 @@
 
 $params = require(__DIR__ . '/params.php');
 $components = require(__DIR__ . '/components.php');
+$modules = require(__DIR__ . '/modules.php');
 
 // Set aliases for namespaces
 $namespaces = require(__DIR__ . '/namespaces.php');
 foreach($namespaces as $alias => $path){
     Yii::setAlias('@' . $alias, __DIR__ . '/../' . $path);
+}
+
+foreach (array_keys($modules) as $module) {
+    Yii::setAlias('@' . $module . 'Views', __DIR__ . '/../themes/' . $module . '/views');
 }
 
 $config = [
@@ -15,7 +20,7 @@ $config = [
     'bootstrap' => ['log'],
     'components' => $components,
     'params' => $params,
-    'modules' => require(__DIR__ . '/modules.php'),
+    'modules' => $modules,
     'language' => 'ru',
     'sourceLanguage' => 'en',
 ];

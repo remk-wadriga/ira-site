@@ -13,6 +13,8 @@ use abstracts\ModelAbstract;
 use interfaces\IdentityInterface;
 use interfaces\StoryInterface;
 use yii\db\Query;
+use admin\listeners\UserListener;
+use events\UserEvent;
 
 /**
  * This is the model class for table "user".
@@ -39,6 +41,8 @@ use yii\db\Query;
  */
 class User extends ModelAbstract implements IdentityInterface, StoryInterface
 {
+    const EVENT_CHANGED = 'event_changed';
+
     const ROLE_GUEST = 'guest';
     const ROLE_USER = 'user';
     const ROLE_ADMIN = 'admin';
@@ -50,6 +54,8 @@ class User extends ModelAbstract implements IdentityInterface, StoryInterface
     const STATUS_DELETED = 'deleted';
 
     const STORY_ACTION_REGISTRATION = 'Registration';
+    const STORY_ACTION_CREATED = 'Created';
+    const STORY_ACTION_CREATED_BY_EVENT_RECORD = 'Created by event record';
     const STORY_ACTION_LOGIN = 'Login';
     const STORY_ACTION_LOGOUT = 'Logout';
     const STORY_ACTION_ACTIVATED = 'Activated';
@@ -60,6 +66,7 @@ class User extends ModelAbstract implements IdentityInterface, StoryInterface
 
     public $password;
     public $rememberMe = true;
+    public $isRegistered = false;
 
     private static $_roles = [
         self::ROLE_USER,
@@ -76,6 +83,8 @@ class User extends ModelAbstract implements IdentityInterface, StoryInterface
 
     private static $_storyActions = [
         self::STORY_ACTION_REGISTRATION,
+        self::STORY_ACTION_CREATED,
+        self::STORY_ACTION_CREATED_BY_EVENT_RECORD,
         self::STORY_ACTION_LOGIN,
         self::STORY_ACTION_LOGOUT,
         self::STORY_ACTION_ACTIVATED,
@@ -118,7 +127,7 @@ class User extends ModelAbstract implements IdentityInterface, StoryInterface
             [['firstName', 'lastName'], 'string', 'max' => 126],
             [['phone'], 'string', 'max' => 24],
             ['info', 'string'],
-            [['dateRegister', 'rememberMe'], 'safe'],
+            [['dateRegister', 'rememberMe', 'isRegistered'], 'safe'],
         ];
     }
 
@@ -132,6 +141,7 @@ class User extends ModelAbstract implements IdentityInterface, StoryInterface
             'lastName' => $this->t('Last name'),
             'phone' => $this->t('Phone'),
             'info' => $this->t('Info'),
+            'isRegistered' => $this->t('Registered user'),
         ];
     }
 
@@ -270,6 +280,37 @@ class User extends ModelAbstract implements IdentityInterface, StoryInterface
 
 
     // Public methods
+
+    public function init()
+    {
+        parent::init();
+        $this->on(self::EVENT_CHANGED, [UserListener::className(), 'handleUserChanged']);
+    }
+
+    public function save($runValidation = true, $attributeNames = null)
+    {
+        $db = Yii::$app->getDb();
+        $transaction = $db->beginTransaction();
+
+        if (!parent::save($runValidation, $attributeNames)) {
+            $transaction->rollBack();
+            return false;
+        }
+
+        if (!in_array($this->getStoryAction(), [self::STORY_ACTION_LOGIN, self::STORY_ACTION_LOGOUT, self::STORY_ACTION_REGISTRATION])) {
+            // Create "User changed" event
+            $event = new UserEvent();
+            $this->trigger(self::EVENT_CHANGED, $event);
+            if (!$event->isValid) {
+                $transaction->rollBack();
+                $this->addError(null, $event->message);
+                return false;
+            }
+        }
+
+        $transaction->commit();
+        return true;
+    }
 
     public function getRoleName($role = null)
     {

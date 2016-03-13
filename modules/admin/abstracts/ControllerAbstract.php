@@ -50,6 +50,7 @@ abstract class ControllerAbstract extends BaseController
             return Json::encode([
                 'status' => $status,
                 'message' => $message,
+                'title' => isset($params['title']) ? $params['title'] : '',
                 'content' => $content = $this->renderPartial($view, $params),
             ]);
         }

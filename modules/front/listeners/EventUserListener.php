@@ -44,7 +44,7 @@ class EventUserListener extends ListenerAbstract
 
         if ($event->isValid) {
             $user = Yii::$app->user;
-            if (!$user->isGuest) {
+            if (!$user->isGuest && !$sender->userID) {
                 $sender->userID = $user->id;
                 $sender->email = $user->email;
                 $sender->name = $user->fullName;

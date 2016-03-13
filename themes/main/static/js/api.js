@@ -14,10 +14,10 @@ Api = {
             dataType: dataType,
             beforeSend: function(){},
             success: function(json){
-                //success(json);
+                success(json);
             },
             complete: function(json){
-                success(json);
+                //success(json);
             },
             error: function(json){
                 error(json);

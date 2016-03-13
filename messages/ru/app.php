@@ -87,6 +87,11 @@ $messages = [
     'Register in site'                                                                                                  => '',
     'Recorded users'                                                                                                    => '',
     'Came users'                                                                                                        => '',
+    'Actions'                                                                                                           => '',
+    'Error'                                                                                                             => '',
+    'Register user'                                                                                                     => '',
+    'Add user'                                                                                                          => '',
+    'Select user'                                                                                                       => '',
 ];
 
 return array_merge($messages, require(__DIR__ . '/error.php'), require(__DIR__ . '/flash.php'));

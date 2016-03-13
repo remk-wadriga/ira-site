@@ -27,22 +27,22 @@ use interfaces\StoryInterface;
 class EventUser extends ModelAbstract implements StoryInterface
 {
     const STATUS_RECORDED = 'recorded';
-    const STATUS_COME = 'come';
-    const STATUS_NOT_COME = 'not_come';
+    const STATUS_CAME = 'came';
+    const STATUS_NOT_CAME = 'not_CAME';
 
     const EVENT_USER_REGISTER = 'user_register';
     const EVENT_USER_AFTER_REGISTER = 'user_after_register';
 
     protected static $_statuses = [
         self::STATUS_RECORDED,
-        self::STATUS_COME,
-        self::STATUS_NOT_COME,
+        self::STATUS_CAME,
+        self::STATUS_NOT_CAME,
     ];
 
     protected static $_statusesNames = [
         self::STATUS_RECORDED => 'Recorded',
-        self::STATUS_COME => 'Come',
-        self::STATUS_NOT_COME => 'Not come',
+        self::STATUS_CAME => 'Come',
+        self::STATUS_NOT_CAME => 'Not come',
     ];
 
     public $password;
@@ -228,6 +228,11 @@ class EventUser extends ModelAbstract implements StoryInterface
 
         $transaction->commit();
         return true;
+    }
+
+    public function isRegisteredUser()
+    {
+        return $this->userID > 0;
     }
 
     // END Public methods

@@ -10,6 +10,7 @@ use interfaces\FileModelInterface;
 use interfaces\ImagedEntityInterface;
 use admin\listeners\EventListener;
 use events\EventEvent;
+use yii\db\Query;
 use yii\helpers\Json;
 
 /**
@@ -127,6 +128,7 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
     public $cropInfo;
     public $imgWidth = 540;
     public $imgHeight = 320;
+    public $userID;
 
     public static function tableName()
     {
@@ -145,7 +147,7 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
             [['ownerID', 'membersCount', 'inMainSlider'], 'integer'],
             [['description', 'type', 'img'], 'string'],
             [['price', 'profit', 'cost'], 'number'],
-            [['dateStart', 'dateEnd', 'hasOwner', 'cropInfo'], 'safe'],
+            [['dateStart', 'dateEnd', 'hasOwner', 'cropInfo', 'userID'], 'safe'],
             [['name', 'ownerName'], 'string', 'max' => 255],
             [['address'], 'string', 'max' => 512],
             ['type', 'in', 'range' => self::$_types],
@@ -171,6 +173,7 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
             'hasOwner' => $this->t('Registered user'),
             'mainImageUrl' => $this->t('Image'),
             'actualUsersCount' => $this->getActualUsersCountLabel(),
+            'userID' => $this->t('User'),
         ];
     }
 
@@ -202,7 +205,7 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
      */
     public function getUsersComeRecords()
     {
-        return $this->hasMany(EventUser::className(), ['event_id' => 'id'])->andWhere(['status' => EventUser::STATUS_COME]);
+        return $this->hasMany(EventUser::className(), ['event_id' => 'id'])->andWhere(['status' => EventUser::STATUS_CAME]);
     }
 
     /**
@@ -210,7 +213,7 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
      */
     public function getUsersNotComeRecords()
     {
-        return $this->hasMany(EventUser::className(), ['event_id' => 'id'])->andWhere(['status' => EventUser::STATUS_NOT_COME]);
+        return $this->hasMany(EventUser::className(), ['event_id' => 'id'])->andWhere(['status' => EventUser::STATUS_NOT_CAME]);
     }
 
     /**
@@ -676,6 +679,42 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
             $label = 'Came users';
         }
         return $this->t($label);
+    }
+
+    public function getNotRegisteredUsersItems($firstElement = null)
+    {
+        return $this->getRTCItem('notRegisteredUsersItems', function () use ($firstElement) {
+            $items = [];
+            if ($firstElement !== null) {
+                $items[] = $firstElement;
+            }
+            foreach ($this->getNotRecordedUsers() as $user) {
+                $items[$user->id] = $user->fullName;
+            }
+            return $items;
+        }, []);
+    }
+
+    /**
+     * @return User[]
+     */
+    public function getNotRecordedUsers()
+    {
+        return $this->getRTCItem('notRecordedUsers', function () {
+            $recordsCommand = (new Query())
+                ->select('user_id')
+                ->from(EventUser::tableName())
+                ->where(['event_id' => $this->id])
+                ->createCommand();
+
+            $recordsSql = $recordsCommand->sql;
+            $recordsParams = $recordsCommand->params;
+
+            return User::find()
+                ->where("id NOT IN($recordsSql)")
+                ->addParams($recordsParams)
+                ->all();
+        }, []);
     }
 
     // END Public methods

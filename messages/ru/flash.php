@@ -7,4 +7,7 @@ return [
     'Can not deactivate slide'                                                                                          => '',
     'Event status changed'                                                                                              => '',
     'Can not change event status'                                                                                       => '',
+    'User successfully registered'                                                                                      => '',
+    'User successfully created'                                                                                         => '',
+    'Status successfully changed'                                                                                       => '',
 ];
