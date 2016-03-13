@@ -13,5 +13,11 @@ use abstracts\ControllerAbstract as BaseController;
 
 abstract class ControllerAbstract extends BaseController
 {
-
+    public function beforeAction($action)
+    {
+        if (!parent::beforeAction($action)) {
+            return false;
+        }
+        return true;
+    }
 }

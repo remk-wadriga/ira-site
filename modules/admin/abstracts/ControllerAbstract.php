@@ -32,12 +32,6 @@ abstract class ControllerAbstract extends BaseController
         return true;
     }
 
-    public function redirect($url, $statusCode = 302)
-    {
-        Yii::$app->user->setReturnUrl(Yii::$app->request->url);
-        return parent::redirect($url, $statusCode);
-    }
-
     public function renderAjx($view = null, $message = null, $status = null, $params = [])
     {
         if ($status === null) {

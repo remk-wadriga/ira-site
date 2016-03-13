@@ -11,7 +11,7 @@ namespace site\controllers;
 use Yii;
 use site\abstracts\ControllerAbstract;
 use models\User;
-use yii\web\UserEvent;
+use yii\base\ErrorException;
 
 class AuthController extends ControllerAbstract
 {
@@ -48,20 +48,13 @@ class AuthController extends ControllerAbstract
     public function actionRegister()
     {
         $user = new User();
-        $user->load($this->post());
 
-        if ($user->load($this->post()) && $user->save()) {
-            $user->setStoryAction(User::STORY_ACTION_REGISTRATION);
+        if ($user->load($this->post())) {
+            try {
+               Yii::$app->user->register($user);
+            } catch (ErrorException $e) {
 
-            $userService = Yii::$app->user;
-            $userService->identity = $user;
-
-            // Create "user register" event
-            $event = new UserEvent();
-            $userService->trigger($userService::EVENT_AFTER_REGISTER, $event);
-
-            $user->setStoryAction(User::STORY_ACTION_LOGIN);
-            $userService->login($user, $user->getSessionTime());
+            }
             return $this->redirect(['/front/index/index']);
         }
 

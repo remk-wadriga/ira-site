@@ -60,7 +60,6 @@ class EventUser extends ModelAbstract implements StoryInterface
             [['eventID', 'userID'], 'integer'],
             [['email', 'eventID', 'status', 'dateRegistration'], 'required'],
             [['email', 'name', 'password', 'passwordRepeat'], 'string', 'max' => 255],
-            ['email', 'unique'],
             [['comment'], 'string'],
             [['email', 'name'], 'string', 'max' => 255],
             [['phone'], 'string', 'max' => 26],

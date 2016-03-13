@@ -17,6 +17,11 @@ use yii\web\NotFoundHttpException;
 
 class EventController extends ControllerAbstract
 {
+    protected $redirectActions = [
+        'list',
+        'view',
+    ];
+
     public function actionList()
     {
         $searchModel = new EventSearch();

@@ -35,23 +35,7 @@ class EventUserListener extends ListenerAbstract
                 $user->password = $sender->password;
                 $user->passwordRepeat = $sender->passwordRepeat;
 
-                if (!$user->save()) {
-                    throw new ErrorException($sender->t('Can not register the user'));
-                }
-
-                $user->setStoryAction(User::STORY_ACTION_REGISTRATION);
-
-                $userService = Yii::$app->user;
-                $userService->identity = $user;
-
-                // Create "user register" event
-                $event = new UserEvent();
-                $userService->trigger($userService::EVENT_AFTER_REGISTER, $event);
-
-                $user->setStoryAction(User::STORY_ACTION_LOGIN);
-                if (!$userService->login($user, $user->getSessionTime())) {
-                    throw new ErrorException($sender->t('Can not login the user'));
-                }
+                Yii::$app->user->register($user);
             } catch (ErrorException $e) {
                 $event->isValid = false;
                 $event->message = $e->getMessage();

@@ -15,6 +15,21 @@ abstract class ControllerAbstract extends Controller
 {
     protected $disableAssets = false;
 
+    protected $redirectActions = [];
+
+    public function beforeAction($action)
+    {
+        if (!parent::beforeAction($action)) {
+            return false;
+        }
+
+        if (in_array($action->id, $this->redirectActions)) {
+            Yii::$app->user->setReturnUrl(Yii::$app->request->url);
+        }
+
+        return true;
+    }
+
     public function t($message, $params = [], $direction = 'app')
     {
         return Yii::$app->view->t($message, $params, $direction);
@@ -38,6 +53,20 @@ abstract class ControllerAbstract extends Controller
         }
 
         return parent::render($view, $params);
+    }
+
+    public function goBack($defaultUrl = null)
+    {
+        if ($defaultUrl === null) {
+            $defaultUrl = Yii::$app->getRequest()->getReferrer();
+        }
+        return parent::goBack($defaultUrl);
+    }
+
+    public function redirect($url, $statusCode = 302)
+    {
+        Yii::$app->user->setReturnUrl(Yii::$app->request->url);
+        return parent::redirect($url, $statusCode);
     }
 
     public function isPost()

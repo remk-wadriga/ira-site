@@ -13,7 +13,6 @@ use abstracts\ModelAbstract;
 use interfaces\IdentityInterface;
 use interfaces\StoryInterface;
 use yii\db\Query;
-use yii\log\EmailTarget;
 
 /**
  * This is the model class for table "user".
