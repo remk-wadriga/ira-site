@@ -38,7 +38,7 @@ use yii\bootstrap\Html;
     </span><!-- .title-desc -->
 
     <p>
-        <?= $model->description ?>
+        <?= $this->subtext($model->description) ?>
     </p>
 
     <?= Html::a('<i class="fa fa-long-arrow-right"></i>' . $this->t('Read More'), ['/front/event/view', 'id' => $model->id], [

@@ -6,3 +6,9 @@
     background: #6ebff3;
     color: #fff;
 }
+.filter-btn.btn-bordered, .filter-btn.btn-bordered:focus{
+    border: 1px solid #e2e2e2;
+}
+.slug span{
+    margin-top: 30px;
+}

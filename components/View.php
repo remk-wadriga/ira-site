@@ -87,6 +87,15 @@ class View extends YiiView
         return strtoupper(Yii::$app->time->formatDateTime($dateTime, 'M'));
     }
 
+    public function subtext($text, $length = 300)
+    {
+        if (strlen($text) <= $length) {
+            return $text;
+        } else {
+            return substr($text, 0, $length) . ' ...';
+        }
+    }
+
     // scriptParams
     public function setScriptParams($params = [])
     {

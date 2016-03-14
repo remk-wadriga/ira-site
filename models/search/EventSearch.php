@@ -52,6 +52,9 @@ class EventSearch extends Event
             'sort' => [
                 'defaultOrder' => ['date_start' => SORT_DESC],
             ],
+            'pagination' => [
+                'pageSize' => 3,
+            ],
         ]);
 
         $this->load($params);

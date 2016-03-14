@@ -33,19 +33,14 @@ $this->params['breadcrumbs'][] = $this->title;
                         'class' => 'list-wrapper',
                         'id' => 'events_list_view',
                     ],
-                    'layout' => "{items}",
+                    'layout' => "{items}\n{pager}",
                     'itemView' => '_item-view',
+                    'pager' => [
+                        'options' => [
+                            'class' => 'pagination anim fadeInLeft animated',
+                        ],
+                    ],
                 ]) ?>
-
-                <?php /** @todo Make the pager */ ?>
-                <!--<ul class="pagination anim fadeInLeft" data-wow-delay="0.2s">
-                    <li><a href="single.html">&laquo;</a></li>
-                    <li><a href="single.html">1</a></li>
-                    <li><a href="single.html">2</a></li>
-                    <li><a href="single.html">3</a></li>
-                    <li><a href="single.html">4</a></li>
-                    <li><a href="single.html">&raquo;</a></li>
-                </ul>--><!-- .pagination -->
 
             </div><!-- .col-lg-9 -->
 
