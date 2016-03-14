@@ -19,4 +19,5 @@ return [
     'Event not found'                                                                                                   => '',
     'User not found'                                                                                                    => '',
     'Status already is "{status}"'                                                                                      => '',
+    'Role already is {role}'                                                                                            => '',
 ];

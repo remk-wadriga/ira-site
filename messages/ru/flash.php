@@ -10,4 +10,5 @@ return [
     'User successfully registered'                                                                                      => '',
     'User successfully created'                                                                                         => '',
     'Status successfully changed'                                                                                       => '',
+    'Role successfully changed'                                                                                         => '',
 ];

@@ -1,6 +1,5 @@
 Admin = {
 
-    changeEventStatusDropdownID: '#change_event_status_dropdown',
     modalWindowID: '#modal_window',
     modalWindowTitleID: '#modal_window .modal-header',
     modalWindowContentID: '#modal_window .modal-body',
@@ -23,7 +22,7 @@ Admin = {
     },
 
     setHandlers: function () {
-        Admin.changeEventStatusDropdownSwich();
+
     },
 
 
@@ -34,17 +33,7 @@ Admin = {
 
     // Event handlers
 
-    changeEventStatusDropdownSwich: function () {
-        $(Admin.changeEventStatusDropdownID).on('change', function () {
-            var item = $(this);
 
-            var success = function () {
-
-            };
-
-            Api.ajx(item.data('url'), {status: item.val()}, success, 'GET');
-        });
-    },
 
     // END Event handlers
 
@@ -55,6 +44,30 @@ Admin = {
 
 
     // Public functions
+
+    changeEventStatus: function (item) {
+        var success = function () {
+
+        };
+
+        Api.ajx(item.data('url'), {status: item.val()}, success, 'GET');
+    },
+
+    changeUserRole: function (item) {
+        var success = function () {
+
+        };
+
+        Api.ajx(item.data('url'), {role: item.val()}, success, 'GET');
+    },
+
+    changeUserStatus: function (item) {
+        var success = function () {
+
+        };
+
+        Api.ajx(item.data('url'), {status: item.val()}, success, 'GET');
+    },
 
     changeSlideStatus: function (item) {
         var checked = item.prop('checked');

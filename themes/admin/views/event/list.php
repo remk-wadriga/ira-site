@@ -56,8 +56,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'status',
                 'value' => function ($model) {
                     return Html::activeDropDownList($model, 'status', $model->getStatusesItems(), [
-                        'id' => 'change_event_status_dropdown',
-                        'class' => 'form-group',
+                        'class' => 'form-group change-event-status-dropdown',
+                        'onchange' => 'Admin.changeEventStatus($(this));',
                         'data' => [
                             'url' => Url::to(['/admin/event/change-status', 'id' => $model->id]),
                         ],

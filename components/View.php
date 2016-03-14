@@ -74,7 +74,7 @@ class View extends YiiView
 
     public function dateTime($dateTime)
     {
-        return Yii::$app->time->formatDateTime($dateTime);
+        return Yii::$app->time->formatDateTime($dateTime, Yii::$app->params['dateTimeFormatFront']);
     }
 
     public function day($dateTime)

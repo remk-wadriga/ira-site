@@ -6,6 +6,7 @@ return [
     'timeScriptsFormat'                                     => 'H:i',
     'dateTimeScriptsFormat'                                 => 'Y-m-d H:i:s',
     'dateTimeFormat'                                        => 'Y-m-d H:i:s',
+    'dateTimeFormatFront'                                   => 'Y-m-d H:i',
     'dateFormat'                                            => 'Y-m-d',
     'timeFormat'                                            => 'H:i:s',
     'timeZone'                                              => 'Europe/Kiev',

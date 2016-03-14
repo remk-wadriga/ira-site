@@ -63,6 +63,7 @@ class User extends ModelAbstract implements IdentityInterface, StoryInterface
     const STORY_ACTION_BANNED = 'Banned';
     const STORY_ACTION_DELETED = 'Deleted';
     const STORY_ACTION_UPDATED = 'Updated';
+    const STORY_ACTION_CHANGE_ROLE = 'Change role';
 
     public $password;
     public $rememberMe = true;
@@ -92,6 +93,7 @@ class User extends ModelAbstract implements IdentityInterface, StoryInterface
         self::STORY_ACTION_BANNED,
         self::STORY_ACTION_DELETED,
         self::STORY_ACTION_UPDATED,
+        self::STORY_ACTION_CHANGE_ROLE,
     ];
 
     private static $_rolesNames = [
@@ -184,6 +186,13 @@ class User extends ModelAbstract implements IdentityInterface, StoryInterface
         }
 
         return true;
+    }
+
+    public function afterFind()
+    {
+        parent::afterFind();
+        $this->setRTC('oldRole', $this->role);
+        $this->setRTC('oldStatus', $this->status);
     }
 
     // END Event handlers
@@ -292,12 +301,18 @@ class User extends ModelAbstract implements IdentityInterface, StoryInterface
         $db = Yii::$app->getDb();
         $transaction = $db->beginTransaction();
 
+        $action = $this->getStoryAction();
+        if ($action === null) {
+            $action = self::STORY_ACTION_UPDATED;
+            $this->setStoryAction($action);
+        }
+
         if (!parent::save($runValidation, $attributeNames)) {
             $transaction->rollBack();
             return false;
         }
 
-        if (!in_array($this->getStoryAction(), [self::STORY_ACTION_LOGIN, self::STORY_ACTION_LOGOUT, self::STORY_ACTION_REGISTRATION])) {
+        if (!in_array($action, [self::STORY_ACTION_LOGIN, self::STORY_ACTION_LOGOUT, self::STORY_ACTION_REGISTRATION])) {
             // Create "User changed" event
             $event = new UserEvent();
             $this->trigger(self::EVENT_CHANGED, $event);
@@ -374,7 +389,12 @@ class User extends ModelAbstract implements IdentityInterface, StoryInterface
 
     public function getRolesItems($firstElement = null)
     {
-        return $this->getEnumNames(self::$_rolesNames, 'roles_items', $firstElement);
+        return $this->getEnumNames(self::$_rolesNames, 'rolesItems', $firstElement);
+    }
+
+    public function getStatusesItems($firstElement = null)
+    {
+        return $this->getEnumNames(self::$_statusesNames, 'statusesItems', $firstElement);
     }
 
     // END Public methods
@@ -480,29 +500,81 @@ class User extends ModelAbstract implements IdentityInterface, StoryInterface
 
     public function getStoryAction()
     {
-        return $this->getRTC('storyAction');
+        $action = $this->getRTC('storyAction');
+        if ($action == self::STORY_ACTION_UPDATED) {
+            if ($this->getRTC('oldStatus') != $this->status) {
+                switch ($this->status) {
+                    case self::STATUS_ACTIVE:
+                        $action = self::STORY_ACTION_ACTIVATED;
+                        break;
+                    case self::STATUS_BANNED:
+                        $action = self::STORY_ACTION_BANNED;
+                        break;
+                    case self::STATUS_FROZEN:
+                        $action = self::STORY_ACTION_FROZEN;
+                        break;
+                    case self::STATUS_DELETED:
+                        $action = self::STORY_ACTION_DELETED;
+                        break;
+                }
+            } elseif ($this->getRTC('oldRole') != $this->role) {
+                $action = self::STORY_ACTION_CHANGE_ROLE;
+            }
+        }
+        $this->setStoryAction($action);
+        return $action;
     }
 
     public function getStoryFields()
     {
-        if ($this->getStoryAction() == self::STORY_ACTION_UPDATED) {
-            return $this->attributes();
+        if (!in_array($this->getStoryAction(), [self::STORY_ACTION_LOGIN, self::STORY_ACTION_LOGOUT, self::STORY_ACTION_REGISTRATION])) {
+            $attributes = [];
+            if ($this->getRTC('oldStatus') != $this->status) {
+                $attributes[] = 'status';
+            }
+            if ($this->getRTC('oldRole') != $this->role) {
+                $attributes[] = 'role';
+            }
+            if (empty($attributes)) {
+                $attributes = $this->attributes();
+            }
+            return $attributes;
         }
         return null;
     }
 
     public function getStoryOldValues()
     {
-        if ($this->getStoryAction() == self::STORY_ACTION_UPDATED) {
-            return $this->getOldAttributes();
+        if (!in_array($this->getStoryAction(), [self::STORY_ACTION_LOGIN, self::STORY_ACTION_LOGOUT, self::STORY_ACTION_REGISTRATION])) {
+            $attributes = [];
+            if ($this->getRTC('oldStatus') != $this->status) {
+                $attributes['status'] = $this->getRTC('oldStatus');
+            }
+            if ($this->getRTC('oldRole') != $this->role) {
+                $attributes['role'] = $this->getRTC('oldRole');
+            }
+            if (empty($attributes)) {
+                $attributes = $this->getOldAttributes();
+            }
+            return $attributes;
         }
         return null;
     }
 
     public function getStoryNewValues()
     {
-        if ($this->getStoryAction() == self::STORY_ACTION_UPDATED) {
-            return $this->getAttributes();
+        if (!in_array($this->getStoryAction(), [self::STORY_ACTION_LOGIN, self::STORY_ACTION_LOGOUT, self::STORY_ACTION_REGISTRATION])) {
+            $attributes = [];
+            if ($this->getRTC('oldStatus') != $this->status) {
+                $attributes['status'] = $this->status;
+            }
+            if ($this->getRTC('oldRole') != $this->role) {
+                $attributes['role'] = $this->role;
+            }
+            if (empty($attributes)) {
+                $attributes = $this->getAttributes();
+            }
+            return $attributes;
         }
         return null;
     }
