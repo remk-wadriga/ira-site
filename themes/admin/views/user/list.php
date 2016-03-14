@@ -52,7 +52,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value' => function (\models\User $model) {
                     return Html::activeDropDownList($model, 'status', $model->getStatusesItems(), [
                         'class' => 'form-group change-user-status-dropdown',
-                        'onclick' => 'Admin.changeUserStatus($(this));',
+                        'onchange' => 'Admin.changeUserStatus($(this));',
                         'data' => [
                             'url' => Url::to(['/admin/user/change-status', 'id' => $model->id]),
                         ],
