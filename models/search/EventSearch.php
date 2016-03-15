@@ -20,6 +20,7 @@ class EventSearch extends Event
 {
     public $searchText;
     public $filterType;
+    public $pageSize = 20;
 
     public function rules()
     {
@@ -50,10 +51,10 @@ class EventSearch extends Event
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'sort' => [
-                'defaultOrder' => ['date_start' => SORT_DESC],
+                'defaultOrder' => ['id' => SORT_DESC],
             ],
             'pagination' => [
-                'pageSize' => 3,
+                'pageSize' => $this->pageSize,
             ],
         ]);
 

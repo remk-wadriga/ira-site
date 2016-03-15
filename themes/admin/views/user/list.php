@@ -10,7 +10,7 @@
  * @var yii\data\ActiveDataProvider $dataProvider
  */
 
-use yii\helpers\Html;
+use yii\bootstrap\Html;
 use yii\grid\GridView;
 use yii\helpers\Url;
 
@@ -32,6 +32,20 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
+            [
+                'attribute' => 'avatarUrl',
+                'value' => function (\models\User $model) {
+                    if ($model->avatarUrl) {
+                        return Html::img($model->avatarUrl, [
+                            'class' => 'micro-img',
+                            'alt' => $model->avatarAlt,
+                        ]);
+                    } else {
+                        return null;
+                    }
+                },
+                'format' => 'raw',
+            ],
             'email:email',
             'fullName',
             [

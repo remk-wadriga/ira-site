@@ -35,6 +35,7 @@ class EventController extends ControllerAbstract
     public function actionList()
     {
         $searchModel = new EventSearch();
+        $searchModel->pageSize = Yii::$app->params['adminEventsPerPage'];
         $dataProvider = $searchModel->search($this->get());
 
         return $this->render([
