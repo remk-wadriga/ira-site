@@ -65,7 +65,7 @@ class FileService extends Component
 
             // Resize and crop the image
             $result = $image
-                ->resize($newSizeThumb)
+                //->resize($newSizeThumb)
                 ->crop($cropPointThumb, $cropSizeThumb)
                 ->save($path, ['quality' => 100]);
             if (!$result) {
