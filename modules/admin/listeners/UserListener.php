@@ -8,6 +8,7 @@
 
 namespace admin\listeners;
 
+use models\Image;
 use Yii;
 use abstracts\ListenerAbstract;
 use events\UserEvent;
@@ -26,6 +27,17 @@ class UserListener extends ListenerAbstract
             if (!$result) {
                 $event->isValid = false;
                 $event->message = Yii::$app->view->t('Can not save the record');
+            }
+        }
+
+        if ($event->isValid) {
+            if (!Yii::$app->file->loadFile($sender)) {
+                $event->isValid = false;
+                $event->message = Yii::$app->view->t('Can not upload image');
+            } elseif ($sender->isAvatarChanged()) {
+                // Save the user avatar
+                $event->isValid = Image::createImage($sender);
+                $event->message = Yii::$app->view->t('Can not save image');
             }
         }
 

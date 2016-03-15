@@ -145,7 +145,7 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
     public function rules()
     {
         return [
-            [['name', 'price', 'type', 'status', 'dateStart'], 'required'],
+            [['name', 'price', 'type', 'status'], 'required'],
             [['ownerID', 'membersCount', 'inMainSlider'], 'integer'],
             [['description', 'type', 'img'], 'string'],
             [['price', 'profit', 'cost'], 'number'],
@@ -318,9 +318,6 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
             return false;
         }
 
-        if (!$this->dateStart) {
-            $this->dateStart = Yii::$app->time->getCurrentDateTime();
-        }
         if (!$this->status) {
             $this->status = self::STATUS_NEW;
         }
@@ -352,6 +349,12 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
             } else {
                 $this->ownerName = Yii::$app->user->fullName;
             }
+        }
+        if ($this->dateStart) {
+            $this->dateStart = Yii::$app->time->formatDateTime($this->dateStart);
+        }
+        if ($this->dateEnd) {
+            $this->dateStart = Yii::$app->time->formatDateTime($this->dateEnd);
         }
 
         if ($this->isNewRecord) {

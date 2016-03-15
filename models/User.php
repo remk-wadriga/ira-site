@@ -12,9 +12,12 @@ use Yii;
 use abstracts\ModelAbstract;
 use interfaces\IdentityInterface;
 use interfaces\StoryInterface;
+use interfaces\FileModelInterface;
+use interfaces\ImagedEntityInterface;
 use yii\db\Query;
 use admin\listeners\UserListener;
 use events\UserEvent;
+use yii\helpers\Json;
 
 /**
  * This is the model class for table "user".
@@ -26,7 +29,6 @@ use events\UserEvent;
  * @property string $firstName
  * @property string $lastName
  * @property string $phone
- * @property string $avatar
  * @property string $role
  * @property string $status
  * @property string $info
@@ -35,11 +37,14 @@ use events\UserEvent;
  * @property string $passwordRepeat
  *
  * @property string $fullName
- *
+ * @property string $avatarUrl
+ * @property string $avatarAlt
  * @property string $roleName
  * @property string $statusName
+ *
+ * @property Image $mainImage
  */
-class User extends ModelAbstract implements IdentityInterface, StoryInterface
+class User extends ModelAbstract implements IdentityInterface, StoryInterface, FileModelInterface, ImagedEntityInterface
 {
     const EVENT_CHANGED = 'event_changed';
 
@@ -68,6 +73,10 @@ class User extends ModelAbstract implements IdentityInterface, StoryInterface
     public $password;
     public $rememberMe = true;
     public $isRegistered = false;
+    public $avatar;
+    public $cropInfo;
+    public $imgWidth = 400;
+    public $imgHeight = 350;
 
     private static $_roles = [
         self::ROLE_USER,
@@ -116,12 +125,10 @@ class User extends ModelAbstract implements IdentityInterface, StoryInterface
 
     public function rules()
     {
-        return [
+        $rules = [
             [['email', 'firstName', 'dateRegister', 'passwordHash'], 'required'],
             ['email', 'unique'],
-            [['password', 'passwordRepeat'], 'required', 'when' => function (User $model) {
-                return $model->getIsNewRecord();
-            }],
+            ['avatar', 'image', 'extensions' => ['jpg', 'jpeg', 'png', 'gif'], 'mimeTypes' => ['image/jpeg', 'image/pjpeg', 'image/png', 'image/gif']],
             ['passwordRepeat', 'compare', 'compareAttribute' => 'password', 'message' => 'Passwords don`t match'],
             ['role', 'in', 'range' => self::$_roles],
             ['status', 'in', 'range' => self::$_statuses],
@@ -129,8 +136,14 @@ class User extends ModelAbstract implements IdentityInterface, StoryInterface
             [['firstName', 'lastName'], 'string', 'max' => 126],
             [['phone'], 'string', 'max' => 24],
             ['info', 'string'],
-            [['dateRegister', 'rememberMe', 'isRegistered'], 'safe'],
+            [['dateRegister', 'rememberMe', 'isRegistered', 'cropInfo'], 'safe'],
         ];
+
+        if ($this->isNewRecord) {
+            $rules[] = [['password', 'passwordRepeat'], 'required'];
+        }
+
+        return $rules;
     }
 
     public function attributeLabels()
@@ -141,9 +154,14 @@ class User extends ModelAbstract implements IdentityInterface, StoryInterface
             'passwordRepeat' => $this->t('Repeat password'),
             'firstName' => $this->t('First name'),
             'lastName' => $this->t('Last name'),
+            'fullName' => $this->t('Name'),
             'phone' => $this->t('Phone'),
             'info' => $this->t('Info'),
             'isRegistered' => $this->t('Registered user'),
+            'avatar' => $this->t('Avatar'),
+            'roleName' => $this->t('Role'),
+            'statusName' => $this->t('Status'),
+            'dateRegister' => $this->t('Registration date'),
         ];
     }
 
@@ -193,6 +211,7 @@ class User extends ModelAbstract implements IdentityInterface, StoryInterface
         parent::afterFind();
         $this->setRTC('oldRole', $this->role);
         $this->setRTC('oldStatus', $this->status);
+        $this->setRTC('oldAvatarUrl', $this->avatarUrl);
     }
 
     // END Event handlers
@@ -285,6 +304,30 @@ class User extends ModelAbstract implements IdentityInterface, StoryInterface
         $this->setRTC('passwordRepeat', $passwordRepeat);
     }
 
+    // avatarUrl
+    public function getAvatarUrl()
+    {
+        return $this->getRTCItem('avatarUrl', function () {
+            return $this->getMainImage() !== null ? $this->getMainImage()->url : '';
+        }, null);
+    }
+    public function setAvatarUrl($avatar_url)
+    {
+        $this->setRTC('avatarUrl', $avatar_url);
+    }
+
+    // avatarAlt
+    public function getAvatarAlt()
+    {
+        return $this->getRTCItem('avatarAlt', function () {
+            return $this->getMainImage() !== null ? $this->getMainImage()->alt : '';
+        }, null);
+    }
+    public function setAvatarAlt($avatar_alt)
+    {
+        $this->setRTC('avatarAlt', $avatar_alt);
+    }
+
     // END Getters and setters
 
 
@@ -332,7 +375,7 @@ class User extends ModelAbstract implements IdentityInterface, StoryInterface
         if ($role === null) {
             $role = $this->role;
         }
-        $name = isset(self::$_roles[$role]) ? self::$_roles[$role] : self::$_roles[self::ROLE_USER];
+        $name = isset(self::$_rolesNames[$role]) ? self::$_rolesNames[$role] : self::$_rolesNames[self::ROLE_USER];
         return $this->t($name);
     }
 
@@ -341,7 +384,7 @@ class User extends ModelAbstract implements IdentityInterface, StoryInterface
         if ($status === null) {
             $status = $this->status;
         }
-        $name = isset(self::$_statuses[$status]) ? self::$_roles[$status] : self::$_statuses[self::STATUS_ACTIVE];
+        $name = isset(self::$_statusesNames[$status]) ? self::$_statusesNames[$status] : self::$_statusesNames[self::STATUS_ACTIVE];
         return $this->t($name);
     }
 
@@ -389,12 +432,33 @@ class User extends ModelAbstract implements IdentityInterface, StoryInterface
 
     public function getRolesItems($firstElement = null)
     {
+        if ($this->role === null) {
+            $this->role = self::ROLE_USER;
+        }
         return $this->getEnumNames(self::$_rolesNames, 'rolesItems', $firstElement);
     }
 
     public function getStatusesItems($firstElement = null)
     {
+        if ($this->status === null) {
+            $this->status = self::STATUS_ACTIVE;
+        }
         return $this->getEnumNames(self::$_statusesNames, 'statusesItems', $firstElement);
+    }
+
+    public function isAvatarChanged()
+    {
+        return $this->getOldFileName() != $this->getAvatarUrl();
+    }
+
+    /**
+     * @return Image|null
+     */
+    public function getMainImage()
+    {
+        return $this->getRTCItem('mainImage', function () {
+            return Image::findEntityMainImage($this);
+        }, null);
     }
 
     // END Public methods
@@ -580,4 +644,77 @@ class User extends ModelAbstract implements IdentityInterface, StoryInterface
     }
 
     // END Implements StoryInterface
+
+
+    // Implements FileModelInterface
+
+    public function getFileAttributeName()
+    {
+        return 'avatar';
+    }
+
+    public function getModelInstance()
+    {
+        return $this;
+    }
+
+    public function getOldFileName()
+    {
+        return $this->getRTC('oldAvatarUrl');
+    }
+
+    public function setFileName($fileName)
+    {
+        $this->avatarUrl = $fileName;
+    }
+
+    public function getCropInfo()
+    {
+        if ($this->cropInfo !== null) {
+            $this->cropInfo = Json::decode($this->cropInfo);
+        }
+        return $this->cropInfo;
+    }
+
+    public function getImgWidth()
+    {
+        return $this->imgWidth;
+    }
+
+    public function getImgHeight()
+    {
+        return $this->imgHeight;
+    }
+
+    // END Implements FileModelInterface
+
+
+    // Implements ImagedEntityInterface
+
+    public function getImgUrl()
+    {
+        return $this->avatarUrl;
+    }
+
+    public function getImgAlt()
+    {
+        return $this->fullName;
+    }
+
+    public function isMainImage()
+    {
+        return true;
+    }
+
+    public function getImgID()
+    {
+
+    }
+
+    public function setImgID($id)
+    {
+
+    }
+
+    // END Implements ImagedEntityInterface
 }

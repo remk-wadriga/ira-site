@@ -53,7 +53,9 @@ class UserController extends ControllerAbstract
     {
         $model = new User();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        $model->setStoryAction($model::STORY_ACTION_CREATED);
+
+        if ($model->load($this->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         } else {
             return $this->render([
@@ -65,6 +67,8 @@ class UserController extends ControllerAbstract
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
+
+        $model->setStoryAction($model::STORY_ACTION_UPDATED);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);

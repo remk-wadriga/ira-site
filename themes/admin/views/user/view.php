@@ -9,7 +9,7 @@
  * @var models\User $model
  */
 
-use yii\helpers\Html;
+use yii\bootstrap\Html;
 use yii\widgets\DetailView;
 
 $this->title = $model->fullName;
@@ -32,21 +32,32 @@ $this->params['breadcrumbs'][] = $this->title;
         ]) ?>
     </p>
 
-    <?= DetailView::widget([
-        'model' => $model,
-        'attributes' => [
-            'email:email',
-            'fullName',
-            'phone',
-            'avatar',
-            'role',
-            'status',
-            'info:ntext',
-            [
-                'attribute' => 'dateRegister',
-                'value' => $this->dateTime($model->dateRegister),
+    <div class="col-lg-6">
+        <?php if ($model->avatarUrl) : ?>
+            <?= Html::img($model->avatarUrl, [
+                'class' => 'big-img',
+                'alt' => $model->avatarAlt,
+            ]) ?>
+        <?php endif ?>
+    </div>
+
+    <div class="col-lg-6">
+        <?= DetailView::widget([
+            'model' => $model,
+            'attributes' => [
+                'email:email',
+                'fullName',
+                'phone',
+                'roleName',
+                'statusName',
+                'info:ntext',
+                [
+                    'attribute' => 'dateRegister',
+                    'value' => $this->dateTime($model->dateRegister),
+                ],
             ],
-        ],
-    ]) ?>
+        ]) ?>
+    </div>
+
 
 </div>

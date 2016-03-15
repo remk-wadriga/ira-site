@@ -162,6 +162,14 @@ class Image extends ModelAbstract
             'entity_class' => $entity::className(),
             'is_main' => $entity->isMainImage(),
         ];
+        if ($entity->isMainImage()) {
+            $image = self::findEntityMainImage($entity);
+            if ($image != null && !$image->delete()) {
+                $transaction->rollBack();
+                return false;
+            }
+        }
+
         $result = $db->createCommand()->insert(self::entityImageTableName(), $params)->execute() > 0;
         if (!$result) {
             $transaction->rollBack();
