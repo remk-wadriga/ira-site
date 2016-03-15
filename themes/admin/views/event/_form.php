@@ -31,7 +31,7 @@ use bupy7\cropbox\Cropbox;
         ],
     ]); ?>
 
-    <div class="form-group">
+    <div class="form-group text-center-align">
         <?= $form->field($model, 'img', [
             'template' => "{input}\n<p>{error}",
         ])->widget(Cropbox::className(), [

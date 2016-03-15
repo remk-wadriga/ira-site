@@ -31,12 +31,19 @@ class FileService extends Component
      */
     public function loadFile($model)
     {
-        $file = UploadedFile::getInstance($model->getModelInstance(), $model->getFileAttributeName());
         $cropInfo = $model->getCropInfo();
+        $needCropAndResize = true;
+        $file = null;
+
         if (!empty($cropInfo) && isset($cropInfo['image'])) {
             $file = $this->createFileInstanceFromBase64data($cropInfo['image']);
-            //$cropInfo = null;
+            $needCropAndResize = false;
         }
+        if ($file === null) {
+            $file = UploadedFile::getInstance($model->getModelInstance(), $model->getFileAttributeName());
+            $needCropAndResize = true;
+        }
+
         if ($file === null) {
             return true;
         }
@@ -49,25 +56,27 @@ class FileService extends Component
 
         if (!empty($cropInfo)) {
             Image::$driver = Image::DRIVER_GD2;
-
-            $width = $model->getImgWidth();
-            $height = $model->getImgHeight();
-            $newWidth = isset($cropInfo['dWidth']) ? (int)$cropInfo['dWidth'] : $model->getImgWidth();
-            $newHeight = isset($cropInfo['dHeight']) ? (int)$cropInfo['dHeight'] : $model->getImgHeight();
-            $x = isset($cropInfo['x']) ? $cropInfo['x'] : 0;
-            $y = isset($cropInfo['y']) ? $cropInfo['y'] : 0;
-
-            $newSizeThumb = new Box($newWidth, $newHeight);
-            $cropSizeThumb = new Box($width, $height);
-            $cropPointThumb = new Point($x, $y);
-
             $image = Image::getImagine()->open($file->tempName);
 
+            if ($needCropAndResize) {
+                $width = $model->getImgWidth();
+                $height = $model->getImgHeight();
+                $newWidth = isset($cropInfo['dWidth']) ? (int)$cropInfo['dWidth'] : $model->getImgWidth();
+                $newHeight = isset($cropInfo['dHeight']) ? (int)$cropInfo['dHeight'] : $model->getImgHeight();
+                $x = isset($cropInfo['x']) ? $cropInfo['x'] : 0;
+                $y = isset($cropInfo['y']) ? $cropInfo['y'] : 0;
+
+                $newSizeThumb = new Box($newWidth, $newHeight);
+                $cropSizeThumb = new Box($width, $height);
+                $cropPointThumb = new Point($x, $y);
+
+                $image
+                    ->resize($newSizeThumb)
+                    ->crop($cropPointThumb, $cropSizeThumb);
+            }
+
             // Resize and crop the image
-            $result = $image
-                //->resize($newSizeThumb)
-                ->crop($cropPointThumb, $cropSizeThumb)
-                ->save($path, ['quality' => 100]);
+            $result = $image->save($path, ['quality' => 100]);
             if (!$result) {
                 return false;
             }

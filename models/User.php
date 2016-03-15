@@ -671,7 +671,7 @@ class User extends ModelAbstract implements IdentityInterface, StoryInterface, F
     public function getCropInfo()
     {
         if ($this->cropInfo !== null) {
-            $this->cropInfo = Json::decode($this->cropInfo);
+            $this->cropInfo = Json::decode($this->cropInfo)[0];
         }
         return $this->cropInfo;
     }
