@@ -2,6 +2,7 @@
 
 namespace admin;
 
+use Yii;
 use abstracts\ModuleAbstract;
 
 class AdminModule extends ModuleAbstract

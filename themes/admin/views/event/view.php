@@ -11,6 +11,7 @@
 
 use yii\bootstrap\Html;
 use yii\widgets\DetailView;
+use widgets\typeahead\Typeahead;
 
 $this->title = $model->name;
 $this->params['breadcrumbs'][] = ['label' => $this->t('Events'), 'url' => ['list']];
@@ -66,6 +67,16 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
                 ],
             ]) ?>
+
+
+            <h3><?= $this->t('Tags') ?>:</h3>
+            <div class="row">
+                <div class="tags-list event-tags-list">
+                    <?= Typeahead::widget([
+                        'entity' => $model,
+                    ]) ?>
+                </div>
+            </div>
         </div>
 
         <div class="col-lg-6">

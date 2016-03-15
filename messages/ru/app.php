@@ -95,6 +95,7 @@ $messages = [
     'Users'                                                                                                             => '',
     'Update User {name}'                                                                                                => '',
     'Create User'                                                                                                       => '',
+    'Add tag'                                                                                                           => '',
 ];
 
 return array_merge($messages, require(__DIR__ . '/error.php'), require(__DIR__ . '/flash.php'));

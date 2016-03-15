@@ -2,25 +2,25 @@
 /**
  * Created by PhpStorm.
  * User: Dima
- * Date: 06.03.2016
- * Time: 21:43
+ * Date: 15.03.2016
+ * Time: 1:19
  */
 
-namespace assets;
+namespace widgets\typeahead;
 
 use abstracts\AssetAbstract;
 
-class BootstrapSwitchAsset extends AssetAbstract
+class BootstrapTypeaheadAsset extends AssetAbstract
 {
     public $theme = 'main';
-    public $path = 'plugins/bootstrap-switch/';
+    public $path = 'plugins/bootstrap-typeahead/';
 
     public $js = [
-        'js/bootstrap-switch.js',
+        'bootstrap3-typeahead.js',
     ];
 
     public $css = [
-        'css/bootstrap3/bootstrap-switch.css',
+
     ];
 
     public $depends = [

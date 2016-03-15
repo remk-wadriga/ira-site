@@ -20,4 +20,5 @@ return [
     'User not found'                                                                                                    => '',
     'Status already is "{status}"'                                                                                      => '',
     'Role already is {role}'                                                                                            => '',
+    'Invalid entity'                                                                                                    => '',
 ];

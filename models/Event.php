@@ -42,6 +42,7 @@ use yii\helpers\Json;
  * @property integer $comeUsersCount
  * @property integer $notComeUsersCount
  * @property integer $allUsersCount
+ * @property string[] $tags
  *
  * @property User $owner
  * @property User[] $users
@@ -129,6 +130,7 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
     public $imgWidth = 540;
     public $imgHeight = 320;
     public $userID;
+    public $tag;
 
     public static function tableName()
     {
@@ -147,7 +149,7 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
             [['ownerID', 'membersCount', 'inMainSlider'], 'integer'],
             [['description', 'type', 'img'], 'string'],
             [['price', 'profit', 'cost'], 'number'],
-            [['dateStart', 'dateEnd', 'hasOwner', 'cropInfo', 'userID'], 'safe'],
+            [['dateStart', 'dateEnd', 'hasOwner', 'cropInfo', 'userID', 'tag'], 'safe'],
             [['name', 'ownerName'], 'string', 'max' => 255],
             [['address'], 'string', 'max' => 512],
             ['type', 'in', 'range' => self::$_types],
@@ -671,7 +673,7 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
             return $this->getUsersAllRecords()->count();
         }, 0);
     }
-
+    // actualUsersCountLabel
     public function getActualUsersCountLabel()
     {
         $label = 'Recorded users';
@@ -680,7 +682,7 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
         }
         return $this->t($label);
     }
-
+    // notRegisteredUsersItems
     public function getNotRegisteredUsersItems($firstElement = null)
     {
         return $this->getRTCItem('notRegisteredUsersItems', function () use ($firstElement) {
@@ -692,6 +694,13 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
                 $items[$user->id] = $user->fullName;
             }
             return $items;
+        }, []);
+    }
+    // tags
+    public function getTags()
+    {
+        return $this->getRTCItem('tags', function () {
+            return Tag::getEntityTags($this->id, self::className());
         }, []);
     }
 
