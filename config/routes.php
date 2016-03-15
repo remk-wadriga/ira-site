@@ -22,4 +22,4 @@ $baseRoutes = [
     '<controller>s'                                                                 => 'front/<controller>/list',
 ];
 
-return array_merge(require(__DIR__ . '/../modules/front/config/routes.php'), $baseRoutes);
+return array_merge(require(__DIR__ . '/../modules/front/config/routes.php'), require(__DIR__ . '/../modules/site/config/routes.php'), $baseRoutes);

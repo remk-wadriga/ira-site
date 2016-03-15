@@ -9,7 +9,6 @@
  * @var array $menuItems
  */
 
-use yii\bootstrap\Html;
 use models\Slide;
 use widgets\slider\Slider;
 use widgets\nav\NavBar;

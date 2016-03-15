@@ -510,6 +510,7 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
             return false;
         }
 
+        $this->cropInfo = null;
         $transaction->commit();
         return true;
     }

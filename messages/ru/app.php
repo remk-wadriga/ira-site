@@ -99,6 +99,8 @@ $messages = [
     'Avatar'                                                                                                            => '',
     'Name'                                                                                                              => '',
     'Registration date'                                                                                                 => '',
+    'My profile'                                                                                                        => '',
+    'You can change your private account settings'                                                                      => '',
 ];
 
 return array_merge($messages, require(__DIR__ . '/error.php'), require(__DIR__ . '/flash.php'));

@@ -15,15 +15,14 @@ $this->title = $this->t('Register');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<div class="register-page">
-    <h1><?= Html::encode($this->title) ?></h1>
+<section class="content-section form contact light">
+    <div class="container register-page">
+        <h1><?= Html::encode($this->title) ?></h1>
 
-    <p><?= $this->t('Please fill out the following fields to register') ?>:</p>
+        <h4><?= $this->t('Please fill out the following fields to register') ?>:</h4>
 
-    <div class="col-lg-5">
-        <?= $this->render('_register-form', ['user' => $user]) ?>
+        <div class="row">
+            <?= $this->render('_register-form', ['user' => $user]) ?>
+        </div>
     </div>
-
-</div>
-
-
+</section>

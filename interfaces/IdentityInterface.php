@@ -54,4 +54,15 @@ interface IdentityInterface extends BaseIdentityInterface
      * @return string
      */
     public function getPhone();
+
+    /**
+     * @param array $params
+     * @return bool
+     */
+    public function load($params);
+
+    /**
+     * @return bool
+     */
+    public function save();
 }

@@ -366,6 +366,7 @@ class User extends ModelAbstract implements IdentityInterface, StoryInterface, F
             }
         }
 
+        $this->cropInfo = null;
         $transaction->commit();
         return true;
     }

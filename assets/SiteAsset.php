@@ -22,7 +22,7 @@ class SiteAsset extends AssetAbstract
 
     public $depends = [
         'assets\FrontAsset',
-        'assets\MainAsset',
+        //'assets\MainAsset',
     ];
 
     public static function scriptName()

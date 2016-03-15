@@ -60,8 +60,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
                 <?php if ($model->owner !== null) : ?>
                 <div class="author anim fadeIn">
-                    <?php /* @todo create user avatars */ ?>
-                    <img src="images/blog-author-example.jpg" alt="Dale Blog Post Author Example" />
+                    <img src="<?= $model->owner->avatarUrl ?>" alt="<?= $model->owner->avatarAlt ?>" />
                     <h5><?= $model->owner->fullName ?></h5>
                     <?php /* @todo create social networks links */ ?>
                     <!--<span>

@@ -1,0 +1,14 @@
+
+
+.cropbox {
+    width: 100%;
+    margin-bottom: 30px;
+    position: relative;
+    display: table;
+    border-collapse: separate;
+    margin-left: 15px;
+}
+.cropbox .btn i.glyphicon {
+    right: 10px;
+}
+

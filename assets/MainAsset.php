@@ -27,6 +27,7 @@ class MainAsset extends AssetAbstract
         'yii\web\JqueryAsset',
         'yii\bootstrap\BootstrapPluginAsset',
         'yii\web\YiiAsset',
+        'assets\BootstrapSwitchAsset',
     ];
 
     public static function scriptName()

@@ -42,6 +42,7 @@ if (Yii::$app->user->isGuest) {
     $menuItems[] = ['label' => $this->t('Register'), 'url' => ['/site/auth/register']];
 } else {
     $menuItems[] = ['label' => $this->t('Account'), 'items' => [
+        ['label' => $this->t('My profile'), 'url' => ['/site/account/update']],
         [
             'label' => $this->t('Logout ({name})', ['name' => Yii::$app->user->fullName]),
             'url' => ['/site/auth/logout'],

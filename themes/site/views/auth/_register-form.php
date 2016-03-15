@@ -9,35 +9,70 @@
  * @var models\User $user
  */
 
-use yii\helpers\Html;
+use yii\bootstrap\Html;
 use yii\bootstrap\ActiveForm;
+use bupy7\cropbox\Cropbox;
 ?>
 
     <?php $form = ActiveForm::begin([
         'id' => 'register_form',
         'options' => ['class' => 'form-horizontal'],
         'fieldConfig' => [
-            'template' => "{label}\n<div class=\"col-lg-10\">{input}\n<p>{error}</p></div>",
-            'labelOptions' => ['class' => 'col-lg-2 control-label'],
+            'template' => "<span class=\"input-group\">{input}</span>",
         ],
     ]); ?>
 
-    <?= $form->field($user, 'firstName')->textInput(['autofocus' => true]) ?>
+    <div class="col-lg-5 anim fadeInLeft animated">
+        <?= $form->field($user, 'firstName')->textInput([
+            'class' => 'lg',
+            'placeholder' => $user->getAttributeLabel('firstName'),
+            'autofocus' => true,
+        ])->label('') ?>
 
-    <?= $form->field($user, 'lastName') ?>
+        <?= $form->field($user, 'lastName')->textInput([
+            'class' => 'lg',
+            'placeholder' => $user->getAttributeLabel('lastName'),
+        ])->label('') ?>
 
-    <?= $form->field($user, 'phone') ?>
+        <?= $form->field($user, 'phone')->textInput([
+            'class' => 'lg',
+            'placeholder' => $user->getAttributeLabel('phone'),
+        ])->label('') ?>
 
-    <?= $form->field($user, 'email') ?>
+        <?= $form->field($user, 'email')->textInput([
+            'class' => 'lg',
+            'placeholder' => $user->getAttributeLabel('email'),
+        ])->label('') ?>
 
-    <?= $form->field($user, 'password')->passwordInput() ?>
+        <?= $form->field($user, 'password')->passwordInput([
+            'class' => 'lg',
+            'placeholder' => $user->getAttributeLabel('password'),
+        ])->label('') ?>
 
-    <?= $form->field($user, 'passwordRepeat')->passwordInput() ?>
+        <?= $form->field($user, 'passwordRepeat')->passwordInput([
+            'class' => 'lg',
+            'placeholder' => $user->getAttributeLabel('passwordRepeat'),
+        ])->label('') ?>
+    </div>
 
-    <div class="form-group">
-        <div class="col-lg-offset-1 col-lg-11">
-            <?= Html::submitButton($this->t('Register'), ['class' => 'btn btn-primary', 'name' => 'login-button']) ?>
-        </div>
+    <div class="col-lg-7 anim fadeInRight animated">
+        <?= $form->field($user, 'avatar', [
+            'template' => "{input}\n<p>{error}",
+        ])->widget(Cropbox::className(), [
+            'attributeCropInfo' => 'cropInfo',
+            'previewImagesUrl' => [$user->avatarUrl],
+            'pluginOptions' => [
+                'variants' => [
+                    [
+                        'width' => $user->imgWidth,
+                        'height' => $user->imgHeight,
+                    ],
+                ],
+            ],
+        ]) ?>
+        <span class="input-group">
+            <?= Html::submitButton($user->isNewRecord ? $this->t('Register') : $this->t('Update'), ['class' => 'submit', 'name' => 'login-button']) ?>
+        </span>
     </div>
 
 <?php ActiveForm::end(); ?>

@@ -276,6 +276,7 @@ class Slide extends ModelAbstract implements FileModelInterface, ImagedEntityInt
             return false;
         }
 
+        $this->cropInfo = null;
         $transaction->commit();
         return true;
     }
