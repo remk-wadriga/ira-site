@@ -15,6 +15,7 @@ use abstracts\ModelAbstract;
 use yii\db\Query;
 use models\Tag;
 use yii\helpers\Json;
+use yii\helpers\Url;
 
 class Typeahead extends Widget
 {
@@ -40,6 +41,7 @@ class Typeahead extends Widget
     {
         BootstrapTypeaheadAsset::register(Yii::$app->view);
         $this->registerScript();
+
         return $this->render('block', [
             'tags' => $this->getTags(),
             'entity' => $this->entity,
@@ -61,10 +63,9 @@ class Typeahead extends Widget
                 ->andWhere(['!=', 'entity_id', $entity->getID()])
                 ->all();
             foreach ($tags as $tag) {
-                $this->_data[] = $tag;
+                $this->_data[] = $tag['tag'];
             }
         }
-        $this->_data = [['id' => 1, 'name' => 'Tag 1'], ['id' => 2, 'name' => 'Tag 2'], ['id' => 3, 'name' => 'Tag 3']];
         return $this->_data;
     }
 
@@ -80,9 +81,12 @@ class Typeahead extends Widget
 
     private function registerScript()
     {
+        $entity = $this->entity;
         $data = Json::encode($this->getData());
         $tags = Json::encode($this->getTags());
-        $script = "TypeaheadScript.init({tags:{$tags}});";
+        $addUrl = Url::to(['/admin/api/add-tag', 'entityClass' => $entity::className(), 'entityID' => $entity->getID()]);
+        $removeUrl = Url::to(['/admin/api/remove-tag', 'entityClass' => $entity::className(), 'entityID' => $entity->getID()]);
+        $script = "TypeaheadScript.init({tags:{$tags}, addUrl:'{$addUrl}', removeUrl:'{$removeUrl}'});";
         $script .= "$('input.{$this->inputClass}').typeahead({source:{$data}, autoSelect:true, afterSelect:function(tag){TypeaheadScript.addTag(tag)}});";
         Yii::$app->view->registerJs($script);
     }

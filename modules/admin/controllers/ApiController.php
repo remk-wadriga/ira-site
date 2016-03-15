@@ -8,17 +8,18 @@
 
 namespace admin\controllers;
 
-use models\Event;
-use models\EventUser;
 use Yii;
 use admin\abstracts\ControllerAbstract;
 use yii\base\ErrorException;
 use yii\helpers\Json;
 use yii\helpers\Url;
 use yii\web\BadRequestHttpException;
-use models\Image;
 use yii\web\NotFoundHttpException;
 use models\User;
+use models\Event;
+use models\EventUser;
+use models\Image;
+use models\Tag;
 
 class ApiController extends ControllerAbstract
 {
@@ -212,6 +213,48 @@ class ApiController extends ControllerAbstract
             return $this->renderAjx(null, $this->t('Status successfully changed'), self::AJX_STATUS_OK);
         } else {
             return $this->renderAjx(null, $record->errors, self::AJX_STATUS_ERROR);
+        }
+    }
+
+    public function actionAddTag()
+    {
+        if (!$this->isPost() || !$this->isPost()) {
+            throw new BadRequestHttpException();
+        }
+
+        $ID = $this->get('entityID');
+        $class = $this->get('entityClass');
+        $tag = $this->post('tag');
+
+        if (!$class || !$ID || !$tag) {
+            throw new BadRequestHttpException();
+        }
+
+        if (Tag::addEntityTag($ID, $class, $tag)) {
+            return $this->renderAjx(null, $this->t('Tag successfully added'), self::AJX_STATUS_OK);
+        } else {
+            return $this->renderAjx(null, $this->t('Can not add the tag'), self::AJX_STATUS_ERROR);
+        }
+    }
+
+    public function actionRemoveTag()
+    {
+        if (!$this->isPost() || !$this->isPost()) {
+            throw new BadRequestHttpException();
+        }
+
+        $ID = $this->get('entityID');
+        $class = $this->get('entityClass');
+        $tag = $this->post('tag');
+
+        if (!$class || !$ID || !$tag) {
+            throw new BadRequestHttpException();
+        }
+
+        if (Tag::removeEntityTag($ID, $class, $tag)) {
+            return $this->renderAjx(null, $this->t('Tag successfully removed'), self::AJX_STATUS_OK);
+        } else {
+            return $this->renderAjx(null, $this->t('Can not remove the tag'), self::AJX_STATUS_ERROR);
         }
     }
 }

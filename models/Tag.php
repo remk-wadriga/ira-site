@@ -100,9 +100,29 @@ class Tag extends ModelAbstract
             ])
             ->all();
         foreach ($tags as $tag) {
-            $list[] = $tag;
+            $list[] = $tag['tag'];
         }
         return $list;
+    }
+
+    public static function addEntityTag($entityID, $entityClass, $tag)
+    {
+        $params = [
+            'entity_id' => $entityID,
+            'entity_class' => $entityClass,
+            'tag' => $tag,
+        ];
+        return (bool)Yii::$app->db->createCommand()->insert(self::tableName(), $params)->execute();
+    }
+
+    public static function removeEntityTag($entityID, $entityClass, $tag)
+    {
+        $conditions = [
+            'entity_id' => $entityID,
+            'entity_class' => $entityClass,
+            'tag' => $tag,
+        ];
+        return (bool)Yii::$app->db->createCommand()->delete(self::tableName(), $conditions)->execute();
     }
 
     // END Public static methods

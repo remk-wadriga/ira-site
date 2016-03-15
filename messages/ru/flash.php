@@ -11,4 +11,6 @@ return [
     'User successfully created'                                                                                         => '',
     'Status successfully changed'                                                                                       => '',
     'Role successfully changed'                                                                                         => '',
+    'Tag successfully added'                                                                                            => '',
+    'Tag successfully removed'                                                                                          => '',
 ];

@@ -2,6 +2,8 @@ TypeaheadScript = {
 
     formID: '#tag_form',
     tags: [],
+    addUrl: '',
+    removeUrl: '',
 
     init: function (data) {
         if (data !== undefined) {
@@ -66,7 +68,20 @@ TypeaheadScript = {
 
         TypeaheadScript.tags[length++] = tag.name;
 
-        console.log(TypeaheadScript.tags);
+        var success = function (json) {
+            console.log(json);
+        };
+
+        $.ajax({
+            type: 'POST',
+            url: TypeaheadScript.addUrl,
+            data: {tag: tag.name},
+            dataType: 'json',
+            beforeSend: function(){},
+            success: function(json){
+                success(json);
+            }
+        });
     }
 
     // END Public functions

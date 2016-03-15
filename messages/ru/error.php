@@ -21,4 +21,6 @@ return [
     'Status already is "{status}"'                                                                                      => '',
     'Role already is {role}'                                                                                            => '',
     'Invalid entity'                                                                                                    => '',
+    'Can not add the tag'                                                                                               => '',
+    'Can not remove the tag'                                                                                            => '',
 ];
