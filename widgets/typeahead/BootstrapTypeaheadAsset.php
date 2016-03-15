@@ -17,6 +17,7 @@ class BootstrapTypeaheadAsset extends AssetAbstract
 
     public $js = [
         'bootstrap3-typeahead.js',
+        'typeahead-script.js',
     ];
 
     public $css = [

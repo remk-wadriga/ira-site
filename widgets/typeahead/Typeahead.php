@@ -60,11 +60,8 @@ class Typeahead extends Widget
                 ->where(['entity_class' => $entity::className()])
                 ->andWhere(['!=', 'entity_id', $entity->getID()])
                 ->all();
-            foreach ($tags as $id => $tag) {
-                $this->_data[] = [
-                    'id' => $id + 1,
-                    'name' => $tag,
-                ];
+            foreach ($tags as $tag) {
+                $this->_data[] = $tag;
             }
         }
         $this->_data = [['id' => 1, 'name' => 'Tag 1'], ['id' => 2, 'name' => 'Tag 2'], ['id' => 3, 'name' => 'Tag 3']];
@@ -84,7 +81,9 @@ class Typeahead extends Widget
     private function registerScript()
     {
         $data = Json::encode($this->getData());
-        $script = "$('input.{$this->inputClass}').typeahead({source: {$data}});";
+        $tags = Json::encode($this->getTags());
+        $script = "TypeaheadScript.init({tags:{$tags}});";
+        $script .= "$('input.{$this->inputClass}').typeahead({source:{$data}, autoSelect:true, afterSelect:function(tag){TypeaheadScript.addTag(tag)}});";
         Yii::$app->view->registerJs($script);
     }
 }
