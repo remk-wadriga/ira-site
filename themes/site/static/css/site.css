@@ -11,4 +11,10 @@
 .cropbox .btn i.glyphicon {
     right: 10px;
 }
-
+.text-center-align {
+    text-align: center;
+}
+.login-page.text-center-align .anim{
+    margin: auto;
+    float: none;
+}

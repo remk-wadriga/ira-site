@@ -53,6 +53,10 @@ use bupy7\cropbox\Cropbox;
             'class' => 'lg',
             'placeholder' => $user->getAttributeLabel('passwordRepeat'),
         ])->label('') ?>
+
+        <span class="input-group">
+            <?= Html::submitButton($user->isNewRecord ? $this->t('Register') : $this->t('Update'), ['class' => 'submit', 'name' => 'login-button']) ?>
+        </span>
     </div>
 
     <div class="col-lg-7 anim fadeInRight animated">
@@ -70,9 +74,6 @@ use bupy7\cropbox\Cropbox;
                 ],
             ],
         ]) ?>
-        <span class="input-group">
-            <?= Html::submitButton($user->isNewRecord ? $this->t('Register') : $this->t('Update'), ['class' => 'submit', 'name' => 'login-button']) ?>
-        </span>
     </div>
 
 <?php ActiveForm::end(); ?>

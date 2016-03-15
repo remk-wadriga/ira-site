@@ -6,7 +6,7 @@
  * Time: 20:45
  *
  * @var components\View $this
- * @var models\User;
+ * @var models\User $user;
  */
 
 use yii\helpers\Html;
@@ -16,29 +16,37 @@ $this->title = $this->t('Login');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<div class="register-page">
-    <h1><?= Html::encode($this->title) ?></h1>
+<section class="content-section form contact light">
+    <div class="container login-page text-center-align">
+        <div class="col-lg-5 anim animated">
+            <h1><?= Html::encode($this->title) ?></h1>
 
-    <p><?= $this->t('Please fill out the following fields to login') ?>:</p>
+            <div class="row">
+                <?php $form = ActiveForm::begin([
+                    'id' => 'login_form',
+                    'options' => ['class' => 'form-horizontal'],
+                    'fieldConfig' => [
+                        'template' => "<span class=\"input-group\">{input}</span>",
+                    ],
+                ]); ?>
 
-    <?php $form = ActiveForm::begin([
-        'id' => 'login_form',
-        'options' => ['class' => 'form-horizontal'],
-        'fieldConfig' => [
-            'template' => "{label}\n<div class=\"col-lg-3\">{input}</div>\n<div class=\"col-lg-8\">{error}</div>",
-            'labelOptions' => ['class' => 'col-lg-1 control-label'],
-        ],
-    ]); ?>
+                <?= $form->field($user, 'email')->textInput([
+                    'class' => 'lg',
+                    'placeholder' => $user->getAttributeLabel('email'),
+                    'autofocus' => true,
+                ]) ?>
 
-    <?= $form->field($user, 'email')->textInput(['autofocus' => true]) ?>
+                <?= $form->field($user, 'password')->passwordInput([
+                    'class' => 'lg',
+                    'placeholder' => $user->getAttributeLabel('password'),
+                ]) ?>
 
-    <?= $form->field($user, 'password')->passwordInput() ?>
+                <span class="input-group">
+                    <?= Html::submitButton($this->t('Login'), ['class' => 'submit', 'name' => 'login-button']) ?>
+                </span>
 
-    <div class="form-group">
-        <div class="col-lg-offset-1 col-lg-11">
-            <?= Html::submitButton($this->t('Login'), ['class' => 'btn btn-primary', 'name' => 'login-button']) ?>
+                <?php ActiveForm::end(); ?>
+            </div>
         </div>
     </div>
-
-    <?php ActiveForm::end(); ?>
-</div>
+</section>
