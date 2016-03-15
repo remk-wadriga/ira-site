@@ -1,6 +1,9 @@
 TypeaheadScript = {
 
+    blockID: '',
+    tagsBlockID: '.tags-block',
     formID: '#tag_form',
+    removeTabBtnID: '.tab-btn .glyphicon-remove',
     tags: [],
     addUrl: '',
     removeUrl: '',
@@ -24,10 +27,41 @@ TypeaheadScript = {
 
     setHandlers: function () {
         TypeaheadScript.submitForm();
+        TypeaheadScript.clickRemoveTabBtn();
     },
 
 
     // Auto functions
+
+    clickRemoveTabBtn: function () {
+        $(TypeaheadScript.blockID).on('click', TypeaheadScript.removeTabBtnID, function () {
+            var item = $(this).closest('a');
+            var tag = item.data('tag');
+
+            var success = function (json) {
+                if (json.status == 'OK') {
+                    var index = TypeaheadScript.tags.indexOf(tag);
+                    if (index > -1) {
+                        TypeaheadScript.tags.splice(index);
+                    }
+                    item.remove();
+                }
+            };
+
+            $.ajax({
+                type: 'POST',
+                url: TypeaheadScript.removeUrl,
+                data: {tag: tag},
+                dataType: 'json',
+                beforeSend: function(){},
+                success: function(json){
+                    success(json);
+                }
+            });
+
+            return false;
+        });
+    },
 
     // END Auto functions
 
@@ -35,7 +69,6 @@ TypeaheadScript = {
     // Event handlers
 
     submitForm: function () {
-        console.log(TypeaheadScript.tags);
         $(TypeaheadScript.formID).on('submit', function () {
             TypeaheadScript.addTag({name: $('input:text', this).val()});
             return false;
@@ -69,7 +102,17 @@ TypeaheadScript = {
         TypeaheadScript.tags[length++] = tag.name;
 
         var success = function (json) {
-            console.log(json);
+            if (json.status == 'OK') {
+                var item = '<a href="#" class="btn btn-primary tab-btn"';
+                    item += 'data-tag="' + tag.name + '">';
+                    item += tag.name;
+                    item += ' <i class="glyphicon glyphicon-remove"></i>';
+                    item += '</a>';
+
+                var tagBlock = $(TypeaheadScript.blockID + ' ' + TypeaheadScript.tagsBlockID);
+                tagBlock.append('&nbsp;');
+                tagBlock.append(item);
+            }
         };
 
         $.ajax({

@@ -13,6 +13,7 @@
  *
  */
 
+use yii\bootstrap\Html;
 use yii\bootstrap\ActiveForm;
 ?>
 
@@ -20,7 +21,12 @@ use yii\bootstrap\ActiveForm;
 
     <div class="row tags-block">
         <?php foreach ($tags as $tag) : ?>
-            <?= $tag ?>,
+            <?= Html::a($tag . ' <i class="glyphicon glyphicon-remove"></i>', '#', [
+                'class' => 'btn btn-primary tab-btn',
+                'data' => [
+                    'tag' => $tag,
+                ],
+            ]) ?>&nbsp;
         <?php endforeach ?>
     </div>
 

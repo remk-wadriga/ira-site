@@ -86,7 +86,7 @@ class Typeahead extends Widget
         $tags = Json::encode($this->getTags());
         $addUrl = Url::to(['/admin/api/add-tag', 'entityClass' => $entity::className(), 'entityID' => $entity->getID()]);
         $removeUrl = Url::to(['/admin/api/remove-tag', 'entityClass' => $entity::className(), 'entityID' => $entity->getID()]);
-        $script = "TypeaheadScript.init({tags:{$tags}, addUrl:'{$addUrl}', removeUrl:'{$removeUrl}'});";
+        $script = "TypeaheadScript.init({blockID:'.{$this->class}', tags:{$tags}, addUrl:'{$addUrl}', removeUrl:'{$removeUrl}'});";
         $script .= "$('input.{$this->inputClass}').typeahead({source:{$data}, autoSelect:true, afterSelect:function(tag){TypeaheadScript.addTag(tag)}});";
         Yii::$app->view->registerJs($script);
     }
