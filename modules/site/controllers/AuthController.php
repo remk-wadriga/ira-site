@@ -33,10 +33,11 @@ class AuthController extends ControllerAbstract
         if ($user->load($this->post())) {
             $userService = Yii::$app->user;
             $account = $user->getAccount();
-            $account->setStoryAction(User::STORY_ACTION_LOGIN);
-
-            if ($account !== null && $userService->login($account, $user->getSessionTime())) {
-                return $this->goBack();
+            if ($account !== null) {
+                $account->setStoryAction(User::STORY_ACTION_LOGIN);
+                if ($userService->login($account, $user->getSessionTime())) {
+                    return $this->goBack(['/site/account/update']);
+                }
             }
         }
 
