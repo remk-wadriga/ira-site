@@ -220,16 +220,16 @@ $this->params['breadcrumbs'][] = $this->title;
                     </ul><!-- .comments-wrapper -->
                 </div>
 
-                <h4 class="anim fadeInRight">
-                    <?= $this->t('Tags') ?><i class="fa fa-tags"></i>
-                </h4>
-                <div class="anim fadeInRight">
-                    <div class="comments-wrapper">
-                        <?php /** @todo Make the tags */ ?>
-                        <!-- Tags -->
-                    </div><!-- .testimonials -->
-                </div>
-
+                <?php if (!empty($model->tags)) : ?>
+                    <h4 class="anim fadeInRight">
+                        <?= $this->t('Tags') ?><i class="fa fa-tags"></i>
+                    </h4>
+                    <div class="anim fadeInRight">
+                        <div class="comments-wrapper tags-list">
+                            <?= implode("<br />", $model->tags) ?>
+                        </div><!-- .testimonials -->
+                    </div>
+                <?php endif ?>
             </div><!-- .col-lg-4 .sidebar -->
 
         </div><!-- .row -->

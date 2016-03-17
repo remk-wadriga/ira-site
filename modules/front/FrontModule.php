@@ -2,6 +2,7 @@
 
 namespace front;
 
+use Yii;
 use abstracts\ModuleAbstract;
 
 class FrontModule extends ModuleAbstract
@@ -11,5 +12,7 @@ class FrontModule extends ModuleAbstract
     public function init()
     {
         parent::init();
+
+        Yii::setAlias('@common', '@app/themes/front/views/common');
     }
 }

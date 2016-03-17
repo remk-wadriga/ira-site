@@ -88,19 +88,24 @@ class Tag extends ModelAbstract
      * @param string $entityClass
      * @return string[]
      */
-    public static function getEntityTags($entityID, $entityClass)
+    public static function getEntityTags($entityClass, $entityID = null)
     {
         $list = [];
+        $conditions = [];
+        if ($entityID !== null) {
+            $conditions['entity_id'] = $entityID;
+        }
+        $conditions['entity_class'] = $entityClass;
+
         $tags = (new Query())
             ->select('tag')
             ->from(self::tableName())
-            ->where([
-                'entity_id' => $entityID,
-                'entity_class' => $entityClass,
-            ])
+            ->where($conditions)
             ->all();
         foreach ($tags as $tag) {
-            $list[] = $tag['tag'];
+            if (!in_array($tag['tag'], $list)) {
+                $list[] = $tag['tag'];
+            }
         }
         return $list;
     }

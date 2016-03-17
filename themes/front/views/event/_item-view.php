@@ -41,6 +41,14 @@ use yii\bootstrap\Html;
         <?= $this->subtext($model->description) ?>
     </p>
 
+    <div class="row" >
+        <?php if (!empty($model->tags)) : ?>
+            <p class="tags-list">
+                <label><?= $this->t('Tags') ?></label>: <?= implode(', ', $model->tags) ?>
+            </p>
+        <?php endif ?>
+    </div>
+
     <?= Html::a('<i class="fa fa-long-arrow-right"></i>' . $this->t('Read More'), ['/front/event/view', 'id' => $model->id], [
         'class' => 'btn btn-sm btn-primary icon',
         'role' => 'button',

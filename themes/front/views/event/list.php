@@ -8,6 +8,7 @@
  * @var components\View $this
  * @var models\search\EventSearch $searchModel
  * @var yii\data\ActiveDataProvider $dataProvider
+ * @var array $tags
  */
 
 use yii\bootstrap\Html;
@@ -58,16 +59,19 @@ $this->params['breadcrumbs'][] = $this->title;
                     ]) ?>
                 </div>
 
-                <h4 class="anim fadeInRight">
-                    <?= $this->t('Tags') ?><i class="fa fa-tags"></i>
-                </h4>
-                <div class="anim fadeInRight">
-                    <div class="comments-wrapper">
-                        <?php /** @todo Make the tags */ ?>
-                        <!-- Tags -->
-                    </div><!-- .testimonials -->
-                </div>
-
+                <?php if (!empty($tags)) : ?>
+                    <h4 class="anim fadeInRight">
+                        <?= $this->t('Tags') ?><i class="fa fa-tags"></i>
+                    </h4>
+                    <div class="anim fadeInRight">
+                        <div class="comments-wrapper">
+                            <?= $this->render('@common/tags-list', [
+                                'model' => $searchModel,
+                                'tags' => $tags,
+                            ]); ?>
+                        </div><!-- .testimonials -->
+                    </div>
+                <?php endif ?>
                 <!--<h4 class="anim fadeInRight">
                     <?/*= $this->t('Feedbacks') */?><i class="fa fa-comment"></i>
                 </h4>

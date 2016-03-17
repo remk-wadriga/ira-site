@@ -12,3 +12,18 @@
 .slug span{
     margin-top: 30px;
 }
+.btn.tag {
+    min-width: 250px;
+    text-align: left;
+}
+a.tag.active {
+    /*color: #881220;*/
+}
+p.tags-list {
+    font-size: 14px;
+    margin-left: 15px;
+    font-weight: 100;
+}
+.tags-list {
+    color: #6EBFF3;
+}

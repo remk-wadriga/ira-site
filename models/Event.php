@@ -704,7 +704,7 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
     public function getTags()
     {
         return $this->getRTCItem('tags', function () {
-            return Tag::getEntityTags($this->id, self::className());
+            return Tag::getEntityTags(self::className(), $this->id);
         }, []);
     }
 

@@ -74,7 +74,7 @@ class Typeahead extends Widget
         if ($this->_tags === null) {
             $entity = $this->entity;
 
-            $this->_tags = Tag::getEntityTags($entity->getID(), $entity::className());
+            $this->_tags = Tag::getEntityTags($entity::className(), $entity->getID());
         }
         return $this->_tags;
     }

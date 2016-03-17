@@ -8,10 +8,13 @@
 
 namespace models\search;
 
+use models\Tag;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use models\Event;
+use yii\db\Query;
+use yii\helpers\Json;
 
 /**
  * EventSearch represents the model behind the search form about `models\Event`.
@@ -20,6 +23,8 @@ class EventSearch extends Event
 {
     public $searchText;
     public $filterType;
+    public $tags;
+
     public $pageSize = 20;
 
     public function rules()
@@ -27,6 +32,7 @@ class EventSearch extends Event
         return [
             [['searchText'], 'string', 'max' => 126],
             ['filterType', 'in', 'range' => self::$_types],
+            [['tags'], 'safe'],
         ];
     }
 
@@ -60,6 +66,10 @@ class EventSearch extends Event
 
         $this->load($params);
 
+        if ($this->tags) {
+            $this->tags = Json::decode($this->tags);
+        }
+
         if (!$this->filterType) {
             $this->filterType = null;
         }
@@ -74,6 +84,22 @@ class EventSearch extends Event
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->searchText]);
+
+        if (!empty($this->tags)) {
+            //echo '<pre>'; print_r($this->tags); exit('</pre>');
+            $command = (new Query())
+                ->select('entity_id')
+                ->from(Tag::tableName())
+                ->where([
+                    'entity_class' => Event::className(),
+                    'tag' => $this->tags,
+                ])
+                ->createCommand();
+
+            $query
+                ->andWhere("id IN({$command->sql})")
+                ->addParams($command->params);
+        }
 
         return $dataProvider;
     }

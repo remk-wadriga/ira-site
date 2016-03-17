@@ -13,6 +13,7 @@ use front\abstracts\ControllerAbstract;
 use models\search\EventSearch;
 use models\Event;
 use models\EventUser;
+use models\Tag;
 use yii\web\NotFoundHttpException;
 
 class EventController extends ControllerAbstract
@@ -32,6 +33,7 @@ class EventController extends ControllerAbstract
         return $this->render([
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'tags' => Tag::getEntityTags(Event::className()),
         ]);
     }
 

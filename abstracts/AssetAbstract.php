@@ -10,6 +10,7 @@
 namespace abstracts;
 
 use Yii;
+use yii\helpers\Json;
 use yii\web\AssetBundle;
 
 /**
@@ -63,11 +64,17 @@ class AssetAbstract extends AssetBundle
 
         $paramsString = '';
         foreach ($params as $name => $value) {
-            $paramsString .= "    {$name}: '{$value}',\n";
+            $paramsString .= "    {$name}: ";
+            if (is_string($value)) {
+                $paramsString .= "'{$value}'";
+            } else {
+                $paramsString .= Json::encode($value);
+            }
+            $paramsString .= ",\n";
         }
         $strLen = strlen($paramsString);
         if ($strLen > 0) {
-            $paramsString = substr($paramsString, 0, $strLen - 1);
+            $paramsString = substr($paramsString, 0, $strLen - 2);
         }
 
         $scriptString = '';
