@@ -57,6 +57,11 @@ if (isset($parent) && !$parent->isNewRecord) {
             'class' => 'btn btn-sm btn-primary icon anim fadeIn',
         ]) ?>
 
+        <?= Html::button($this->t('Cancel'), [
+            'class' => 'btn btn-sm btn-cancel icon anim fadeIn',
+            'onclick' => 'return Front.cancelCommentForm($(this));',
+        ]) ?>
+
         <?php ActiveForm::end() ?>
         </div>
     </div>

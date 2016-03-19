@@ -275,7 +275,7 @@ class EventUser extends ModelAbstract implements StoryInterface
         if (!$this->getRTC('isNewRecord')) {
             return ['status'];
         } else {
-            return null;
+            return ['userID', 'eventID'];
         }
     }
 
@@ -290,11 +290,7 @@ class EventUser extends ModelAbstract implements StoryInterface
 
     public function getStoryNewValues()
     {
-        if (!$this->getRTC('isNewRecord')) {
-            return ['status' => $this->status];
-        } else {
-            return null;
-        }
+        return $this->getAttributes($this->getStoryFields());
     }
 
     // END Implements StoryInterface

@@ -33,7 +33,7 @@ if (isset($parent) && !$parent->isNewRecord) {
 ?>
 
 <?= Html::a($name, '#', [
-    'class' => 'btn btn-primary',
+    'class' => 'btn btn-primary leave-comment-btn',
     'onclick' => "return Front.getCommentForm($(this), {$paramsString});",
     'data' => [
         'comments-block' => '#' . $commentsBlockID,

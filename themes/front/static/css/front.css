@@ -45,6 +45,9 @@ p.tags-list {
 .comments .btn.icon {
     margin-left: 36px;
 }
+.comments .btn.btn-cancel, .btn.btn-cancel {
+    margin-left: 10px;
+}
 .comments .form.contact .input-group {
     margin: -5px 0 12px 36px;
 }

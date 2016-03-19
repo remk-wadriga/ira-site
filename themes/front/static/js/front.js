@@ -4,6 +4,7 @@ Front = {
     toggleElementID: '.toggle-element',
     commentFormTmplID: '#comment_form_tmpl',
     commentFormContainerID: '.comment-form-container',
+    leaveCommentBtnID: '.leave-comment-btn',
 
     init: function (data) {
         if (data !== undefined) {
@@ -71,7 +72,6 @@ Front = {
         var container = item.next(Front.commentFormContainerID);
         $(Front.commentFormTmplID).tmpl(params).appendTo(container);
         item.addClass('hide');
-        console.log(container);
 
         $('form', container).on('submit', function () {
             var form = $(this);
@@ -99,6 +99,14 @@ Front = {
             });
             return false;
         });
+
+        return false;
+    },
+
+    cancelCommentForm: function (item) {
+        $(Front.leaveCommentBtnID, item.closest('.col-lg-9')).removeClass('hide');
+        $(Front.leaveCommentBtnID, item.closest('.wrapper')).removeClass('hide');
+        item.closest(Front.commentFormContainerID).html('');
 
         return false;
     },
