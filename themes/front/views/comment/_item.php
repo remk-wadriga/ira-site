@@ -23,16 +23,16 @@
             'parent' => $comment,
         ]) ?>
         <div class="form contact style-2 comment-form-container"></div>
-
-        <?php $blockID = 'comments_block_' . str_replace('\\', '_', $comment::className()) . '_' . $comment->id; ?>
-        <ul id="<?= $blockID ?>">
-            <?php if (!empty($comment->children)) : ?>
-                <?php foreach ($comment->children as $child) : ?>
-                    <?= $this->render('_item', [
-                        'comment' => $child,
-                    ]) ?>
-                <?php endforeach ?>
-            <?php endif ?>
-        </ul>
     </div><!-- .wrapper -->
+
+    <?php $blockID = 'comments_block_' . str_replace('\\', '_', $comment::className()) . '_' . $comment->id; ?>
+    <ul id="<?= $blockID ?>">
+        <?php if (!empty($comment->children)) : ?>
+            <?php foreach ($comment->children as $child) : ?>
+                <?= $this->render('_item', [
+                    'comment' => $child,
+                ]) ?>
+            <?php endforeach ?>
+        <?php endif ?>
+    </ul>
 </li>

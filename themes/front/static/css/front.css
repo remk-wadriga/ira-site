@@ -27,3 +27,11 @@ p.tags-list {
 .tags-list {
     color: #6EBFF3;
 }
+
+/* Comments */
+.single ul.comments li .wrapper {
+    height: auto;
+}
+.form.contact.style-2 {
+    margin-top: 30px;
+}
