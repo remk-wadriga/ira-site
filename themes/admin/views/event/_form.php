@@ -50,17 +50,9 @@ use bupy7\cropbox\Cropbox;
         <div class="col-lg-6">
             <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
-            <?= $form->field($model, 'description')->textarea(['rows' => 6]) ?>
+            <?= $form->field($model, 'description')->textarea(['rows' => 10]) ?>
 
-            <?= $form->field($model, 'price')->textInput() ?>
-
-            <?= $form->field($model, 'cost')->textInput() ?>
-
-            <?php if (!$model->isNewRecord) : ?>
-                <?= $form->field($model, 'profit')->textInput() ?>
-            <?php endif ?>
-
-            <?= $form->field($model, 'membersCount')->textInput() ?>
+            <?= $form->field($model, 'citation')->textarea(['rows' => 10]) ?>
 
         </div>
 
@@ -80,6 +72,16 @@ use bupy7\cropbox\Cropbox;
             <div id="event_owner_name_field" class="user-owner-id-field<?= $model->hasOwner ? ' hide' : '' ?>">
                 <?= $form->field($model, 'ownerName')->textInput(['maxlength' => true]) ?>
             </div>
+
+            <?= $form->field($model, 'price')->textInput() ?>
+
+            <?= $form->field($model, 'cost')->textInput() ?>
+
+            <?php if (!$model->isNewRecord) : ?>
+                <?= $form->field($model, 'profit')->textInput() ?>
+            <?php endif ?>
+
+            <?= $form->field($model, 'membersCount')->textInput() ?>
 
             <?= $form->field($model, 'type')->dropDownList($model->getTypesItems($this->t('Select type'))) ?>
 

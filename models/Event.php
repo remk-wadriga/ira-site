@@ -31,6 +31,7 @@ use yii\helpers\Json;
  * @property string $dateStart
  * @property string $dateEnd
  * @property bool $inMainSlider
+ * @property string $citation
  *
  * @property string $defaultAddress
  * @property string $statusName
@@ -43,6 +44,7 @@ use yii\helpers\Json;
  * @property integer $notComeUsersCount
  * @property integer $allUsersCount
  * @property string[] $tags
+ * @property Comment[] $lastComments
  *
  * @property User $owner
  * @property User[] $users
@@ -148,7 +150,7 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
         return [
             [['name', 'price', 'type', 'status'], 'required'],
             [['ownerID', 'membersCount', 'inMainSlider'], 'integer'],
-            [['description', 'type', 'img'], 'string'],
+            [['description', 'citation', 'img'], 'string'],
             [['price', 'profit', 'cost'], 'number'],
             [['dateStart', 'dateEnd', 'hasOwner', 'cropInfo', 'userID', 'tag'], 'safe'],
             [['name', 'ownerName'], 'string', 'max' => 255],
@@ -177,6 +179,7 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
             'mainImageUrl' => $this->t('Image'),
             'actualUsersCount' => $this->getActualUsersCountLabel(),
             'userID' => $this->t('User'),
+            'citation' => $this->t('Citation'),
         ];
     }
 
@@ -718,6 +721,20 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
     {
         return $this->getRTCItem('tags', function () {
             return Tag::getEntityTags(self::className(), $this->id);
+        }, []);
+    }
+    // lastComments
+    public function getLastComments($count = 5)
+    {
+        return $this->getRTCItem("lastComments{$count}", function () use ($count) {
+            return Comment::find()
+                ->where([
+                    'entity_id' => $this->id,
+                    'entity_class' => self::className(),
+                ])
+                ->limit($count)
+                ->orderBy(['date' => SORT_DESC])
+                ->all();
         }, []);
     }
 

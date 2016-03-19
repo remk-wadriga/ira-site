@@ -48,6 +48,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'name',
                     'ownerName',
                     'description:ntext',
+                    'citation:ntext',
                     'membersCount',
                     'address',
                     'price:number',

@@ -47,9 +47,11 @@ $this->params['breadcrumbs'][] = $this->title;
 
                     <p class="anim fadeIn"><?= $model->description ?></p>
 
-                    <!--<blockquote class="anim fadeIn">
-                        <i class="fa fa-quote-left"></i>Nam ipsum nunc, egestas eu nisl non, auctor conse at leo. Phasellus et neque  sit amet sapien ultric vit. Donec pretium, quam id porta eleifend, justo erat taso.
-                    </blockquote>-->
+                    <?php if ($model->citation) : ?>
+                        <blockquote class="anim fadeIn">
+                            <i class="fa fa-quote-left"></i><?= $model->citation ?>
+                        </blockquote>
+                    <?php endif ?>
 
 
                 </div><!-- .blog -->
@@ -105,31 +107,26 @@ $this->params['breadcrumbs'][] = $this->title;
             </div><!-- .col-lg-9 -->
 
             <div class="col-lg-3 sidebar">
+                <?php if (!empty($model->lastComments)) : ?>
                 <h4 class="anim fadeInRight">
                     <?= $this->t('Comments') ?><i class="fa fa-comment"></i>
                 </h4>
 
                 <div class="anim fadeInRight">
                     <ul id="carousel" class="comments-wrapper">
-                        <?php /* @todo create comments system */ ?>
                         <li>
                             <ul class="comments">
-                                <li>
-                                    Quisque accumsan justo ut malesuada sa&hellip;
-                                    <a href="single.html">- Username</a>
-                                </li>
-                                <li>
-                                    Suspendisse euismod turpis eu aliquam t&hellip;
-                                    <a href="single.html">- Username</a>
-                                </li>
-                                <li>
-                                    Nullam faucibus eros quis nisl gravidas lo&hellip;
-                                    <a href="single.html">- Username</a>
-                                </li>
+                                <?php foreach($model->lastComments as $comment) : ?>
+                                    <li>
+                                        <?= $this->subtext($comment->text) ?>&hellip;
+                                        - <?= Html::a($comment->userName, '#') ?>
+                                    </li>
+                                <?php endforeach ?>
                             </ul><!-- .comments -->
                         </li>
                     </ul><!-- .comments-wrapper -->
                 </div>
+                <?php endif ?>
 
                 <?php if (!empty($model->tags)) : ?>
                     <h4 class="anim fadeInRight">
@@ -142,6 +139,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     </div>
                 <?php endif ?>
             </div><!-- .col-lg-4 .sidebar -->
+
 
         </div><!-- .row -->
     </div><!-- .container -->
