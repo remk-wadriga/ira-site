@@ -35,3 +35,16 @@ p.tags-list {
 .form.contact.style-2 {
     margin-top: 30px;
 }
+.comments .form.contact .input-group textarea.lg {
+    height: 100px;
+    width: 94%;
+}
+.comments .single h6, .comments h6 {
+    margin: 15px 36px;
+}
+.comments .btn.icon {
+    margin-left: 36px;
+}
+.comments .form.contact .input-group {
+    margin: -5px 0 12px 36px;
+}
