@@ -56,6 +56,7 @@ use yii\helpers\Json;
  * @property Image[] $images
  * @property Image[] $allImages
  * @property Image $mainImage
+ * @property Comment[] $comments
  */
 class Event extends ModelAbstract implements StoryInterface, FileModelInterface, ImagedEntityInterface
 {
@@ -294,6 +295,18 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
                 'is_main' => 1,
             ]);
         });
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getComments()
+    {
+        return $this->hasMany(Comment::className(), ['entity_id' => 'id'])
+            ->andWhere([
+                'entity_class' => self::className(),
+                'parent_id' => null,
+            ]);
     }
 
     // END Depending

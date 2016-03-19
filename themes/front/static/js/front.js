@@ -2,6 +2,8 @@ Front = {
 
     eventFilterBtnID: '.event-filter-btn',
     toggleElementID: '.toggle-element',
+    commentFormTmplID: '#comment_form_tmpl',
+    commentFormContainerID: '.comment-form-container',
 
     init: function (data) {
         if (data !== undefined) {
@@ -53,7 +55,7 @@ Front = {
 
             return false;
         });
-    }
+    },
 
     // END Event handlers
 
@@ -65,10 +67,72 @@ Front = {
 
     // Public functions
 
+    getCommentForm: function (item, params) {
+        var container = item.next(Front.commentFormContainerID);
+        $(Front.commentFormTmplID).tmpl(params).appendTo(container);
+        item.addClass('hide');
+        console.log(container);
+
+        $('form', container).on('submit', function () {
+            var form = $(this);
+
+            if (!$('textarea', form).val()) {
+                return false;
+            }
+
+            var success = function (json) {
+                if (typeof json.responseText) {
+                    $(item.data('comments-block')).append(json.responseText);
+                    item.removeClass('hide');
+                    container.html('');
+                }
+            };
+
+            $.ajax({
+                type: 'POST',
+                url: form.attr('action'),
+                data: form.serialize(),
+                dataType: 'json',
+                complete: function(json){
+                    success(json);
+                }
+            });
+            return false;
+        });
+
+        return false;
+    },
+
     // END Public functions
 
 
     // Private functions
+
+    ajx: function(url, data, success, type, dataType, headers, error){
+        success = success || function(){};
+        error = error || function(json){return true};
+        type = type || 'POST';
+        headers = headers || {};
+        dataType = dataType || 'json';
+
+        $.ajax({
+            type: type,
+            url: url,
+            data: data,
+            headers: headers,
+            dataType: dataType,
+            beforeSend: function(){},
+            success: function(json){
+                success(json);
+            },
+            complete: function(json){
+                //success(json);
+            },
+            error: function(json){
+                error(json);
+            }
+        });
+    }
 
     // END Private functions
 };

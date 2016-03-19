@@ -74,122 +74,33 @@ $this->params['breadcrumbs'][] = $this->title;
                     <h5><?= $model->ownerName ?></h5>
                 <?php endif ?>
 
-
                 <h4 class="anim fadeIn">
-                    Comments (4)
+                    <?= $this->t('Comments ({count})', ['count' => count($model->comments)]) ?>
                 </h4>
-
-                <ul class="comments">
-                    <li class="anim fadeIn" data-wow-delay="0.2s">
-                        <div class="wrapper">
-                            <img src="images/blog-author-example.jpg" alt="Dale Blog Post Author Example" />
-                            <h5>
-                                Sarah Smith
-                            </h5>
-                                <span>
-                                    January 07, 2015
-                                </span>
-                            <p>
-                                Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Duis sodales facilis egas
-                                gravida quam ut laoreet. Nulla rutrum facilisis egestas. Morbi accumsan massa id lectus placerat lacinia vel rutrum
-                                sed est. Integer consequat justo et neque scelerisque, quis congue urna iaculis.
-                            </p>
-                            <a href="#">
-                                Reply
-                            </a>
-                        </div><!-- .wrapper -->
-                    </li>
-
-                    <li>
-                        <div class="wrapper anim fadeIn" data-wow-delay="0.2s">
-                            <img src="images/blog-author-example.jpg" alt="Dale Blog Post Author Example" />
-                            <h5>
-                                Sarah Smith
-                            </h5>
-                                <span>
-                                    January 07, 2015
-                                </span>
-                            <p>
-                                Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Duis sodales facilis egas
-                                gravida quam ut laoreet. Nulla rutrum facilisis egestas. Morbi accumsan massa id lectus placerat lacinia vel rutrum
-                                sed est. Integer consequat justo et neque scelerisque, quis congue urna iaculis.
-                            </p>
-                            <a href="#">
-                                Reply
-                            </a>
-                        </div><!-- .wrapper -->
-
-                        <ul><!-- nested comments -->
-                            <li>
-                                <div class="wrapper anim fadeIn" data-wow-delay="0.2s">
-                                    <img src="images/blog-author-example.jpg" alt="Dale Blog Post Author Example" />
-                                    <h5>
-                                        Sarah Smith
-                                    </h5>
-                                        <span>
-                                            January 07, 2015
-                                        </span>
-                                    <p>
-                                        Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Duis sodales facilis egas
-                                        gravida quam ut laoreet. Nulla rutrum facilisis egestas. Morbi accumsan massa id lectus placerat lacinia vel rutrum
-                                        sed est. Integer consequat justo et neque scelerisque, quis congue urna iaculis.
-                                    </p>
-                                    <a href="#">
-                                        Reply
-                                    </a>
-                                </div><!-- .wrapper -->
-                            </li>
-
-                        </ul><!-- end of nested comments -->
-
-                    </li>
-
-                    <li>
-                        <div class="wrapper anim fadeIn" data-wow-delay="0.2s">
-                            <img src="images/blog-author-example.jpg" alt="Dale Blog Post Author Example" />
-                            <h5>
-                                Sarah Smith
-                            </h5>
-                                <span>
-                                    January 07, 2015
-                                </span>
-                            <p>
-                                Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Duis sodales facilis egas
-                                gravida quam ut laoreet. Nulla rutrum facilisis egestas. Morbi accumsan massa id lectus placerat lacinia vel rutrum
-                                sed est. Integer consequat justo et neque scelerisque, quis congue urna iaculis.
-                            </p>
-                            <a href="#">
-                                Reply
-                            </a>
-                        </div><!-- .wrapper -->
-                    </li>
+                <?php $blockD = 'comments_block_' . str_replace('\\', '_', $model::className()) . '_' . $model->id ?>
+                <ul id="<?= $blockD ?>" class="comments">
+                    <?php if (!empty($model->comments)) : ?>
+                        <?php foreach ($model->comments as $comment) : ?>
+                            <?= $this->render('@frontViews/comment/_item', [
+                                'comment' => $comment,
+                            ]) ?>
+                        <?php endforeach ?>
+                    <?php endif ?>
                 </ul>
 
-                <h6 class="anim fadeIn" data-wow-delay="0.24s">
-                    Leave a Comment
-                </h6>
-
-                <div class="form contact style-2">
-                    <form target="#" name="contact">
-                            <span class="input-group anim fadeIn" data-wow-delay="0.1s">
-                                <i class="fa fa-user"></i>
-                                <input type="text" name="contactName" id="contactName" class="lg" placeholder="Name" />
-                            </span><!-- .input-group -->
-
-                            <span class="input-group anim fadeIn" data-wow-delay="0.20s">
-                                <i class="fa fa-envelope"></i>
-                                <input type="text" name="contactEmail" id="contactAddress" class="lg" placeholder="Email Address" />
-                            </span><!-- .input-group -->
-
-                            <span class="input-group anim fadeIn" data-wow-delay="0.30s">
-                                <textarea name="contactMessage" id="contactMessage" class="lg" placeholder="What's on your mind?"></textarea>
-                            </span><!-- .input-group -->
-
-                        <span id="message"></span>
-
-                        <a class="btn btn-sm btn-primary icon anim fadeIn" data-wow-delay=".45s" role="button"><i class="fa fa-long-arrow-right"></i>Post my Comment</a>
-                    </form>
-                </div>
+                <?php if (!Yii::$app->user->isGuest) : ?>
+                    <?= $this->render('@frontViews/comment/_form-tmpl', [
+                        'model' => $model,
+                    ]) ?>
+                    <?= $this->render('@frontViews/comment/_leave-comment-btn', [
+                        'model' => $model,
+                    ]) ?>
+                    <div class="form contact style-2 comment-form-container"></div>
+                <?php else : ?>
+                    <h6 class="anim fadeIn animated">
+                        <?= Html::a($this->t('Sign in to leave a comment'), ['/site/auth/login']) ?>
+                    </h6>
+                <?php endif ?>
 
             </div><!-- .col-lg-9 -->
 

@@ -9,7 +9,7 @@
  * @var models\User $user;
  */
 
-use yii\helpers\Html;
+use yii\bootstrap\Html;
 use yii\bootstrap\ActiveForm;
 
 $this->title = $this->t('Login');
@@ -44,6 +44,11 @@ $this->params['breadcrumbs'][] = $this->title;
                 <span class="input-group">
                     <?= Html::submitButton($this->t('Login'), ['class' => 'submit', 'name' => 'login-button']) ?>
                 </span>
+
+                <p>
+                    <?= $this->t('You do not have an account') ?>?
+                    <?= Html::a($this->t('Sign up'), ['/site/auth/register']) ?>!
+                </p>
 
                 <?php ActiveForm::end(); ?>
             </div>

@@ -101,6 +101,13 @@ $messages = [
     'Registration date'                                                                                                 => '',
     'My profile'                                                                                                        => '',
     'You can change your private account settings'                                                                      => '',
+    'Leave a comment'                                                                                                   => '',
+    'Sign in to leave a comment'                                                                                        => '',
+    'You do not have an account'                                                                                        => 'У Вас нет аккаунта',
+    'Sign up'                                                                                                           => 'Зарегистрируйтесь',
+    'Leave the comment'                                                                                                 => '',
+    'Reply'                                                                                                             => '',
+    'Post'                                                                                                              => '',
 ];
 
 return array_merge($messages, require(__DIR__ . '/error.php'), require(__DIR__ . '/flash.php'));

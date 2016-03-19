@@ -73,6 +73,7 @@ class FrontAsset extends AssetAbstract
     public $depends = [
         'yii\bootstrap\BootstrapPluginAsset',
         'yii\web\YiiAsset',
+        'assets\JqueryTmplAsset',
     ];
 
     public static function scriptName()
