@@ -23,7 +23,7 @@ if ($count < 200) {
 
 <div class="event-interested-users">
     <?php if ($count < 200) : ?>
-        <?php if ($count > 5) : ?>
+        <?php if ($count > 10) : ?>
             <?= Html::a($this->t('Show users list'), '#', [
                 'class' => 'toggle-element',
                 'data' => [
@@ -31,7 +31,7 @@ if ($count < 200) {
                 ],
             ]) ?>
         <?php endif ?>
-        <div class="list event-interested-users-list<?= $count > 5 ? ' hide' : '' ?>">
+        <div class="list event-interested-users-list<?= $count > 10 ? ' hide' : '' ?>">
             <?= implode(', ', $names) ?>
         </div>
     <?php endif ?>

@@ -14,11 +14,25 @@ use yii\helpers\Url;
 use yii\bootstrap\Html;
 
 $count = $model->getClicksCount($type, null);
+if ($count > 0) {
+    if ($model->getClicksCount($type) == 1) {
+        $text = $count > 1 ? $this->t('It is interesting to you and {count} more users', ['count' => $count - 1]) : $this->t('It is interesting to you');
+        $title = $this->t('Refuse');
+    } else {
+        $text = $this->t('It is interesting to {count} users', ['count' => $count]);
+        $title = $this->t('I\'m interested') . '!';
+    }
+} else {
+    $text = $this->t('This is interesting') . '!';
+    $title = $this->t('I\'m interested') . '!';
+}
+
+
 ?>
 
-<?= Html::a('<i class="fa fa-check-circle-o"></i>' . ($count > 0 ? ' ' . $count : $this->t('This is interesting') . '!'), '#', [
-    'title' => $count > 0 ? $this->t('This is interesting! ({count} person)', ['count' => $count]) : $this->t('This is interesting') . '!',
-    'onclick' => 'return Front.userClick($(this));',
+<?= Html::a('<i class="fa fa-check-circle-o"></i>' . $text, '#', [
+    'title' => $title,
+    'onclick' => 'Front.userClick($(this));Front.initTooltip();return false;',
     'data' => [
         'toggle' => 'tooltip',
         'type' => $type,
