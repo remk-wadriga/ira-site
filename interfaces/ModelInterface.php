@@ -16,4 +16,9 @@ interface ModelInterface extends ActiveRecordInterface
      * @return integer
      */
     public function getID();
+
+    /*
+     * @return string
+     */
+    public static function className();
 }

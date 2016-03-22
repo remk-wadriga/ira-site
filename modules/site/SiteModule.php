@@ -8,6 +8,7 @@
 
 namespace site;
 
+use Yii;
 use abstracts\ModuleAbstract;
 
 class SiteModule extends ModuleAbstract
@@ -18,5 +19,7 @@ class SiteModule extends ModuleAbstract
     public function init()
     {
         parent::init();
+
+        Yii::setAlias('@common', '@app/themes/front/views/common');
     }
 }

@@ -23,4 +23,6 @@ return [
     'Invalid entity'                                                                                                    => '',
     'Can not add the tag'                                                                                               => '',
     'Can not remove the tag'                                                                                            => '',
+    'Can not set the click'                                                                                             => '',
+    'Can not find entity'                                                                                               => '',
 ];

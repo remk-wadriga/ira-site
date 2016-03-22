@@ -66,6 +66,10 @@ $this->params['breadcrumbs'][] = $this->title;
                         'attribute' => 'dateStart',
                         'value' => $this->dateTime($model->dateStart),
                     ],
+                    [
+                        'attribute' => 'interestedUsersCount',
+                        'value' => implode(', ', $model->interestedUsersNames),
+                    ],
                 ],
             ]) ?>
 

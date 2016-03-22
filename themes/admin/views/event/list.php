@@ -52,6 +52,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             'membersCount',
             'actualUsersCount',
+            'interestedUsersCount',
             [
                 'attribute' => 'status',
                 'value' => function ($model) {

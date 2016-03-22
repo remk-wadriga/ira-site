@@ -8,6 +8,7 @@ use yii\db\ActiveQuery;
 use interfaces\StoryInterface;
 use interfaces\FileModelInterface;
 use interfaces\ImagedEntityInterface;
+use interfaces\UserClickInterface;
 use admin\listeners\EventListener;
 use events\EventEvent;
 use yii\db\Query;
@@ -45,6 +46,8 @@ use yii\helpers\Json;
  * @property integer $allUsersCount
  * @property string[] $tags
  * @property Comment[] $lastComments
+ * @property integer $interestedUsersCount
+ * @property array $interestedUsersNames
  *
  * @property User $owner
  * @property User[] $users
@@ -60,7 +63,7 @@ use yii\helpers\Json;
  * @property Image $mainImage
  * @property Comment[] $comments
  */
-class Event extends ModelAbstract implements StoryInterface, FileModelInterface, ImagedEntityInterface
+class Event extends ModelAbstract implements StoryInterface, FileModelInterface, ImagedEntityInterface, UserClickInterface
 {
     const EVENT_STORY_CHANGED = 'story_changed';
     const EVENT_EVENT_DELETED = 'event_event_deleted';
@@ -180,6 +183,7 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
             'actualUsersCount' => $this->getActualUsersCountLabel(),
             'userID' => $this->t('User'),
             'citation' => $this->t('Citation'),
+            'interestedUsersCount' => $this->t('Interested users'),
         ];
     }
 
@@ -759,6 +763,18 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
                 ->all();
         }, []);
     }
+    // interestedUsersCount
+    public function getInterestedUsersCount()
+    {
+        return $this->getClicksCount(UserClick::TYPE_INTEREST, null);
+    }
+    // interestedUsersNames
+    public function getInterestedUsersNames()
+    {
+        return $this->getRTCItem('interestedUsersNames', function () {
+            return UserClick::getUsersNames(UserClick::TYPE_INTEREST, self::className(), $this->id);
+        }, []);
+    }
 
     // END Public methods
 
@@ -896,4 +912,16 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
     }
 
     // END Implements ImagedEntityInterface
+
+
+    // Implements UserClickInterface
+
+    public function getClicksCount($type, $userID = 0)
+    {
+        return $this->getRTCItem("userClicks_{$type}_{$userID}", function () use ($type, $userID) {
+            return UserClick::count($type, self::className(), $this->id, $userID);
+        }, 0);
+    }
+
+    // END Implements UserClickInterface
 }

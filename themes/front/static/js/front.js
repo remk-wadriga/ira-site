@@ -20,7 +20,7 @@ Front = {
     },
 
     setAutoFunctions: function () {
-
+        Front.initTooltip();
     },
 
     setHandlers: function () {
@@ -30,6 +30,10 @@ Front = {
 
 
     // Auto functions
+
+    initTooltip: function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    },
 
     // END Auto functions
 
@@ -108,6 +112,24 @@ Front = {
         $(Front.leaveCommentBtnID, item.closest('.wrapper')).removeClass('hide');
         item.closest(Front.commentFormContainerID).html('');
 
+        return false;
+    },
+
+    userClick: function (item) {
+        var success = function (json) {
+            if (json.responseText) {
+                item.parent().html(json.responseText);
+            }
+        };
+        $.ajax({
+            type: 'POST',
+            url: item.data('url'),
+            data: {type: item.data('type')},
+            dataType: 'json',
+            complete: function(json){
+                success(json);
+            }
+        });
         return false;
     },
 

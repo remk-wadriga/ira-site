@@ -110,6 +110,11 @@ $messages = [
     'Post'                                                                                                              => '',
     'Cancel'                                                                                                            => '',
     'Citation'                                                                                                          => '',
+    'This is interesting'                                                                                               => '',
+    'This is interesting! ({count} person)'                                                                             => '',
+    'Trainer: {name}'                                                                                                   => '',
+    'Interested users'                                                                                                  => '',
+    'User came'                                                                                                         => '',
 ];
 
 return array_merge($messages, require(__DIR__ . '/error.php'), require(__DIR__ . '/flash.php'));

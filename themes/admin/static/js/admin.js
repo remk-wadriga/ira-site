@@ -18,7 +18,7 @@ Admin = {
     },
 
     setAutoFunctions: function () {
-
+        Admin.initTooltip();
     },
 
     setHandlers: function () {
@@ -27,6 +27,10 @@ Admin = {
 
 
     // Auto functions
+
+    initTooltip: function () {
+        $('[data-toggle="tooltip"]').tooltip();
+    },
 
     // END Auto functions
 

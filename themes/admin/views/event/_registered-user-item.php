@@ -30,9 +30,11 @@ use yii\helpers\Url;
             ]) ?>
         <?php else : ?>
             <?= Html::checkbox('registrationStatus', $record->status == $record::STATUS_CAME, [
+                'title' => $this->t('User came') . '?',
                 'onclick' => 'Admin.setUserEventRecordStatus($(this));',
                 'data' => [
                     'url' => Url::to(['/admin/api/set-user-event-record-status', 'id' => $record->id]),
+                    'toggle' => 'tooltip',
                 ],
             ]) ?>
         <?php endif ?>
