@@ -48,6 +48,7 @@ use yii\helpers\Json;
  * @property Comment[] $lastComments
  * @property integer $interestedUsersCount
  * @property array $interestedUsersNames
+ * @property User[] $interestedUsers
  *
  * @property User $owner
  * @property User[] $users
@@ -741,7 +742,7 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
                 ->all();
         }, []);
     }
-
+    // notRecordedUsers
     /**
      * @return User[]
      */
@@ -763,6 +764,14 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
                 ->all();
         }, []);
     }
+    // interestedUsers
+    /**
+     * @return User[]
+     */
+    public function getInterestedUsers()
+    {
+        return UserClick::getUsers(UserClick::TYPE_INTEREST, self::className(), $this->id);
+    }
     // interestedUsersCount
     public function getInterestedUsersCount()
     {
@@ -772,7 +781,11 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
     public function getInterestedUsersNames()
     {
         return $this->getRTCItem('interestedUsersNames', function () {
-            return UserClick::getUsersNames(UserClick::TYPE_INTEREST, self::className(), $this->id);
+            $names = [];
+            foreach ($this->getInterestedUsers() as $user) {
+                $names[] = $user->fullName;
+            }
+            return $names;
         }, []);
     }
 

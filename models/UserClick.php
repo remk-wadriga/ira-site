@@ -213,7 +213,13 @@ class UserClick extends ModelAbstract
         }
     }
 
-    public static function getUsersNames($type, $entityClass, $entityID)
+    /**
+     * @param string $type
+     * @param string $entityClass
+     * @param integer $entityID
+     * @return User[]
+     */
+    public static function getUsers($type, $entityClass, $entityID)
     {
         if (!in_array($type, self::$_types)) {
             return [];
@@ -228,17 +234,10 @@ class UserClick extends ModelAbstract
             ])
             ->createCommand();
 
-        $names = [];
-        $users = (new Query())
-            ->select(['name' => "CONCAT_WS(' ', first_name, last_name)"])
-            ->from(User::tableName())
+        return User::find()
             ->where("id IN({$clicksCommand->sql})")
             ->addParams($clicksCommand->params)
             ->all();
-        foreach ($users as $user) {
-            $names[] = $user['name'];
-        }
-        return $names;
     }
 
     // END Public static methods

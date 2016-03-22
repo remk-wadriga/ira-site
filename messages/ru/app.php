@@ -115,6 +115,7 @@ $messages = [
     'Trainer: {name}'                                                                                                   => '',
     'Interested users'                                                                                                  => '',
     'User came'                                                                                                         => '',
+    'Total: {count}'                                                                                                    => '',
 ];
 
 return array_merge($messages, require(__DIR__ . '/error.php'), require(__DIR__ . '/flash.php'));

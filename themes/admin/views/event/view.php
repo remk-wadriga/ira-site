@@ -68,7 +68,8 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
                     [
                         'attribute' => 'interestedUsersCount',
-                        'value' => implode(', ', $model->interestedUsersNames),
+                        'value' => $this->render('_interested-users', ['event' => $model]),
+                        'format' => 'raw',
                     ],
                 ],
             ]) ?>
