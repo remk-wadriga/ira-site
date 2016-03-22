@@ -35,7 +35,7 @@ class UserController extends ControllerAbstract
     public function actionList()
     {
         $searchModel = new UserSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider = $searchModel->search($this->params());
 
         return $this->render([
             'searchModel' => $searchModel,

@@ -116,6 +116,7 @@ $messages = [
     'Interested users'                                                                                                  => '',
     'User came'                                                                                                         => '',
     'Total: {count}'                                                                                                    => '',
+    'Show users list'                                                                                                   => '',
 ];
 
 return array_merge($messages, require(__DIR__ . '/error.php'), require(__DIR__ . '/flash.php'));

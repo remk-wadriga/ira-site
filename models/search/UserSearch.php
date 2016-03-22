@@ -10,18 +10,26 @@ namespace models\search;
 
 use Yii;
 use yii\base\Model;
+use models\UserClick;
 use yii\data\ActiveDataProvider;
 use models\User;
+use yii\db\Query;
 
 /**
  * UserSearch represents the model behind the search form about `models\User`.
  */
 class UserSearch extends User
 {
+    /**
+     * @var \abstracts\ModelAbstract
+     */
+    public $userClickModel;
+    public $userClickType;
+
     public function rules()
     {
         return [
-
+            [['userClickType'], 'safe'],
         ];
     }
 
@@ -52,8 +60,6 @@ class UserSearch extends User
         $this->load($params);
 
         if (!$this->validate()) {
-            // uncomment the following line if you do not want to return any records when validation fails
-            // $query->where('0=1');
             return $dataProvider;
         }
 
@@ -61,6 +67,22 @@ class UserSearch extends User
         ]);
 
         $query->andFilterWhere(['like', 'email', $this->email]);
+
+        if ($clickModel = $this->userClickModel) {
+            $clickCommand = (new Query())
+                ->select('user_id')
+                ->from(UserClick::tableName())
+                ->where([
+                    'entity_class' => $clickModel::className(),
+                    'entity_id' => $clickModel->getID(),
+                    'type' => $this->userClickType,
+                ])
+                ->createCommand();
+
+            $query
+                ->andWhere("id IN({$clickCommand->sql})")
+                ->addParams($clickCommand->params);
+        }
 
         return $dataProvider;
     }

@@ -10,7 +10,9 @@ namespace admin\controllers;
 
 use Yii;
 use models\Event;
+use models\UserClick;
 use models\search\EventSearch;
+use models\search\UserSearch;
 use admin\abstracts\ControllerAbstract;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -112,6 +114,19 @@ class EventController extends ControllerAbstract
         }
 
         return $this->renderAjx(null, $message, $status);
+    }
+
+    public function actionInterestedUsersList($id)
+    {
+        $searchModel = new UserSearch();
+        $searchModel->userClickModel = $this->findModel($id);
+        $searchModel->userClickType = UserClick::TYPE_INTEREST;
+        $dataProvider = $searchModel->search($this->params());
+
+        return $this->render('@adminViews/user/list', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
     }
 
     /**
