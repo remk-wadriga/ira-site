@@ -2,8 +2,8 @@
 
 return [
     'class' => 'yii\db\Connection',
-    'dsn' => 'mysql:host=localhost;dbname=ira_site',
-    'username' => 'web',
-    'password' => 'web',
+    'dsn' => 'mysql:host=localhost;dbname=ac001_db',
+    'username' => 'ac001_web',
+    'password' => 'okljuhytHsdjf',
     'charset' => 'utf8',
 ];
