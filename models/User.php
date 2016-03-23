@@ -202,6 +202,9 @@ class User extends ModelAbstract implements IdentityInterface, StoryInterface, F
         if ($this->dateRegister) {
             $this->dateRegister = Yii::$app->time->formatDateTime($this->dateRegister);
         }
+        if ($this->password) {
+            $this->passwordHash = $this->generatePasswordHash();
+        }
 
         return true;
     }
