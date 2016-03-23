@@ -146,7 +146,7 @@ class FileService extends Component
             $this->mkDir($path);
         }
 
-        $file = Yii::$app->security->generateRandomString() . '_' . $file;
+        $file = Yii::$app->security->generateRandomString(4) . '_' . $file;
 
         return [str_replace(DIRECTORY_SEPARATOR, '/', $fullPath . '/' . $file), '/' . $this->filePath . '/' . $dateString . '/' . $file];
     }
@@ -165,7 +165,7 @@ class FileService extends Component
         list(, $data) = explode(',', $data);
         $data = base64_decode($data);
 
-        $fileName = 'file_' . Yii::$app->security->generateRandomString(4) . '.' . $ext;
+        $fileName = Yii::$app->security->generateRandomString(4) . '.' . $ext;
         $filePath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $fileName;
 
         if (!$size = file_put_contents($filePath, $data)) {
