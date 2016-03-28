@@ -33,7 +33,6 @@ return [
         'showScriptName' => false,
         'rules' => $routes,
         'enableStrictParsing' => true,
-        'baseUrl' => '',
     ],
     'i18n' => [
         'translations' => [

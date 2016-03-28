@@ -15,6 +15,8 @@ use yii\bootstrap\ActiveForm;
 use models\User;
 use dosamigos\fileupload\FileUploadUI;
 use bupy7\cropbox\Cropbox;
+use skeeks\yii2\ckeditor\CKEditorWidget;
+use skeeks\yii2\ckeditor\CKEditorPresets;
 ?>
 
 <div class="event-form">
@@ -50,10 +52,17 @@ use bupy7\cropbox\Cropbox;
         <div class="col-lg-6">
             <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
 
-            <?= $form->field($model, 'description')->textarea(['rows' => 10]) ?>
+            <?= $form->field($model, 'price')->textInput() ?>
 
-            <?= $form->field($model, 'citation')->textarea(['rows' => 10]) ?>
+            <?= $form->field($model, 'cost')->textInput() ?>
 
+            <?php if (!$model->isNewRecord) : ?>
+                <?= $form->field($model, 'profit')->textInput() ?>
+            <?php endif ?>
+
+            <?= $form->field($model, 'membersCount')->textInput() ?>
+
+            <?= $form->field($model, 'citation')->textarea(['rows' => 7]) ?>
         </div>
 
         <div class="col-lg-6">
@@ -73,21 +82,20 @@ use bupy7\cropbox\Cropbox;
                 <?= $form->field($model, 'ownerName')->textInput(['maxlength' => true]) ?>
             </div>
 
-            <?= $form->field($model, 'price')->textInput() ?>
-
-            <?= $form->field($model, 'cost')->textInput() ?>
-
-            <?php if (!$model->isNewRecord) : ?>
-                <?= $form->field($model, 'profit')->textInput() ?>
-            <?php endif ?>
-
-            <?= $form->field($model, 'membersCount')->textInput() ?>
-
             <?= $form->field($model, 'type')->dropDownList($model->getTypesItems($this->t('Select type'))) ?>
 
             <?= $form->field($model, 'address')->textInput(['maxlength' => true]) ?>
 
             <?= $form->field($model, 'status')->dropDownList($model->getStatusesItems()) ?>
+        </div>
+
+        <div class="row">
+            <?= $form->field($model, 'description', [
+                'template' => "<div class=\"col-lg-12\">{input}</div>",
+            ])->widget(CKEditorWidget::className(), [
+                'options' => ['rows' => 6],
+                'preset' => CKEditorPresets::FULL,
+            ]) ?>
         </div>
     </div>
 
