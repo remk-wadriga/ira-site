@@ -120,6 +120,15 @@ $messages = [
     'It is interesting to you and {count} more users'                                                                   => '',
     'It is interesting to you'                                                                                          => '',
     'Refuse'                                                                                                            => 'Отказаться',
+    'Private'                                                                                                           => '',
+    'For registered users'                                                                                              => '',
+    'Public'                                                                                                            => '',
+    'Disabled'                                                                                                          => '',
+    'Blog'                                                                                                              => '',
+    'Add post'                                                                                                          => '',
+    'Posts'                                                                                                             => '',
+    'Update post "{title}"'                                                                                             => '',
+    'Updated'                                                                                                           => '',
 ];
 
 return array_merge($messages, require(__DIR__ . '/error.php'), require(__DIR__ . '/flash.php'));

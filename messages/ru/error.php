@@ -25,4 +25,5 @@ return [
     'Can not remove the tag'                                                                                            => '',
     'Can not set the click'                                                                                             => '',
     'Can not find entity'                                                                                               => '',
+    'Can not change story status'                                                                                       => '',
 ];

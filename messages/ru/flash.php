@@ -13,4 +13,5 @@ return [
     'Role successfully changed'                                                                                         => '',
     'Tag successfully added'                                                                                            => '',
     'Tag successfully removed'                                                                                          => '',
+    'Story status changed'                                                                                              => '',
 ];

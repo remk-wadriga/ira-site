@@ -53,7 +53,13 @@ Admin = {
         var success = function () {
 
         };
+        Api.ajx(item.data('url'), {status: item.val()}, success, 'GET');
+    },
 
+    changePostStatus: function (item) {
+        var success = function () {
+
+        };
         Api.ajx(item.data('url'), {status: item.val()}, success, 'GET');
     },
 
