@@ -26,7 +26,7 @@ return [
             ],
         ],
     ],
-    'db' => require(__DIR__ . '/db.php'),
+    'db' => require(__DIR__ . '/db_local.php'),
     'urlManager' => [
         //'class' => 'components\UrlManager',
         'enablePrettyUrl' => true,
