@@ -8,7 +8,36 @@
  * @var components\View $this
  */
 
-$this->title = 'Admin panel';
+use yii\bootstrap\Html;
+
+$this->title = $this->t('Admin panel');
+
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<h1>Hello admin!</h1>
+<div class="row">
+    <h1><?= $this->title ?></h1>
+</div>
+
+<div class="row">
+    <div class="col-lg-6">
+        <?= Html::a('<i class="fa fa-sliders"></i> ' . $this->t('Slides'), ['/admin/slide/list'], [
+            'class' => 'panel-block',
+        ]) ?>
+    </div>
+    <div class="col-lg-6">
+        <?= Html::a('<i class="fa fa-calendar-check-o"></i> ' . $this->t('Events'), ['/admin/event/list'], [
+            'class' => 'panel-block',
+        ]) ?>
+    </div>
+    <div class="col-lg-6">
+        <?= Html::a('<i class="fa fa-pencil-square-o"></i> ' . $this->t('Blog'), ['/admin/post/list'], [
+            'class' => 'panel-block',
+        ]) ?>
+    </div>
+    <div class="col-lg-6">
+        <?= Html::a('<i class="fa fa-users"></i> ' . $this->t('Users'), ['/admin/user/list'], [
+            'class' => 'panel-block',
+        ]) ?>
+    </div>
+</div>

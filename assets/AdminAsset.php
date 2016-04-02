@@ -25,6 +25,7 @@ class AdminAsset extends AssetAbstract
         'yii\bootstrap\BootstrapPluginAsset',
         'assets\MainAsset',
         'assets\BootstrapSwitchAsset',
+        'rmrevin\yii\fontawesome\AssetBundle',
     ];
 
     public static function scriptName()
