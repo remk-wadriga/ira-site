@@ -106,7 +106,7 @@ class ModelAbstract extends ActiveRecord implements ModelInterface
         return $value;
     }
 
-    public function attributes()
+    public function attributesNames()
     {
         $names = static::getAttributesNames();
         if (is_array($names) && !empty($names)) {
@@ -135,7 +135,7 @@ class ModelAbstract extends ActiveRecord implements ModelInterface
     public function getAttributes($names = null, $except = [])
     {
         if ($names === null) {
-            $names = $this->attributes();
+            $names = $this->attributesNames();
         }
         return parent::getAttributes($names, $except);
     }
@@ -144,7 +144,7 @@ class ModelAbstract extends ActiveRecord implements ModelInterface
     {
         foreach ($values as $name => $value) {
             $oldValue = $this->getAttribute($name);
-            if ($oldValue != $value && in_array($name, $this->attributes())) {
+            if ($oldValue != $value && in_array($name, $this->attributesNames())) {
                 $this->_changedAttributes[] = $name;
                 $this->_oldAttributes[$name] = $oldValue;
             }
