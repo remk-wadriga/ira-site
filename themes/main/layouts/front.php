@@ -35,6 +35,7 @@ if (Yii::$app->controller->module !== null) {
 $menuItems = [
     ['label' => $this->t('Home'), 'url' => ['/front/index/index']],
     ['label' => $this->t('Events'), 'url' => ['/front/event/list']],
+    ['label' => $this->t('Blog'), 'url' => ['/front/post/list']],
 ];
 
 if (Yii::$app->user->isGuest) {

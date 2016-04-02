@@ -89,6 +89,7 @@ class View extends YiiView
 
     public function subtext($text, $length = 300)
     {
+        $text = strip_tags($text);
         if (strlen($text) <= $length) {
             return $text;
         } else {

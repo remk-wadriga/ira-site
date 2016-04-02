@@ -567,37 +567,6 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
         return parent::getEnumNames(self::$_userComeStatusesNames, 'userComeStatusesItems', $firstElement);
     }
 
-    public function setStoryAction($action = null)
-    {
-        if ($action === null) {
-            switch ($this->status) {
-                case self::STATUS_CURRENT:
-                    $action = self::STORY_ACTION_STARTED;
-                    break;
-                case self::STATUS_PAST:
-                    $action = self::STORY_ACTION_STOPPED;
-                    break;
-                case self::STATUS_CANCELED:
-                    $action = self::STORY_ACTION_CANCELED;
-                    break;
-            }
-        }
-
-        if (in_array($action, self::$_storyActions)) {
-            $this->setRTC('storyAction', $action);
-        }
-    }
-
-    public function setStoryFields($fields)
-    {
-        if (!is_array($fields)) {
-            $fields = [$fields];
-        }
-        $this->setRTC('storyFields', $fields);
-        $this->setRTC('storyOldValues', $this->getOldAttributes($fields));
-        $this->setRTC('storyNewValues', $this->getAttributes($fields));
-    }
-
     public function getStatusName($status = null)
     {
         if ($status === null) {
@@ -658,6 +627,27 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
         return EventUser::getCount($conditions) == 0;
     }
 
+    public function setStoryAction($story_action)
+    {
+        if (in_array($story_action, self::$_storyActions)) {
+            $this->setRTC('storyAction', $story_action);
+        }
+    }
+
+    public function setStoryFields($fields)
+    {
+        $this->setRTC('storyFields', (array)$fields);
+    }
+
+    public function setStoryOldValues($values)
+    {
+        $this->setRTC('storyOldValues', (array)$values);
+    }
+
+    public function setStoryNewValues($values)
+    {
+        $this->setRTC('storyNewValues', (array)$values);
+    }
 
     // actualUsersCount
     public function getActualUsersCount()
@@ -794,6 +784,28 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
 
     // Public static methods
 
+    public static function getAttributesNames()
+    {
+        $dateFormat = Yii::$app->time->dbDateTimeFormat;
+        return [
+            'id',
+            'ownerID' => 'owner_id',
+            'name',
+            'ownerName' => 'ownerName',
+            'description',
+            'citation',
+            'membersCount',
+            'address',
+            'price',
+            'cost',
+            'type',
+            'status',
+            'dateStart' => "DATE_FORMAT(date_start, '{$dateFormat}')",
+            'dateEnd' => "DATE_FORMAT(date_end, '{$dateFormat}')",
+            'inMainSlider' => 'in_main_slider',
+        ];
+    }
+
     // END Public static methods
 
 
@@ -821,34 +833,33 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
 
     public function getStoryAction()
     {
-        return $this->getRTC('storyAction');
+        if (($action = $this->getRTC('storyAction')) === null) {
+            $action = self::STORY_ACTION_UPDATED;
+        }
+        return $action;
     }
-
     public function getStoryFields()
     {
-        if ($this->getStoryAction() == self::STORY_ACTION_UPDATED) {
-            return $this->attributes();
-        } else {
-            return $this->getRTC('storyFields');
+        if (empty($this->getRTC('storyFields')) && !$this->getIsNewRecord()) {
+            $this->setStoryFields($this->getChangedAttributes());
         }
+        return $this->getRTC('storyFields');
     }
-
     public function getStoryOldValues()
     {
-        if ($this->getStoryAction() == self::STORY_ACTION_UPDATED) {
-            return $this->getOldAttributes();
-        } else {
-            return $this->getRTC('storyOldValues');
+        $values = $this->getRTC('storyOldValues');
+        if (empty($values) && !empty($this->getStoryFields())) {
+            $this->setStoryOldValues($this->getOldAttributes($this->getStoryFields()));
         }
+        return $this->getRTC('storyOldValues');
     }
-
     public function getStoryNewValues()
     {
-        if ($this->getStoryAction() == self::STORY_ACTION_UPDATED) {
-            return $this->getAttributes();
-        } else {
-            return $this->getRTC('storyNewValues');
+        $values = $this->getRTC('storyNewValues');
+        if (empty($values) && !empty($this->getStoryFields())) {
+            $this->setStoryNewValues($this->getAttributes($this->getStoryFields()));
         }
+        return $this->getRTC('storyNewValues');
     }
 
     // END Implements StoryInterface

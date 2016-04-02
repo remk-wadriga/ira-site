@@ -9,6 +9,7 @@ return [
     'dateTimeFormatFront'                                   => 'Y-m-d H:i',
     'dateFormat'                                            => 'Y-m-d',
     'timeFormat'                                            => 'H:i:s',
+    'dbDateTimeFormat'                                      => 'YYYY-MM-DD HH:MI:SS',
     'timeZone'                                              => 'Europe/Kiev',
     'salt'                                                  => 'UI8997YU45JK098UIY87Ri445TY',
     'userSessionTime'                                       => '3600',

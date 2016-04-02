@@ -7,6 +7,7 @@ use abstracts\ModelAbstract;
 use interfaces\StoryInterface;
 use interfaces\FileModelInterface;
 use interfaces\ImagedEntityInterface;
+use interfaces\UserClickInterface;
 use yii\helpers\Json;
 use yii\db\ActiveQuery;
 use events\PostEvent;
@@ -25,10 +26,15 @@ use admin\listeners\PostListener;
  * @property string $dateUpdate
  * @property string $status
  *
+ * @property string $ownerName
+ * @property string $imgUrl
+ *
  * @property User $owner
  * @property Image $image
+ * @property Tag[] $tags
+ * @property Comment[] $comments
  */
-class Post extends ModelAbstract implements StoryInterface, FileModelInterface, ImagedEntityInterface
+class Post extends ModelAbstract implements StoryInterface, FileModelInterface, ImagedEntityInterface, UserClickInterface
 {
     const STATUS_PRIVATE = 'private';
     const STATUS_FOR_REGISTERED_USERS = 'for_registered';
@@ -119,6 +125,18 @@ class Post extends ModelAbstract implements StoryInterface, FileModelInterface, 
                 'is_main' => 1,
             ]);
         });
+    }
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getComments()
+    {
+        return $this->hasMany(Comment::className(), ['entity_id' => 'id'])
+            ->andWhere([
+                'entity_class' => self::className(),
+                'parent_id' => null,
+            ]);
     }
 
     // END Depending
@@ -254,21 +272,26 @@ class Post extends ModelAbstract implements StoryInterface, FileModelInterface, 
         return !empty($this->cropInfo) || $this->getRTC('oldImg') != $this->getImgUrl();
     }
 
-    public function setStoryAction($action)
+    public function setStoryAction($story_action)
     {
-        if (in_array($action, self::$_storyActions)) {
-            $this->setRTC('storyAction', $action);
+        if (in_array($story_action, self::$_storyActions)) {
+            $this->setRTC('storyAction', $story_action);
         }
     }
 
     public function setStoryFields($fields)
     {
-        if (!is_array($fields)) {
-            $fields = [$fields];
-        }
-        $this->setRTC('storyFields', $fields);
-        $this->setRTC('storyOldValues', $this->getOldAttributes($fields));
-        $this->setRTC('storyNewValues', $this->getAttributes($fields));
+        $this->setRTC('storyFields', (array)$fields);
+    }
+
+    public function setStoryOldValues($values)
+    {
+        $this->setRTC('storyOldValues', (array)$values);
+    }
+
+    public function setStoryNewValues($values)
+    {
+        $this->setRTC('storyNewValues', (array)$values);
     }
 
 
@@ -285,6 +308,32 @@ class Post extends ModelAbstract implements StoryInterface, FileModelInterface, 
         }
         return $this->t(self::$statusesNames[$status]);
     }
+    // ownerName
+    public function getOwnerName()
+    {
+        return $this->owner !== null ? $this->owner->fullName : null;
+    }
+    // tags
+    public function getTags()
+    {
+        return $this->getRTCItem('tags', function () {
+            return Tag::getEntityTags(self::className(), $this->id);
+        }, []);
+    }
+    // lastComments
+    public function getLastComments($count = 5)
+    {
+        return $this->getRTCItem("lastComments{$count}", function () use ($count) {
+            return Comment::find()
+                ->where([
+                    'entity_id' => $this->id,
+                    'entity_class' => self::className(),
+                ])
+                ->limit($count)
+                ->orderBy(['date' => SORT_DESC])
+                ->all();
+        }, []);
+    }
 
     // END GETTERS
 
@@ -292,6 +341,22 @@ class Post extends ModelAbstract implements StoryInterface, FileModelInterface, 
 
 
     // Public static methods
+
+    public static function getAttributesNames()
+    {
+        $dateFormat = Yii::$app->time->dbDateTimeFormat;
+        return [
+            'id',
+            'ownerID' => 'owner_id',
+            'title',
+            'text',
+            'citation',
+            'video',
+            'dateCreate' => "DATE_FORMAT(date_create, '{$dateFormat}')",
+            'dateUpdate' => "DATE_FORMAT(date_update, '{$dateFormat}')",
+            'status',
+        ];
+    }
 
     // END Public static methods
 
@@ -320,18 +385,32 @@ class Post extends ModelAbstract implements StoryInterface, FileModelInterface, 
 
     public function getStoryAction()
     {
-        return $this->getRTC('storyAction');
+        if (($action = $this->getRTC('storyAction')) === null) {
+            $action = self::STORY_ACTION_UPDATED;
+        }
+        return $action;
     }
     public function getStoryFields()
     {
+        if (empty($this->getRTC('storyFields')) && !$this->getIsNewRecord()) {
+            $this->setStoryFields($this->getChangedAttributes());
+        }
         return $this->getRTC('storyFields');
     }
     public function getStoryOldValues()
     {
+        $values = $this->getRTC('storyOldValues');
+        if (empty($values) && !empty($this->getStoryFields())) {
+            $this->setStoryOldValues($this->getOldAttributes($this->getStoryFields()));
+        }
         return $this->getRTC('storyOldValues');
     }
     public function getStoryNewValues()
     {
+        $values = $this->getRTC('storyNewValues');
+        if (empty($values) && !empty($this->getStoryFields())) {
+            $this->setStoryNewValues($this->getAttributes($this->getStoryFields()));
+        }
         return $this->getRTC('storyNewValues');
     }
 
@@ -379,7 +458,7 @@ class Post extends ModelAbstract implements StoryInterface, FileModelInterface, 
 
     public function getImgUrl()
     {
-        if ($this->img === null) {
+        if (!$this->img) {
             $this->img = $this->image !== null ? $this->image->url : null;
         }
         return $this->img;
@@ -402,4 +481,17 @@ class Post extends ModelAbstract implements StoryInterface, FileModelInterface, 
     }
 
     // END Implements ImagedEntityInterface
+
+
+
+    // Implements UserClickInterface
+
+    public function getClicksCount($type, $userID = 0)
+    {
+        return $this->getRTCItem("userClicks_{$type}_{$userID}", function () use ($type, $userID) {
+            return UserClick::count($type, self::className(), $this->id, $userID);
+        }, 0);
+    }
+
+    // END Implements UserClickInterface
 }

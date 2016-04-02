@@ -26,6 +26,7 @@ class TimeService extends Component
     public $dateTimeFormat;
     public $dateFormat;
     public $timeFormat;
+    public $dbDateTimeFormat;
 
     public function init()
     {
@@ -37,6 +38,9 @@ class TimeService extends Component
         }
         if ($this->timeFormat === null) {
             $this->timeFormat = Yii::$app->params['timeFormat'];
+        }
+        if ($this->dbDateTimeFormat === null) {
+            $this->dbDateTimeFormat = Yii::$app->params['dbDateTimeFormat'];
         }
     }
 

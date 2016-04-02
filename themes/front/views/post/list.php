@@ -2,22 +2,23 @@
 /**
  * Created by PhpStorm.
  * User: Dima
- * Date: 09.03.2016
- * Time: 20:56
+ * Date: 02.04.2016
+ * Time: 16:22
  *
  * @var components\View $this
- * @var models\search\EventSearch $searchModel
+ * @var models\search\PostSearch $searchModel
  * @var yii\data\ActiveDataProvider $dataProvider
  * @var array $tags
  */
 
 use yii\widgets\ListView;
 
-$this->title = $this->t('Events');
+$this->title = $this->t('Blog');
 $this->subtitle = 'A badass compnay can only produce baddass work';
 
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+
 
 <section class="content-section low-rider">
     <div class="container">
@@ -48,14 +49,14 @@ $this->params['breadcrumbs'][] = $this->title;
                     'model' => $searchModel,
                 ]) ?>
 
-                <h4 class="anim fadeInRight">
-                    <?= $this->t('Filter') ?><i class="fa fa-filter"></i>
+                <!--<h4 class="anim fadeInRight">
+                    <?/*= $this->t('Filter') */?><i class="fa fa-filter"></i>
                 </h4>
                 <div class="anim fadeInRight">
-                    <?= $this->render('_filter', [
+                    <?/*= $this->render('_filter', [
                         'model' => $searchModel,
-                    ]) ?>
-                </div>
+                    ]) */?>
+                </div>-->
 
                 <?php if (!empty($tags)) : ?>
                     <h4 class="anim fadeInRight">

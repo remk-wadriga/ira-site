@@ -18,13 +18,16 @@ use models\Post;
  */
 class PostSearch extends Post
 {
+    public $searchText;
+    public $filterType;
+
     /**
      * @inheritdoc
      */
     public function rules()
     {
         return [
-
+            [['searchText'], 'string', 'max' => 255],
         ];
     }
 
@@ -62,7 +65,7 @@ class PostSearch extends Post
 
         ]);
 
-        $query->andFilterWhere(['like', 'title', $this->title]);
+        $query->andFilterWhere(['like', 'title', $this->searchText]);
 
         return $dataProvider;
     }

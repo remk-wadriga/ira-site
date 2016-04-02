@@ -19,6 +19,9 @@ class ModelAbstract extends ActiveRecord implements ModelInterface
 
     protected $_rtcItems = [];
 
+    private $_changedAttributes = [];
+    private $_oldAttributes = [];
+
     public function getID()
     {
         return $this->getAttribute('id');
@@ -115,17 +118,48 @@ class ModelAbstract extends ActiveRecord implements ModelInterface
         return parent::getAttribute($name);
     }
 
-    public function getOldAttributes($names = [])
+    public function getAttributes($names = null, $except = [])
     {
-        if (empty($names)) {
-            return parent::getOldAttributes();
-        } else {
-            $attributes = [];
-            foreach ($names as $name) {
-                $attributes[$name] = $this->getOldAttribute($name);
+        if ($names === null) {
+            $names = static::getAttributesNames();
+            if (is_array($names) && !empty($names)) {
+                $tmpNames = [];
+                foreach ($names as $key => $value) {
+                    $tmpNames[] = is_string($key) ? $key : $value;
+                }
+                $names = $tmpNames;
             }
-            return $attributes;
         }
+        return parent::getAttributes($names, $except);
+    }
+
+    public function setAttributes($values, $safeOnly = true)
+    {
+        foreach ($values as $name => $value) {
+            $oldValue = $this->getAttribute($name);
+            if ($oldValue != $value && in_array($name, static::getAttributesNames())) {
+                $this->_changedAttributes[] = $name;
+                $this->_oldAttributes[$name] = $oldValue;
+            }
+        }
+        parent::setAttributes($values, $safeOnly);
+    }
+
+    public function getOldAttributes($attributes = null)
+    {
+        if ($attributes === null) {
+            $attributes = static::getAttributesNames();
+        }
+        $oldAttributes = [];
+        foreach ($attributes as $attribute) {
+            $oldAttributes[$attribute] = isset($this->_oldAttributes[$attribute]) ? $this->_oldAttributes[$attribute] : $this->getOldAttribute($attribute);
+        }
+        return $oldAttributes;
+    }
+
+    public function getChangedAttributes()
+    {
+        return $this->_changedAttributes;
     }
 
     /**
@@ -200,6 +234,12 @@ class ModelAbstract extends ActiveRecord implements ModelInterface
         }
         return (new Query())->from(static::tableName())->where($conditions)->count();
     }
+
+    public static function getAttributesNames()
+    {
+        return null;
+    }
+
 
     protected static function getItemsNames()
     {
