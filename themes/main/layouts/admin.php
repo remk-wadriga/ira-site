@@ -90,7 +90,7 @@ $items = [
 
         <div class="container content-wrap">
             <?= Breadcrumbs::widget([
-                'homeLink' => ['label' => $this->t('Home'), 'url' => ['/front/index/index']],
+                'homeLink' => ['label' => $this->t('Home'), 'url' => ['/admin/index/index']],
                 'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
             ]) ?>
             <div class="content">
