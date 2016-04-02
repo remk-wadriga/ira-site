@@ -125,6 +125,20 @@ class m160401_154446_install_tables extends Migration
           `type` enum('interesting','like') NOT NULL,
           PRIMARY KEY (`user_id`,`ip_address`,`entity_class`,`entity_id`,`type`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8");
+        $this->execute("CREATE TABLE `post` (
+          `id` bigint(11) unsigned NOT NULL AUTO_INCREMENT,
+          `owner_id` bigint(20) unsigned NOT NULL,
+          `title` varchar(255) NOT NULL,
+          `text` text NOT NULL,
+          `citation` text,
+          `video` varchar(512) DEFAULT NULL,
+          `date_create` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          `date_update` timestamp NULL DEFAULT NULL,
+          `status` enum('private','for_registered','public','disabled','deleted') NOT NULL DEFAULT 'public',
+          PRIMARY KEY (`id`),
+          KEY `post_owner_id` (`owner_id`),
+          CONSTRAINT `post_owner_id` FOREIGN KEY (`owner_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+        ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8");
         $this->execute("INSERT INTO `user` (`email`,`password_hash`,`first_name`,`last_name`,`phone`,`avatar`,`role`,`status`,`info`,`date_register`) VALUES
           ('remkwdriga@yandex.ua','ae296122621b7eda3370dc9959e3005c','Дмитрий','Кушнерёв','(063) 568 86 19',NULL,'admin','active','','2016-03-04 22:49:54'),
           ('ac.kiev.ua@gmail.com','16353818f5e97f46296b1d7908e29014','Ирина','Заец','',NULL,'admin','active',NULL,'2016-03-23 22:15:15')");
