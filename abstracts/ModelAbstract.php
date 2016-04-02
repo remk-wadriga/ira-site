@@ -106,6 +106,20 @@ class ModelAbstract extends ActiveRecord implements ModelInterface
         return $value;
     }
 
+    public function attributes()
+    {
+        $names = static::getAttributesNames();
+        if (is_array($names) && !empty($names)) {
+            $tmpNames = [];
+            foreach ($names as $key => $value) {
+                $tmpNames[] = is_string($key) ? $key : $value;
+            }
+            return $tmpNames;
+        } else {
+            return parent::attributes();
+        }
+    }
+
     public function getAttribute($name)
     {
         if ($this->hasAttribute($name)) {
@@ -121,14 +135,7 @@ class ModelAbstract extends ActiveRecord implements ModelInterface
     public function getAttributes($names = null, $except = [])
     {
         if ($names === null) {
-            $names = static::getAttributesNames();
-            if (is_array($names) && !empty($names)) {
-                $tmpNames = [];
-                foreach ($names as $key => $value) {
-                    $tmpNames[] = is_string($key) ? $key : $value;
-                }
-                $names = $tmpNames;
-            }
+            $names = $this->attributes();
         }
         return parent::getAttributes($names, $except);
     }
@@ -137,7 +144,7 @@ class ModelAbstract extends ActiveRecord implements ModelInterface
     {
         foreach ($values as $name => $value) {
             $oldValue = $this->getAttribute($name);
-            if ($oldValue != $value && in_array($name, static::getAttributesNames())) {
+            if ($oldValue != $value && in_array($name, $this->attributes())) {
                 $this->_changedAttributes[] = $name;
                 $this->_oldAttributes[$name] = $oldValue;
             }
