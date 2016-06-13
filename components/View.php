@@ -84,7 +84,7 @@ class View extends YiiView
 
     public function month($dateTime)
     {
-        return strtoupper(Yii::$app->time->formatDateTime($dateTime, 'M'));
+        return strtoupper($this->t(Yii::$app->time->formatDateTime($dateTime, 'M')));
     }
 
     public function subtext($text, $length = 300)

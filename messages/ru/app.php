@@ -134,6 +134,8 @@ $messages = [
     'Author'                                                                                                            => 'Автор',
     'Read More'                                                                                                         => 'Подробнее',
     'Account'                                                                                                           => 'Профиль',
+    'Comments'                                                                                                          => 'Комментарии',
+    'Jun'                                                                                                               => 'Июнь',
 ];
 
 return array_merge($messages, require(__DIR__ . '/error.php'), require(__DIR__ . '/flash.php'));
