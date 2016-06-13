@@ -14,7 +14,7 @@
 use yii\widgets\ListView;
 
 $this->title = $this->t('Events');
-$this->subtitle = 'A badass compnay can only produce baddass work';
+//$this->subtitle = 'A badass compnay can only produce baddass work';
 
 $this->params['breadcrumbs'][] = $this->title;
 ?>
