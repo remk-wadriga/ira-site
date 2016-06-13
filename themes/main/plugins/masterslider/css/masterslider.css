@@ -84,8 +84,8 @@
 
 /* grab cursor */
 .ms-def-cursor{cursor:auto !important;}
-.ms-grab-cursor{cursor: url("grab.png"), move;}
-.ms-grabbing-cursor{cursor: url("grabbing.png"), move;}
+/*.ms-grab-cursor{cursor: url("grab.png"), move;}*/
+/*.ms-grabbing-cursor{cursor: url("grabbing.png"), move;}*/
 .ms-ie .ms-grab-cursor{cursor: url("../masterslider/style/grab.cur"), move;}
 .ms-ie .ms-grabbing-cursor {cursor: url("../masterslider/style/grabbing.cur"), move;}
 

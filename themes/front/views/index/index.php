@@ -225,7 +225,7 @@ $this->params['showMainSlider'] = true;
                 <div class="master-slider wrapper" id="teamslider">
 
                     <div class="ms-slide" data-member-id="1" data-title="Optional Title">
-                        <img src="/img/design/blank.jpg" data-src="http://placehold.it/300x295/f8c2c5/ffffff" alt="lorem ipsum dolor sit"/>
+                        <img src="/img/design/blank.png" data-src="http://placehold.it/300x295/f8c2c5/ffffff" alt="lorem ipsum dolor sit"/>
 
                         <div class="ms-info">
                             <span class="name">ELLEN JOHN</span>
@@ -234,7 +234,7 @@ $this->params['showMainSlider'] = true;
                     </div>
 
                     <div class="ms-slide" data-member-id="2">
-                        <img src="/img/design/blank.jpg" data-src="http://placehold.it/300x295/f8c2c5/ffffff" alt="lorem ipsum dolor sit"/>
+                        <img src="/img/design/blank.png" data-src="http://placehold.it/300x295/f8c2c5/ffffff" alt="lorem ipsum dolor sit"/>
 
                         <div class="ms-info">
                             <span class="name">PAUL HOLDER</span>
@@ -243,7 +243,7 @@ $this->params['showMainSlider'] = true;
                     </div>
 
                     <div class="ms-slide" data-member-id="3">
-                        <img src="/img/design/blank.jpg" data-src="http://placehold.it/300x295/f8c2c5/ffffff" alt="lorem ipsum dolor sit"/>
+                        <img src="/img/design/blank.png" data-src="http://placehold.it/300x295/f8c2c5/ffffff" alt="lorem ipsum dolor sit"/>
 
                         <div class="ms-info">
                             <span class="name">SARAH SMITH</span>
@@ -252,7 +252,7 @@ $this->params['showMainSlider'] = true;
                     </div>
 
                     <div class="ms-slide" data-member-id="4">
-                        <img src="/img/design/blank.jpg" data-src="http://placehold.it/300x295/f8c2c5/ffffff" alt="lorem ipsum dolor sit"/>
+                        <img src="/img/design/blank.png" data-src="http://placehold.it/300x295/f8c2c5/ffffff" alt="lorem ipsum dolor sit"/>
 
                         <div class="ms-info">
                             <span class="name">MARK DOE</span>
