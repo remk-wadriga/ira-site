@@ -122,6 +122,9 @@ a:hover {
 	max-height:70px;
 	top:0;
 }
+a.navbar-brand {
+	padding: 0;
+}
 
 .navigation .navbar-default {
 	height:87px;
