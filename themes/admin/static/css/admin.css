@@ -10,3 +10,30 @@ img.micro-img, .file-upload-files-block img{
 .field-slide-img .cropbox, .text-center-align{
     text-align: center;
 }
+a.panel-block{
+    color: #ffffff;
+    font-family: "Open Sans";
+    font-size: 40px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 90px;
+    text-align: left;
+    width: 100%;
+    min-width: 240px;
+    background-color: #337ab7;
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    padding: 20px;
+}
+a.panel-block:hover{
+    text-decoration: none;
+    color: #fff;
+    background-color: #449d44;
+}
+a.panel-block i{
+    margin-top: 26px;
+    margin-right: 20px;
+    float: right;
+}
