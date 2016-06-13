@@ -13,7 +13,6 @@ use yii\bootstrap\Html;
 use models\UserClick;
 
 $this->title = $model->name;
-$this->subtitle = 'am ipsum nunc, egestas eu nisl non, auctor consequat leo.';
 
 $this->params['breadcrumbs'][] = ['label' => $this->t('Events'), 'url' => ['/front/event/list']];
 $this->params['breadcrumbs'][] = $this->title;
@@ -67,6 +66,13 @@ $this->params['breadcrumbs'][] = $this->title;
                         </blockquote>
                     <?php endif ?>
 
+                    <?php if (!empty($model->images)) : ?>
+                        <p class="fadeIn">
+                            <?php foreach ($model->images as $image) : ?>
+                                <?= Html::img($image->url, ['class' => 'small-img']) ?>
+                            <?php endforeach ?>
+                        </p>
+                    <?php endif ?>
 
                 </div><!-- .blog -->
 

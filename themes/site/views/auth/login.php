@@ -41,9 +41,11 @@ $this->params['breadcrumbs'][] = $this->title;
                     'placeholder' => $user->getAttributeLabel('password'),
                 ]) ?>
 
-                <span class="input-group">
-                    <?= Html::submitButton($this->t('Login'), ['class' => 'submit', 'name' => 'login-button']) ?>
-                </span>
+                <div class="form-group">
+                    <span class="input-group">
+                        <?= Html::submitButton($this->t('Login'), ['class' => 'submit', 'name' => 'login-button']) ?>
+                    </span>
+                </div>
 
                 <p>
                     <?= $this->t('You do not have an account') ?>?

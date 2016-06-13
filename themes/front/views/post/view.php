@@ -13,7 +13,6 @@ use yii\bootstrap\Html;
 use models\UserClick;
 
 $this->title = $model->title;
-$this->subtitle = 'am ipsum nunc, egestas eu nisl non, auctor consequat leo.';
 
 $this->params['breadcrumbs'][] = ['label' => $this->t('Blog'), 'url' => ['/front/post/list']];
 $this->params['breadcrumbs'][] = $this->title;

@@ -1,3 +1,6 @@
+h1 {
+    margin-bottom: 40px;
+}
 .filter-btn{
 
 }
@@ -50,4 +53,7 @@ p.tags-list {
 }
 .comments .form.contact .input-group {
     margin: -5px 0 12px 36px;
+}
+div.cropbox {
+    margin-bottom: 0;
 }

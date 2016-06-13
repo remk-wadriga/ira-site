@@ -19,10 +19,12 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="container register-page">
         <h1><?= Html::encode($this->title) ?></h1>
 
-        <h4><?= $this->t('Please fill out the following fields to register') ?>:</h4>
-
         <div class="row">
-            <?= $this->render('_register-form', ['user' => $user]) ?>
+            <div class="col-lg-2"></div>
+            <div class="col-lg-8">
+                <?= $this->render('_register-form', ['user' => $user]) ?>
+            </div>
+            <div class="col-lg-2"></div>
         </div>
     </div>
 </section>

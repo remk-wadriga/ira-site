@@ -16,10 +16,6 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <div class="row">
-    <h1><?= $this->title ?></h1>
-</div>
-
-<div class="row">
     <div class="col-lg-6">
         <?= Html::a('<i class="fa fa-sliders"></i> ' . $this->t('Slides'), ['/admin/slide/list'], [
             'class' => 'panel-block',

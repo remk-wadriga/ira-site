@@ -63,6 +63,7 @@ if (Yii::$app->user->isGuest) {
         <meta charset="<?= Yii::$app->charset ?>">
         <meta id="wixMobileViewport" name="viewport" content="minimum-scale=0.25, maximum-scale=1.2"/>
         <?= Html::csrfMetaTags() ?>
+        <link rel="shortcut icon" href="<?= Yii::$app->request->baseUrl ?>/favicon.ico" type="image/x-icon" />
         <title><?= Html::encode($this->title) ?></title>
         <?php $this->head() ?>
     </head>
