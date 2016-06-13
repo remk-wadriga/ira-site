@@ -37,7 +37,7 @@ class NavBar extends Widget
             'id' => isset($this->options['id']) ? $this->options['id'] : 'nav-begins',
             'class' => isset($this->options['class']) ? $this->options['class'] : 'container-wrapper navigation',
             'navbarClass' => isset($this->options['navbarClass']) ? $this->options['navbarClass'] : 'navbar navbar-default',
-            'logo' => '@web/img/ac_main_logo.gif',
+            'logo' => '@web/img/main_logo.jpg',
             'items' => $this->items,
         ]);
     }
