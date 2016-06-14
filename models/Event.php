@@ -343,8 +343,7 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
         if ($this->status == self::STATUS_PAST && $this->profit == 0) {
             $this->profit = ($this->membersCount * $this->price) - $this->cost;
         }
-        echo '<pre>'; var_dump($this->url); exit('</pre>');
-        if ($this->url === null) {
+        if (!$this->url) {
             $this->url = $this->createCpuUrl($this->name, $this->dateStart);
 
             $this->update(false, ['url']);
