@@ -23,6 +23,7 @@ class CpuUrls extends BehaviorAbstract
     public function createCpuUrl($name, $date = null)
     {
         $url = strtolower(str_replace(' ', '-', TransliteratorHelper::process($name, '', 'en')));
+        $url = str_replace('"', '', $url);
         if ($this->owner->getCountBySpuUrl($url) > 0) {
             if ($date === null) {
                 $date = Yii::$app->time->getCurrentDateTime();
