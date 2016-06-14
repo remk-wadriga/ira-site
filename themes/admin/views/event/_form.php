@@ -87,6 +87,8 @@ use skeeks\yii2\ckeditor\CKEditorPresets;
             <?= $form->field($model, 'address')->textInput(['maxlength' => true]) ?>
 
             <?= $form->field($model, 'status')->dropDownList($model->getStatusesItems()) ?>
+
+            <?= $form->field($model, 'url')->textInput(['maxlength' => true]) ?>
         </div>
 
         <div class="row">

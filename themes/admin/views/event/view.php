@@ -71,6 +71,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'value' => $this->render('_interested-users', ['event' => $model]),
                         'format' => 'raw',
                     ],
+                    'url',
                 ],
             ]) ?>
 

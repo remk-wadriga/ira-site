@@ -57,6 +57,7 @@ class m160401_154446_install_tables extends Migration
           `date_start` datetime DEFAULT NULL,
           `date_end` datetime DEFAULT NULL,
           `in_main_slider` tinyint(1) NOT NULL DEFAULT '0',
+          `url` varchar(512) DEFAULT NULL,
           PRIMARY KEY (`id`),
           KEY `event_owner_id` (`owner_id`),
           CONSTRAINT `event_owner_id` FOREIGN KEY (`owner_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -135,6 +136,7 @@ class m160401_154446_install_tables extends Migration
           `date_create` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
           `date_update` timestamp NULL DEFAULT NULL,
           `status` enum('private','for_registered','public','disabled','deleted') NOT NULL DEFAULT 'public',
+          `url` varchar(512) DEFAULT NULL,
           PRIMARY KEY (`id`),
           KEY `post_owner_id` (`owner_id`),
           CONSTRAINT `post_owner_id` FOREIGN KEY (`owner_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE

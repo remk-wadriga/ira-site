@@ -9,10 +9,13 @@ use interfaces\StoryInterface;
 use interfaces\FileModelInterface;
 use interfaces\ImagedEntityInterface;
 use interfaces\UserClickInterface;
+use interfaces\CpuUrlsInterface;
 use admin\listeners\EventListener;
 use events\EventEvent;
 use yii\db\Query;
 use yii\helpers\Json;
+use behaviors\CpuUrls;
+use yii\helpers\Url;
 
 /**
  * This is the model class for table "event".
@@ -33,6 +36,7 @@ use yii\helpers\Json;
  * @property string $dateEnd
  * @property bool $inMainSlider
  * @property string $citation
+ * @property string $url
  *
  * @property string $defaultAddress
  * @property string $statusName
@@ -49,6 +53,7 @@ use yii\helpers\Json;
  * @property integer $interestedUsersCount
  * @property array $interestedUsersNames
  * @property User[] $interestedUsers
+ * @property string $cpuUrl
  *
  * @property User $owner
  * @property User[] $users
@@ -64,7 +69,7 @@ use yii\helpers\Json;
  * @property Image $mainImage
  * @property Comment[] $comments
  */
-class Event extends ModelAbstract implements StoryInterface, FileModelInterface, ImagedEntityInterface, UserClickInterface
+class Event extends ModelAbstract implements StoryInterface, FileModelInterface, ImagedEntityInterface, UserClickInterface, CpuUrlsInterface
 {
     const EVENT_STORY_CHANGED = 'story_changed';
     const EVENT_EVENT_DELETED = 'event_event_deleted';
@@ -158,7 +163,7 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
             [['price', 'profit', 'cost'], 'number'],
             [['dateStart', 'dateEnd', 'hasOwner', 'cropInfo', 'userID', 'tag'], 'safe'],
             [['name', 'ownerName'], 'string', 'max' => 255],
-            [['address'], 'string', 'max' => 512],
+            [['address', 'url'], 'string', 'max' => 512],
             ['type', 'in', 'range' => self::$_types],
             ['status', 'in', 'range' => self::$_statuses],
             ['img', 'image', 'extensions' => ['jpg', 'jpeg', 'png', 'gif'], 'mimeTypes' => ['image/jpeg', 'image/pjpeg', 'image/png', 'image/gif']],
@@ -185,10 +190,18 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
             'userID' => $this->t('User'),
             'citation' => $this->t('Citation'),
             'interestedUsersCount' => $this->t('Interested users'),
+            'url' => $this->t('Ссылка'),
         ];
     }
 
     // Behaviors
+
+    public function behaviors()
+    {
+        return [
+            'cpuUrls' => CpuUrls::className(),
+        ];
+    }
 
     // END Behaviors
 
@@ -330,6 +343,10 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
         if ($this->status == self::STATUS_PAST && $this->profit == 0) {
             $this->profit = ($this->membersCount * $this->price) - $this->cost;
         }
+        if ($this->url === null) {
+            $this->url = $this->createCpuUrl($this->name, $this->dateStart);
+            $this->update(false, ['url']);
+        }
         $this->setRTC('oldImg', $this->img);
     }
 
@@ -376,6 +393,9 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
         }
         if ($this->dateEnd) {
             $this->dateStart = Yii::$app->time->formatDateTime($this->dateEnd);
+        }
+        if ($this->url === null) {
+            $this->url = $this->createCpuUrl($this->name, $this->dateStart);
         }
 
         if ($this->isNewRecord) {
@@ -778,6 +798,12 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
             return $names;
         }, []);
     }
+    // cpuUrl
+    public function getCpuUrl()
+    {
+        $id = $this->url !== null ? $this->url : $this->id;
+        return Url::to(['/front/event/view', 'id' => $id]);
+    }
 
     // END Public methods
 
@@ -948,4 +974,13 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
     }
 
     // END Implements UserClickInterface
+
+    // Implements CpuUrlsInterface
+
+    public function getCountBySpuUrl($url)
+    {
+        return self::find()->where(['url' => $url])->count();
+    }
+
+    // END Implements CpuUrlsInterface
 }

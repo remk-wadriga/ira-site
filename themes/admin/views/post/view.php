@@ -44,6 +44,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attribute' => 'dateCreate',
             ],
             'statusName',
+            'url',
         ],
     ]) ?>
 

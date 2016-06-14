@@ -32,8 +32,16 @@ class PostController extends ControllerAbstract
 
     public function actionView($id)
     {
+        if ((int)$id > 0) {
+            $condition = $id;
+        } else {
+            $condition = ['url' => $id];
+        }
+
+        $model = $this->findModel($condition);
+
         return $this->render([
-            'model' => $this->findModel($id),
+            'model' => $model,
         ]);
     }
 

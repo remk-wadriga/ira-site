@@ -54,6 +54,8 @@ use skeeks\yii2\ckeditor\CKEditorPresets;
 
     <?= $form->field($model, 'status')->dropDownList($model->getStatusesItems()) ?>
 
+    <?= $form->field($model, 'url')->textInput(['maxlength' => true]) ?>
+
     <div class="row">
         <?= $form->field($model, 'text', [
             'template' => "<div class=\"col-lg-12\">{input}</div>",

@@ -49,7 +49,7 @@ use yii\bootstrap\Html;
         <?php endif ?>
     </div>
 
-    <?= Html::a('<i class="fa fa-long-arrow-right"></i>' . $this->t('Read More'), ['/front/post/view', 'id' => $model->id], [
+    <?= Html::a('<i class="fa fa-long-arrow-right"></i>' . $this->t('Read More'), $model->cpuUrl, [
         'class' => 'btn btn-sm btn-primary icon',
         'role' => 'button',
         'data' => [

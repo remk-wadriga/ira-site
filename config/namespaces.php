@@ -10,6 +10,7 @@ return [
     'interfaces' => 'interfaces',
     'widgets' => 'widgets',
     'events' => 'events',
+    'behaviors' => 'behaviors',
 
     // Modules namespaces
     'front' => 'modules/front',

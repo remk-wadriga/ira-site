@@ -8,16 +8,19 @@ use interfaces\StoryInterface;
 use interfaces\FileModelInterface;
 use interfaces\ImagedEntityInterface;
 use interfaces\UserClickInterface;
+use interfaces\CpuUrlsInterface;
 use yii\helpers\Json;
 use yii\db\ActiveQuery;
 use events\PostEvent;
 use admin\listeners\PostListener;
+use behaviors\CpuUrls;
+use yii\helpers\Url;
 
 /**
  * This is the model class for table "blog".
  *
- * @property string $id
- * @property string $ownerID
+ * @property integer $id
+ * @property integer $ownerID
  * @property string $title
  * @property string $text
  * @property string $citation
@@ -25,16 +28,18 @@ use admin\listeners\PostListener;
  * @property string $dateCreate
  * @property string $dateUpdate
  * @property string $status
+ * @property string $url
  *
  * @property string $ownerName
  * @property string $imgUrl
+ * @property string $cpuUrl
  *
  * @property User $owner
  * @property Image $image
  * @property Tag[] $tags
  * @property Comment[] $comments
  */
-class Post extends ModelAbstract implements StoryInterface, FileModelInterface, ImagedEntityInterface, UserClickInterface
+class Post extends ModelAbstract implements StoryInterface, FileModelInterface, ImagedEntityInterface, UserClickInterface, CpuUrlsInterface
 {
     const STATUS_PRIVATE = 'private';
     const STATUS_FOR_REGISTERED_USERS = 'for_registered';
@@ -81,7 +86,7 @@ class Post extends ModelAbstract implements StoryInterface, FileModelInterface, 
             [['text', 'citation'], 'string'],
             [['dateCreate', 'dateUpdate', 'cropInfo'], 'safe'],
             [['title'], 'string', 'max' => 255],
-            [['video'], 'string', 'max' => 512],
+            [['video', 'url'], 'string', 'max' => 512],
             ['status', 'in', 'range' => array_keys(self::$statusesNames)],
             ['img', 'image', 'extensions' => ['jpg', 'jpeg', 'png', 'gif'], 'mimeTypes' => ['image/jpeg', 'image/pjpeg', 'image/png', 'image/gif']],
         ];
@@ -96,10 +101,18 @@ class Post extends ModelAbstract implements StoryInterface, FileModelInterface, 
             'citation' => $this->t('Citation'),
             'statusName' => $this->t('Status'),
             'dateCreate' => $this->t('Date'),
+            'url' => $this->t('Ссылка'),
         ];
     }
 
     // Behaviors
+
+    public function behaviors()
+    {
+        return [
+            'cpuUrls' => CpuUrls::className(),
+        ];
+    }
 
     // END Behaviors
 
@@ -148,6 +161,11 @@ class Post extends ModelAbstract implements StoryInterface, FileModelInterface, 
     {
         parent::afterFind();
 
+        if ($this->url === null) {
+            $this->url = $this->createCpuUrl($this->title, $this->dateCreate);
+            $this->update(false, ['url']);
+        }
+
         $this->setRTC('oldImg', $this->getImgUrl());
     }
 
@@ -179,6 +197,9 @@ class Post extends ModelAbstract implements StoryInterface, FileModelInterface, 
                 $this->setStoryAction(self::STORY_ACTION_UPDATED);
                 $this->setStoryFields(['title', 'text', 'citation', 'video', 'status']);
             }
+        }
+        if ($this->url === null) {
+            $this->url = $this->createCpuUrl($this->title, $this->dateCreate);
         }
         return true;
     }
@@ -333,6 +354,12 @@ class Post extends ModelAbstract implements StoryInterface, FileModelInterface, 
                 ->orderBy(['date' => SORT_DESC])
                 ->all();
         }, []);
+    }
+    // cpuUrl
+    public function getCpuUrl()
+    {
+        $id = $this->url !== null ? $this->url : $this->id;
+        return Url::to(['/front/post/view', 'id' => $id]);
     }
 
     // END GETTERS
@@ -494,4 +521,13 @@ class Post extends ModelAbstract implements StoryInterface, FileModelInterface, 
     }
 
     // END Implements UserClickInterface
+
+    // Implements CpuUrlsInterface
+
+    public function getCountBySpuUrl($url)
+    {
+        return self::find()->where(['url' => $url])->count();
+    }
+
+    // END Implements CpuUrlsInterface
 }
