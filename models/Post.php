@@ -163,6 +163,7 @@ class Post extends ModelAbstract implements StoryInterface, FileModelInterface, 
 
         if ($this->url === null) {
             $this->url = $this->createCpuUrl($this->title, $this->dateCreate);
+
             $this->update(false, ['url']);
         }
 
