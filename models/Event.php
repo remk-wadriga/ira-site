@@ -345,6 +345,7 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
         }
         if ($this->url === null) {
             $this->url = $this->createCpuUrl($this->name, $this->dateStart);
+            echo '<pre>'; var_dump($this->url); exit('</pre>');
             $this->update(false, ['url']);
         }
         $this->setRTC('oldImg', $this->img);
