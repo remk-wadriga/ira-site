@@ -157,6 +157,9 @@ class ModelAbstract extends ActiveRecord implements ModelInterface
         if ($attributes === null) {
             $attributes = static::getAttributesNames();
         }
+        if ($attributes === null) {
+            return parent::getOldAttributes();
+        }
         $oldAttributes = [];
         foreach ($attributes as $attribute) {
             $oldAttributes[$attribute] = isset($this->_oldAttributes[$attribute]) ? $this->_oldAttributes[$attribute] : $this->getOldAttribute($attribute);

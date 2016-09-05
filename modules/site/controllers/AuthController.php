@@ -51,11 +51,7 @@ class AuthController extends ControllerAbstract
         $user = new User();
 
         if ($user->load($this->post())) {
-            try {
-               Yii::$app->user->register($user);
-            } catch (ErrorException $e) {
-
-            }
+            Yii::$app->user->register($user);
             return $this->redirect(['/front/index/index']);
         }
 
