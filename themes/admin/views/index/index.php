@@ -36,4 +36,9 @@ $this->params['breadcrumbs'][] = $this->title;
             'class' => 'panel-block',
         ]) ?>
     </div>
+    <div class="col-lg-6">
+        <?= Html::a('<i class="fa fa-share"></i> ' . $this->t('Mail delivery'), ['/admin/mail-delivery/list'], [
+            'class' => 'panel-block',
+        ]) ?>
+    </div>
 </div>

@@ -19,7 +19,7 @@ class m160401_154446_install_tables extends Migration
           `info` text,
           `date_register` datetime NOT NULL,
           PRIMARY KEY (`id`)
-        ) ENGINE=InnoDB AUTO_INCREMENT=46 DEFAULT CHARSET=utf8");
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8");
         $this->execute("CREATE TABLE `comment` (
           `id` bigint(11) unsigned NOT NULL AUTO_INCREMENT,
           `parent_id` bigint(11) DEFAULT NULL,
@@ -61,7 +61,7 @@ class m160401_154446_install_tables extends Migration
           PRIMARY KEY (`id`),
           KEY `event_owner_id` (`owner_id`),
           CONSTRAINT `event_owner_id` FOREIGN KEY (`owner_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-        ) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8");
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8");
         $this->execute("CREATE TABLE `event_user` (
           `id` bigint(11) unsigned NOT NULL AUTO_INCREMENT,
           `event_id` bigint(11) unsigned NOT NULL,
@@ -77,7 +77,7 @@ class m160401_154446_install_tables extends Migration
           KEY `event_user_event_id` (`event_id`),
           CONSTRAINT `event_user_event_id` FOREIGN KEY (`event_id`) REFERENCES `event` (`id`) ON DELETE NO ACTION ON UPDATE CASCADE,
           CONSTRAINT `event_user_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-        ) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8");
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8");
         $this->execute("CREATE TABLE `image` (
           `id` bigint(11) unsigned NOT NULL AUTO_INCREMENT,
           `url` varchar(512) NOT NULL,
@@ -97,7 +97,7 @@ class m160401_154446_install_tables extends Migration
           `link_title` varchar(126) DEFAULT NULL,
           `status` enum('active','not_active') NOT NULL DEFAULT 'active',
           PRIMARY KEY (`id`)
-        ) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8");
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8");
         $this->execute("CREATE TABLE `story` (
           `id` bigint(11) unsigned NOT NULL AUTO_INCREMENT,
           `target_class` varchar(255) NOT NULL,
@@ -111,7 +111,7 @@ class m160401_154446_install_tables extends Migration
           PRIMARY KEY (`id`),
           KEY `story_user_id` (`user_id`),
           CONSTRAINT `story_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
-        ) ENGINE=InnoDB AUTO_INCREMENT=363 DEFAULT CHARSET=utf8");
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8");
         $this->execute("CREATE TABLE `tag` (
           `entity_id` bigint(11) unsigned NOT NULL,
           `entity_class` varchar(126) NOT NULL,
@@ -140,9 +140,22 @@ class m160401_154446_install_tables extends Migration
           PRIMARY KEY (`id`),
           KEY `post_owner_id` (`owner_id`),
           CONSTRAINT `post_owner_id` FOREIGN KEY (`owner_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-        ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8");
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8");
+        $this->execute("CREATE TABLE `mail_delivery` (
+            `id`  bigint(11) UNSIGNED NOT NULL AUTO_INCREMENT ,
+            `author_id`  bigint(20) UNSIGNED NOT NULL ,
+            `name`  varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
+            `title`  varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
+            `message`  text CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
+            `date_create`  datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP ,
+            `date_send`  datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP ,
+            `status`  enum('new','current','past') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'new' ,
+            PRIMARY KEY (`id`),
+            FOREIGN KEY (`author_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+            INDEX `mail_delivery_author_id` (`author_id`) USING BTREE 
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8");
         $this->execute("INSERT INTO `user` (`email`,`password_hash`,`first_name`,`last_name`,`phone`,`avatar`,`role`,`status`,`info`,`date_register`) VALUES
-          ('remkwdriga@yandex.ua','ae296122621b7eda3370dc9959e3005c','Дмитрий','Кушнерёв','(063) 568 86 19',NULL,'admin','active','','2016-03-04 22:49:54'),
+          ('remkwdriga@yandex.ua','c40cbf43e7ca2bcce301a090adcabbe9','Дмитрий','Кушнерёв','(063) 568 86 19',NULL,'admin','active','','2016-09-05 23:10:17'),
           ('ac.kiev.ua@gmail.com','16353818f5e97f46296b1d7908e29014','Ирина','Заец','',NULL,'admin','active',NULL,'2016-03-23 22:15:15')");
     }
 

@@ -41,6 +41,7 @@ $items = [
         ['label' => $this->t('Events'), 'url' => ['/admin/event/list']],
         ['label' => $this->t('Users'), 'url' => ['/admin/user/list']],
         ['label' => $this->t('Blog'), 'url' => ['/admin/post/list']],
+        ['label' => $this->t('Mail delivery'), 'url' => ['/admin/mail-delivery/list']],
     ]],
     ['label' => $this->t('Home'), 'url' => ['/admin/index/index']],
     ['label' => $this->t('Front'), 'url' => ['/front/index/index']],

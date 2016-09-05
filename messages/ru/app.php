@@ -136,6 +136,13 @@ $messages = [
     'Account'                                                                                                           => 'Профиль',
     'Comments'                                                                                                          => 'Комментарии',
     'Jun'                                                                                                               => 'Июнь',
+    'Message'                                                                                                           => 'Сообщение',
+    'Date create'                                                                                                       => 'Дата создания',
+    'Date send'                                                                                                         => 'Дата отправки',
+    'Mail delivery'                                                                                                     => 'Рассылка',
+    'Create mail delivery'                                                                                              => 'Создать рассылку',
+    'Mail deliveries'                                                                                                   => 'Список рассылок',
+    'Update mail delivery "{name}"'                                                                                     => 'Обновить рассылку "{name}"',
 ];
 
 return array_merge($messages, require(__DIR__ . '/error.php'), require(__DIR__ . '/flash.php'));
