@@ -71,7 +71,57 @@ class MailDeliveryController extends ControllerAbstract
     {
         $this->findModel($id)->delete();
 
-        return $this->redirect(['index']);
+        return $this->redirect(['list']);
+    }
+
+    public function actionChangeStatus($id)
+    {
+        $delivery = $this->findModel($id);
+        $status = $this->get('status');
+        if ($status == $delivery->status) {
+            $error = $this->t('Delivery status already is "{status}"', ['status' => $status]);
+            return $this->renderAjx(null, $error, self::AJX_STATUS_ERROR);
+        }
+        $delivery->setStoryFields('status');
+        
+        switch ($delivery->status) {
+            case $delivery::STATUS_NEW:
+                $message = 'Delivery is activated';
+                $error = 'Can not activate delivery';
+                $delivery->setStoryAction($delivery::STORY_ACTION_ACTIVATED);
+                break;
+            case $delivery::STATUS_CURRENT:
+                $delivery->status = $status;
+                if (!$delivery->canStarted) {
+                    $error = $this->t('Can not start delivery with status "{status}"', ['status' => $delivery->status]);
+                    return $this->renderAjx(null, $error, self::AJX_STATUS_ERROR);
+                }
+                $message = 'Delivery is started';
+                $error = 'Can not start delivery';
+                $delivery->setStoryAction($delivery::STORY_ACTION_STARTED);
+                break;
+            case $delivery::STATUS_PAST:
+            case $delivery::STATUS_CANCELLED:
+                $message = 'Delivery is cancelled';
+                $error = 'Can not cancel delivery';
+                $delivery->setStoryAction($delivery::STORY_ACTION_CANCELED);
+                break;
+            default:
+                $error = $this->t('Invalid status "{status}"', ['status' => $status]);
+                return $this->renderAjx(null, $error, self::AJX_STATUS_ERROR);
+                break;
+        }
+
+        $delivery->status = $status;
+
+        if ($delivery->save()) {
+            $status = self::AJX_STATUS_OK;
+        } else {
+            $status = self::AJX_STATUS_ERROR;
+            $message = $error;
+        }
+
+        return $this->renderAjx(null, $message, $status);
     }
 
     /**

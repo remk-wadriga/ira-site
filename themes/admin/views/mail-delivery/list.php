@@ -7,6 +7,7 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
+use yii\helpers\Url;
 
 $this->title = $this->t('Mail deliveries');
 $this->params['breadcrumbs'][] = $this->title;
@@ -24,13 +25,43 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-            'authorID',
+            [
+                'attribute' => 'imgUrl',
+                'value' => function (models\MailDelivery $model) {
+                    return Html::img($model->imgUrl, [
+                        'class' => 'micro-img',
+                    ]);
+                },
+                'format' => 'raw',
+            ],
+            'authorName',
             'name',
             'title',
-            'message:ntext',
-            'dateCreate',
-            'dateSend',
-            'status',
+            [
+                'attribute' => 'dateCreate',
+                'value' => function ($model) {
+                    return $this->dateTime($model->dateCreate);
+                },
+            ],
+            [
+                'attribute' => 'dateSend',
+                'value' => function ($model) {
+                    return $this->dateTime($model->dateSend);
+                },
+            ],
+            [
+                'attribute' => 'status',
+                'value' => function ($model) {
+                    return Html::activeDropDownList($model, 'status', $model->getStatusesItems(), [
+                        'class' => 'form-group change-event-status-dropdown',
+                        'onchange' => 'Admin.changeMailDeliveryStatus($(this));',
+                        'data' => [
+                            'url' => Url::to(['/admin/mail-delivery/change-status', 'id' => $model->id]),
+                        ],
+                    ]);
+                },
+                'format' => 'raw',
+            ],
             ['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>

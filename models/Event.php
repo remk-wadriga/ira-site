@@ -404,6 +404,10 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
             $this->setStoryAction(self::STORY_ACTION_UPDATED);
         }
 
+        if ($this->description !== null) {
+            $this->description = str_replace('&nbsp;', ' ', $this->description);
+        }
+
         return true;
     }
 
@@ -533,7 +537,6 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
     public function save($runValidation = true, $attributeNames = null)
     {
         $db = Yii::$app->getDb();
-        //$isNew = $this->getIsNewRecord();
         $transaction = $db->beginTransaction();
 
         if (!parent::save($runValidation, $attributeNames)) {

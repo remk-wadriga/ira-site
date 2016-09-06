@@ -37,7 +37,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'attributes' => [
             'imgUrl:image',
             'title',
-            'text:ntext',
+            'text:raw',
             'citation:ntext',
             [
                 'value' => $this->dateTime($model->dateCreate),

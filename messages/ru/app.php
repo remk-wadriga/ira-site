@@ -143,6 +143,12 @@ $messages = [
     'Create mail delivery'                                                                                              => 'Создать рассылку',
     'Mail deliveries'                                                                                                   => 'Список рассылок',
     'Update mail delivery "{name}"'                                                                                     => 'Обновить рассылку "{name}"',
+    'Create'                                                                                                            => 'Создать',
+    'Cancelled'                                                                                                         => 'Отменено',
+    'Delivery is activated'                                                                                             => 'Рассылка активирована',
+    'Delivery is started'                                                                                               => 'Рассылка запущена',
+    'Delivery is cancelled'                                                                                             => 'Рассылка отменена',
+    'Start delivery'                                                                                                    => 'Запустить рассылку',
 ];
 
 return array_merge($messages, require(__DIR__ . '/error.php'), require(__DIR__ . '/flash.php'));

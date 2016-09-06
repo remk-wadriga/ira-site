@@ -47,7 +47,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'attributes' => [
                     'name',
                     'ownerName',
-                    'description:ntext',
+                    'description:raw',
                     'citation:ntext',
                     'membersCount',
                     'address',

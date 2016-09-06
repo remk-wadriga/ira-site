@@ -26,4 +26,9 @@ return [
     'Can not set the click'                                                                                             => '',
     'Can not find entity'                                                                                               => '',
     'Can not change story status'                                                                                       => '',
+    'Delivery status already is "{status}"'                                                                             => '',
+    'Can not activate delivery'                                                                                         => '',
+    'Can not start delivery'                                                                                            => '',
+    'Can not cancel delivery'                                                                                           => '',
+    'Can not start delivery with status "{status}"'                                                                     => '',
 ];

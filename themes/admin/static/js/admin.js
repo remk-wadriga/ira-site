@@ -63,6 +63,21 @@ Admin = {
         Api.ajx(item.data('url'), {status: item.val()}, success, 'GET');
     },
 
+    changeMailDeliveryStatus: function (item) {
+        var success = function () {
+
+        };
+        Api.ajx(item.data('url'), {status: item.val()}, success, 'GET');
+    },
+
+    activateMailDelivery: function (item) {
+        var success = function () {
+            item.remove();
+        };
+        Api.ajx(item.attr('href'), {status: item.data('status')}, success, 'GET');
+        return false;
+    },
+
     changeUserRole: function (item) {
         var success = function () {
 

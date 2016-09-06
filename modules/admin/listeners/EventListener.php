@@ -49,10 +49,8 @@ class EventListener extends ListenerAbstract
         $eventModel = $event->sender;
         $eventModel->setStoryAction($eventModel::STORY_ACTION_DELETED);
 
-        // Write the story
-        Story::write($eventModel);
-
         $transaction = Yii::$app->db->beginTransaction();
+
         foreach ($eventModel->allImages as $image) {
             if (!$image->delete()) {
                 $transaction->rollBack();
@@ -63,6 +61,8 @@ class EventListener extends ListenerAbstract
         }
 
         if ($event->isValid) {
+            // Write the story
+            Story::write($eventModel);
             $transaction->commit();
         }
     }

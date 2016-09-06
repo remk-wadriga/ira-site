@@ -201,6 +201,11 @@ class Post extends ModelAbstract implements StoryInterface, FileModelInterface, 
         if ($this->url === null) {
             $this->url = $this->createCpuUrl($this->title, $this->dateCreate);
         }
+
+        if ($this->text !== null) {
+            $this->text = str_replace('&nbsp;', ' ', $this->text);
+        }
+
         return true;
     }
 

@@ -25,19 +25,26 @@ $this->params['breadcrumbs'][] = $this->title;
                 'method' => 'post',
             ],
         ]) ?>
+        <?= $this->render('_active-delivery-btn', ['model' => $model]) ?>
     </p>
 
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
-            'id',
-            'authorID',
+            'imgUrl:image',
+            'authorName',
             'name',
             'title',
-            'message:ntext',
-            'dateCreate',
-            'dateSend',
-            'status',
+            'message:raw',
+            [
+                'value' => $this->dateTime($model->dateCreate),
+                'attribute' => 'dateCreate',
+            ],
+            [
+                'value' => $this->dateTime($model->dateSend),
+                'attribute' => 'dateSend',
+            ],
+            'statusName',
         ],
     ]) ?>
 

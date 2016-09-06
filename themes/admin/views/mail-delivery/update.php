@@ -13,6 +13,10 @@ $this->params['breadcrumbs'][] = $this->t('Update');
 ?>
 <div class="mail-delivery-update">
 
+    <div class="row">
+        <?= $this->render('_active-delivery-btn', ['model' => $model]) ?>
+    </div>
+
     <h1><?= Html::encode($this->title) ?></h1>
 
     <?= $this->render('_form', [
