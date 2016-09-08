@@ -22,6 +22,7 @@ class Mailer extends BaseMailer
     public $enabled = true;
     public $deliveryLimit = 15;
     public $deliveryTimeout = 3;
+    public $replyTo;
 
     public function init()
     {
@@ -30,10 +31,13 @@ class Mailer extends BaseMailer
         $this->setViewPath($this->viewsPath);
 
         if ($this->systemEmail === null) {
-            $this->systemEmail = Yii::$app->params['adminEmail'];
+            $this->systemEmail = Yii::$app->params['systemEmail'];
         }
         if ($this->systemMailFrom === null) {
             $this->systemMailFrom = Yii::$app->id;
+        }
+        if ($this->replyTo === null) {
+            $this->replyTo = Yii::$app->params['adminEmail'];
         }
     }
 
@@ -52,6 +56,8 @@ class Mailer extends BaseMailer
         $fromEmail = $this->systemEmail;
         // Set default system mailer name as sender
         $fromName = $this->systemMailFrom;
+        // Set default "reply to param"
+        $replyTo = $this->replyTo;
 
         // Check mail params
         if (isset($params['fromEmail'])) {
@@ -60,13 +66,17 @@ class Mailer extends BaseMailer
         if (isset($params['from'])) {
             $fromName = $params['from'];
         }
-        if (!isset($params['to']) || !isset($params['title'])) {
-            throw new ErrorException($this->t('You must specify both options: "{param 1}" and "{param2}"', ['param1' => 'to', 'param2' => 'title']));
+        if (isset($params['replyTo'])) {
+            $replyTo = $params['replyTo'];
         }
 
         // Check the email format
         if (!filter_var($params['to'], FILTER_VALIDATE_EMAIL)) {
             throw new ErrorException($this->t('Invalid parameter: "{name}"', ['name' => 'from']));
+        }
+        // Check required params
+        if (!isset($params['to']) || !isset($params['title'])) {
+            throw new ErrorException($this->t('You must specify both options: "{param 1}" and "{param2}"', ['param1' => 'to', 'param2' => 'title']));
         }
 
         if (is_array($fromName) || filter_var($fromName, FILTER_VALIDATE_EMAIL)) {
@@ -77,6 +87,7 @@ class Mailer extends BaseMailer
 
         return $this->compose($view, $params)
             ->setFrom($from)
+            ->setReplyTo($replyTo)
             ->setTo($params['to'])
             ->setSubject($params['title'])
             ->send();
