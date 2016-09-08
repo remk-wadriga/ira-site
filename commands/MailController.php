@@ -35,7 +35,7 @@ class MailController extends Controller
             $transaction = $db->beginTransaction();
             // Set mail delivering default result
             $result = false;
-            
+
             foreach ($this->findUsers($delivery, $limit) as $user) {
                 // Generate mail delivery unfollow token
                 $unfollowToken = Yii::$app->security->generateToken();
@@ -58,7 +58,6 @@ class MailController extends Controller
 
                 // Try to send email
                 if (!MailHelper::send($delivery)) {
-                    echo '<pre>'; print_r(3); exit('</pre>');
                     $result = false;
                     break;
                 }
