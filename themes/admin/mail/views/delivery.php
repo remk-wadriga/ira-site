@@ -16,5 +16,3 @@ use yii\helpers\Html;
 <h2>Message:</h2>
 <h2><?= $message ?>/h2>
 <p><?= Html::a(Yii::t('mail', 'Unfollow from mail delivery'), $unfollowUrl) ?></p>
-
-
