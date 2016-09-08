@@ -25,7 +25,7 @@ class MailController extends Controller
         $db = Yii::$app->getDb();
         // Create sended mails count
         $sendedCount = 0;
-
+        echo '<pre>'; print_r($this->findActiveDeliveries()); exit('</pre>');
         foreach ($this->findActiveDeliveries() as $delivery) {
             if ($limit == 0) {
                 return;
