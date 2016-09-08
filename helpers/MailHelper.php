@@ -21,7 +21,7 @@ class MailHelper extends HelperAbstract
      */
     public static function send(MailSenderInterface $sender)
     {
-        try {
+        /*try {
             $login = 'office@ac.kiev.ua'; // замените test@domain.tld на адрес электронной почты, с которого производится отправка. Поскольку логин совпадает с адресом отправителя - данная переменная используется и как логин, и как адрес отправителя.
 
             $password = 'Rda2bnDJ0Y52';  // Замените 'password' на пароль от почтового ящика, с которого производится отправка.
@@ -91,7 +91,7 @@ class MailHelper extends HelperAbstract
             echo '<pre>'; print_r($e); exit('</pre>' . "\n");
         }
 
-        echo '<pre>'; print_r("OK"); exit('</pre>' . "\n");
+        echo '<pre>'; print_r("OK"); exit('</pre>' . "\n");*/
 
         $params = $sender->getMailParams();
 
