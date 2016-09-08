@@ -86,7 +86,7 @@ return [
         //'useFileTransport' => true,
         'transport' => [
             'class' => 'Swift_SmtpTransport',
-            'host' => 'smtp.gmail.com',
+            'host' => 'http://smtp.gmail.com',
             'username' => 'ac.kiev.ua@gmail.com',
             'password' => 'alterEGO',
             'port' => 587,
