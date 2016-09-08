@@ -90,7 +90,7 @@ return [
             'username' => $params['smtpUsername'],
             'password' => $params['smtpPassword'],
             'port' => $params['smtpPort'],
-            //'encryption' => $params['smtpEncryption'],
+            'encryption' => $params['smtpEncryption'],
         ],
     ],
     'security' => [
