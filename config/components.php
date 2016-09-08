@@ -86,11 +86,11 @@ return [
         //'useFileTransport' => true,
         'transport' => [
             'class' => 'Swift_SmtpTransport',
-            'host' => 'smtp.gmail.com',
-            'username' => 'ac.kiev.ua@gmail.com',
-            'password' => 'alterEGO',
-            'port' => 587,
-            'encryption' => 'tls',
+            'host' => $params['smtpHost'],
+            'username' => $params['smtpUsername'],
+            'password' => $params['smtpPassword'],
+            'port' => $params['smtpPort'],
+            'encryption' => $params['smtpEncryption'],
         ],
     ],
     'security' => [

@@ -19,6 +19,11 @@ $params = [
     'mainAddress'                                           => 'Киев, ул. Регенератораная, 4, корп. 2, оф. 396',
     'frontEventsPerPage'                                    => 3,
     'adminEventsPerPage'                                    => 10,
+    'smtpHost'                                              => 'smtp.gmail.com',
+    'smtpUsername'                                          => 'ac.kiev.ua@gmail.com',
+    'smtpPassword'                                          => 'alterEGO',
+    'smtpPort'                                              => 587,
+    'smtpEncryption'                                        => 'tls',
 ];
 
 $paramsLocalFile = __DIR__ . '/params_local.php';
