@@ -47,6 +47,7 @@ class MailHelper extends HelperAbstract
         try {
             return Yii::$app->mailer->sendMail($sender->getMailView(), $params);
         } catch (\Exception $e) {
+            echo '<pre>'; print_r($e->getMessage()); exit('</pre>');
             return false;
         }
     }
