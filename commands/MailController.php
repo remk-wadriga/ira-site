@@ -25,7 +25,7 @@ class MailController extends Controller
         $db = Yii::$app->getDb();
         // Create sended mails count
         $sendedCount = 0;
-        echo '<pre>'; print_r($this->findActiveDeliveries()); exit('</pre>');
+
         foreach ($this->findActiveDeliveries() as $delivery) {
             if ($limit == 0) {
                 return;
@@ -35,7 +35,7 @@ class MailController extends Controller
             $transaction = $db->beginTransaction();
             // Set mail delivering default result
             $result = false;
-
+            echo '<pre>'; print_r($this->findUsers($delivery, $limit)); exit('</pre>');
             foreach ($this->findUsers($delivery, $limit) as $user) {
                 // Generate mail delivery unfollow token
                 $unfollowToken = Yii::$app->security->generateToken();
