@@ -10,6 +10,7 @@ namespace components;
 
 use Yii;
 use yii\base\ErrorException;
+use yii\db\Query;
 use yii\web\User;
 use models\User as Identity;
 use yii\web\UserEvent;
@@ -64,6 +65,29 @@ class UserService extends User
     public function getIpAddress()
     {
         return Yii::$app->request->getUserIP();
+    }
+    // id
+    public function getId()
+    {
+        if (defined('WEBAPP') && WEBAPP === true) {
+            return parent::getId();
+        } else {
+            // Find admin user
+            $adminUser = (new Query())
+                ->select('id')
+                ->from(Identity::tableName())
+                ->where(['email' => Yii::$app->params['adminEmail']])
+                ->one();
+            if (empty($adminUser)) {
+                // Find first admin user account
+                $adminUser = (new Query())
+                    ->select('id')
+                    ->from(Identity::tableName())
+                    ->where(['role' => Identity::ROLE_ADMIN])
+                    ->one();
+            }
+            return $adminUser['id'];
+        }
     }
 
     // END Getters

@@ -31,4 +31,8 @@ return [
     'Can not start delivery'                                                                                            => '',
     'Can not cancel delivery'                                                                                           => '',
     'Can not start delivery with status "{status}"'                                                                     => '',
+    'You must specify both options: "{param 1}" and "{param2}"'                                                         => '',
+    'Invalid parameter: "{name}"'                                                                                       => '',
+    'Incorrect token'                                                                                                   => '',
+    'Can not unfollow from mail deliveries'                                                                             => 'Не удалось отписаться от рассылок',
 ];

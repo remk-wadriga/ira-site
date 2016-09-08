@@ -1,6 +1,7 @@
 <?php
 
 $routes = require(__DIR__ . '/routes.php');
+$params = require(__DIR__ . '/params.php');
 
 return [
     'request' => [
@@ -12,10 +13,6 @@ return [
     ],
     'errorHandler' => [
         //'errorAction' => 'site/error',
-    ],
-    'mailer' => [
-        'class' => 'yii\swiftmailer\Mailer',
-        'useFileTransport' => true,
     ],
     'log' => [
         'traceLevel' => YII_DEBUG ? 3 : 0,
@@ -80,5 +77,23 @@ return [
     ],
     'file' => [
         'class' => 'components\FileService',
+    ],
+    'mailer' => [
+        'class' => 'components\Mailer',
+        'dateTimeFormat' => $params['mailDateTimeFormat'],
+        'systemEmail' => $params['systemEmail'],
+        'enabled' => true,
+        //'useFileTransport' => true,
+        'transport' => [
+            'class' => 'Swift_SmtpTransport',
+            'host' => 'smtp.gmail.com',
+            'username' => 'ac.kiev.ua@gmail.com',
+            'password' => 'alterEGO',
+            'port' => 587,
+            'encryption' => 'tls',
+        ],
+    ],
+    'security' => [
+        'class' => 'components\SecurityService',
     ],
 ];

@@ -34,8 +34,10 @@ use yii\helpers\Json;
  * @property string $info
  * @property string $dateRegister
  * @property string $dateLastLogin
- * @property string $passwordRepeat
+ * @property boolean $mailDeliveryAllowed
+ * @property integer $mailDeliveryToken
  *
+ * @property string $passwordRepeat
  * @property string $fullName
  * @property string $avatarUrl
  * @property string $avatarAlt
@@ -69,6 +71,7 @@ class User extends ModelAbstract implements IdentityInterface, StoryInterface, F
     const STORY_ACTION_DELETED = 'Deleted';
     const STORY_ACTION_UPDATED = 'Updated';
     const STORY_ACTION_CHANGE_ROLE = 'Change role';
+    const STORY_ACTION_MAIL_DELIVERY_UNFOLLOW = 'Mail delivery unfollow';
 
     public $password;
     public $rememberMe = true;
@@ -103,6 +106,7 @@ class User extends ModelAbstract implements IdentityInterface, StoryInterface, F
         self::STORY_ACTION_DELETED,
         self::STORY_ACTION_UPDATED,
         self::STORY_ACTION_CHANGE_ROLE,
+        self::STORY_ACTION_MAIL_DELIVERY_UNFOLLOW,
     ];
 
     private static $_rolesNames = [
@@ -123,6 +127,11 @@ class User extends ModelAbstract implements IdentityInterface, StoryInterface, F
         return 'user';
     }
 
+    public static function userMailDeliveryTableName()
+    {
+        return 'user_mail_delivery';
+    }
+
     public function rules()
     {
         $rules = [
@@ -135,8 +144,10 @@ class User extends ModelAbstract implements IdentityInterface, StoryInterface, F
             [['email', 'avatar', 'password', 'passwordHash'], 'string', 'max' => 255],
             [['firstName', 'lastName'], 'string', 'max' => 126],
             [['phone'], 'string', 'max' => 24],
+            [['mailDeliveryToken'], 'string', 'max' => 64],
             ['info', 'string'],
             [['dateRegister', 'rememberMe', 'isRegistered', 'cropInfo'], 'safe'],
+            ['mailDeliveryAllowed', 'boolean'],
         ];
 
         if ($this->isNewRecord) {
@@ -231,7 +242,6 @@ class User extends ModelAbstract implements IdentityInterface, StoryInterface, F
     {
         $this->first_name = $first_name;
     }
-
     // lastName
     public function getLastName()
     {
@@ -241,7 +251,6 @@ class User extends ModelAbstract implements IdentityInterface, StoryInterface, F
     {
         $this->last_name = $last_name;
     }
-
     // fullName
     public function getFullName()
     {
@@ -257,7 +266,6 @@ class User extends ModelAbstract implements IdentityInterface, StoryInterface, F
     {
         $this->setRTC('fullName', $full_name);
     }
-
     // dateRegister
     public function getDateRegister()
     {
@@ -267,7 +275,6 @@ class User extends ModelAbstract implements IdentityInterface, StoryInterface, F
     {
         $this->date_register = $date_register;
     }
-
     // dateLastLogin
     public function getDateLastLogin()
     {
@@ -286,7 +293,6 @@ class User extends ModelAbstract implements IdentityInterface, StoryInterface, F
     {
         $this->setRTC('date_last_login', Yii::$app->time->formatDateTime($date_last_login));
     }
-
     // passwordHash
     public function getPasswordHash()
     {
@@ -296,7 +302,6 @@ class User extends ModelAbstract implements IdentityInterface, StoryInterface, F
     {
         $this->password_hash = $password_hash;
     }
-
     // passwordRepeat
     public function getPasswordRepeat()
     {
@@ -306,7 +311,6 @@ class User extends ModelAbstract implements IdentityInterface, StoryInterface, F
     {
         $this->setRTC('passwordRepeat', $passwordRepeat);
     }
-
     // avatarUrl
     public function getAvatarUrl()
     {
@@ -318,7 +322,6 @@ class User extends ModelAbstract implements IdentityInterface, StoryInterface, F
     {
         $this->setRTC('avatarUrl', $avatar_url);
     }
-
     // avatarAlt
     public function getAvatarAlt()
     {
@@ -329,6 +332,24 @@ class User extends ModelAbstract implements IdentityInterface, StoryInterface, F
     public function setAvatarAlt($avatar_alt)
     {
         $this->setRTC('avatarAlt', $avatar_alt);
+    }
+    // mailDeliveryAllowed
+    public function getMailDeliveryAllowed()
+    {
+        return (bool)$this->mail_delivery_allowed;
+    }
+    public function setMailDeliveryAllowed($mail_delivery_allowed)
+    {
+        $this->mail_delivery_allowed = (int)$mail_delivery_allowed;
+    }
+    // mailDeliveryToken
+    public function getMailDeliveryToken()
+    {
+        return $this->mail_delivery_token;
+    }
+    public function setMailDeliveryToken($mail_delivery_token)
+    {
+        $this->mail_delivery_token = $mail_delivery_token;
     }
 
     // END Getters and setters
@@ -569,6 +590,7 @@ class User extends ModelAbstract implements IdentityInterface, StoryInterface, F
     public function getStoryAction()
     {
         $action = $this->getRTC('storyAction');
+
         if ($action == self::STORY_ACTION_UPDATED) {
             if ($this->getRTC('oldStatus') != $this->status) {
                 switch ($this->status) {
@@ -595,56 +617,41 @@ class User extends ModelAbstract implements IdentityInterface, StoryInterface, F
 
     public function getStoryFields()
     {
-        if (!in_array($this->getStoryAction(), [self::STORY_ACTION_LOGIN, self::STORY_ACTION_LOGOUT, self::STORY_ACTION_REGISTRATION])) {
-            $attributes = [];
-            if ($this->getRTC('oldStatus') != $this->status) {
-                $attributes[] = 'status';
-            }
-            if ($this->getRTC('oldRole') != $this->role) {
-                $attributes[] = 'role';
-            }
-            if (empty($attributes)) {
-                $attributes = $this->attributes();
-            }
-            return $attributes;
+        if (in_array($this->getStoryAction(), [self::STORY_ACTION_LOGIN, self::STORY_ACTION_LOGOUT, self::STORY_ACTION_REGISTRATION])) {
+            return null;
         }
-        return null;
+
+        if ($this->getStoryAction() == self::STORY_ACTION_MAIL_DELIVERY_UNFOLLOW) {
+            return ['mail_delivery_allowed', 'mail_delivery_token'];
+        }
+
+        $attributes = [];
+        if ($this->getRTC('oldStatus') != $this->status) {
+            $attributes[] = 'status';
+        }
+        if ($this->getRTC('oldRole') != $this->role) {
+            $attributes[] = 'role';
+        }
+        if (empty($attributes)) {
+            $attributes = $this->attributes();
+        }
+        return $attributes;
     }
 
     public function getStoryOldValues()
     {
-        if (!in_array($this->getStoryAction(), [self::STORY_ACTION_LOGIN, self::STORY_ACTION_LOGOUT, self::STORY_ACTION_REGISTRATION])) {
-            $attributes = [];
-            if ($this->getRTC('oldStatus') != $this->status) {
-                $attributes['status'] = $this->getRTC('oldStatus');
-            }
-            if ($this->getRTC('oldRole') != $this->role) {
-                $attributes['role'] = $this->getRTC('oldRole');
-            }
-            if (empty($attributes)) {
-                $attributes = $this->getOldAttributes();
-            }
-            return $attributes;
+        if (empty($fields = $this->getStoryFields())) {
+            return null;
         }
-        return null;
+        return $this->getOldAttributes($fields);
     }
 
     public function getStoryNewValues()
     {
-        if (!in_array($this->getStoryAction(), [self::STORY_ACTION_LOGIN, self::STORY_ACTION_LOGOUT, self::STORY_ACTION_REGISTRATION])) {
-            $attributes = [];
-            if ($this->getRTC('oldStatus') != $this->status) {
-                $attributes['status'] = $this->status;
-            }
-            if ($this->getRTC('oldRole') != $this->role) {
-                $attributes['role'] = $this->role;
-            }
-            if (empty($attributes)) {
-                $attributes = $this->getAttributes();
-            }
-            return $attributes;
+        if (empty($fields = $this->getStoryFields())) {
+            return null;
         }
-        return null;
+        return $this->getAttributes($fields);
     }
 
     // END Implements StoryInterface

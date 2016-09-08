@@ -14,8 +14,10 @@ foreach (array_keys($modules) as $module) {
     Yii::setAlias('@' . $module . 'Views', __DIR__ . '/../themes/' . $module . '/views');
 }
 
+Yii::setAlias('@themes', __DIR__ . '/../themes');
+
 $config = [
-    'id' => 'Ira',
+    'id' => $params['appID'],
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'components' => $components,

@@ -11,6 +11,7 @@ return [
     'widgets' => 'widgets',
     'events' => 'events',
     'behaviors' => 'behaviors',
+    'helpers' => 'helpers',
 
     // Modules namespaces
     'front' => 'modules/front',

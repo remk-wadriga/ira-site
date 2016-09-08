@@ -7,10 +7,12 @@ use abstracts\ModelAbstract;
 use interfaces\StoryInterface;
 use interfaces\FileModelInterface;
 use interfaces\ImagedEntityInterface;
+use interfaces\MailSenderInterface;
 use events\MailDeliveryEvent;
 use admin\listeners\MailDeliveryListener;
 use yii\db\ActiveQuery;
 use yii\helpers\Json;
+use yii\helpers\Url;
 
 /**
  * This is the model class for table "mail_delivery".
@@ -27,15 +29,18 @@ use yii\helpers\Json;
  * @property string $statusName
  * @property string $imgUrl
  * @property bool $canStarted
+ * @property string $mailDeliveryUnfollowToken
  *
  * @property User $author
  * @property Image $image
  */
-class MailDelivery extends ModelAbstract implements StoryInterface, FileModelInterface, ImagedEntityInterface
+class MailDelivery extends ModelAbstract implements StoryInterface, FileModelInterface, ImagedEntityInterface, MailSenderInterface
 {
     const EVENT_STORY_CHANGED = 'mail_delivery_event_story_changed';
     const EVENT_DELETED = 'mail_delivery_deleted';
     const EVENT_STARTED = 'mail_delivery_started';
+    const EVENT_FINISHED = 'mail_delivery_finished';
+    const EVENT_CANCELLED = 'mail_delivery_cancelled';
 
     const STORY_ACTION_CREATED = 'Created';
     const STORY_ACTION_ACTIVATED = 'Activated';
@@ -214,6 +219,15 @@ class MailDelivery extends ModelAbstract implements StoryInterface, FileModelInt
     {
         $this->date_send = $date_send;
     }
+    // mailDeliveryUnfollowToken
+    public function getMailDeliveryUnfollowToken()
+    {
+        return $this->getRTC('mailDeliveryUnfollowToken');
+    }
+    public function setMailDeliveryUnfollowToken($token)
+    {
+        $this->setRTC('mailDeliveryUnfollowToken', $token);
+    }
 
     // END Getters and setters
 
@@ -227,6 +241,8 @@ class MailDelivery extends ModelAbstract implements StoryInterface, FileModelInt
         $this->on(self::EVENT_STORY_CHANGED, [MailDeliveryListener::className(), 'handleEventStoryChanged']);
         $this->on(self::EVENT_DELETED, [MailDeliveryListener::className(), 'handleEventDeleted']);
         $this->on(self::EVENT_STARTED, [MailDeliveryListener::className(), 'handleEventStarted']);
+        $this->on(self::EVENT_FINISHED, [MailDeliveryListener::className(), 'handleEventFinished']);
+        $this->on(self::EVENT_CANCELLED, [MailDeliveryListener::className(), 'handleEventCancelled']);
     }
 
     public function save($runValidation = true, $attributeNames = null)
@@ -249,6 +265,14 @@ class MailDelivery extends ModelAbstract implements StoryInterface, FileModelInt
                 case self::STORY_ACTION_STARTED:
                     // Create "Mail delivery started" event
                     $this->trigger(self::EVENT_STARTED, $event);
+                    break;
+                case self::STORY_ACTION_FINISHED:
+                    // Create "Mail delivery finished" event
+                    $this->trigger(self::EVENT_FINISHED, $event);
+                    break;
+                case self::STORY_ACTION_CANCELED:
+                    // Create "Mail delivery cancelled" event
+                    $this->trigger(self::EVENT_CANCELLED, $event);
                     break;
             }
         }
@@ -333,6 +357,16 @@ class MailDelivery extends ModelAbstract implements StoryInterface, FileModelInt
     public function getCanStarted()
     {
         return $this->status == self::STATUS_NEW;
+    }
+
+    public function setMailTo($mailTo)
+    {
+        $this->setRTC('mailTo', $mailTo);
+    }
+
+    public function setMailView($view)
+    {
+        $this->setRTC('mailView', $view);
     }
 
     // END Public methods
@@ -471,7 +505,44 @@ class MailDelivery extends ModelAbstract implements StoryInterface, FileModelInt
     // END Implements ImagedEntityInterface
 
 
-    // Implements <some interface>
+    // Implements MailSenderInterface
 
-    // END Implements <some interface>
+    public function getMailFrom()
+    {
+        return null;
+    }
+
+    public function getMailTo()
+    {
+        return $this->getRTC('mailTo');
+    }
+
+    public function getMailView()
+    {
+        return $this->getRTCItem('mailView', function () {
+            return 'delivery';
+        }, 'delivery');
+    }
+
+    public function getMailTitle()
+    {
+        return $this->title;
+    }
+
+    public function getMailMessage()
+    {
+        return $this->message;
+    }
+
+    public function getMailParams()
+    {
+        return [];
+    }
+
+    public function getUnfollowUrl()
+    {
+        return Url::to(['/site/mail-delivery/unfollow', 'token' => base64_encode($this->getMailDeliveryUnfollowToken())], true);
+    }
+
+    // END Implements MailSenderInterface
 }

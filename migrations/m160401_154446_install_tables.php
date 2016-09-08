@@ -18,6 +18,8 @@ class m160401_154446_install_tables extends Migration
           `status` enum('deleted','banned','frozen','active') NOT NULL DEFAULT 'active',
           `info` text,
           `date_register` datetime NOT NULL,
+          `mail_delivery_allowed`  tinyint(4) NOT NULL DEFAULT 1,
+          `mail_delivery_token`  varchar(64) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
           PRIMARY KEY (`id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8");
         $this->execute("CREATE TABLE `comment` (
@@ -147,13 +149,22 @@ class m160401_154446_install_tables extends Migration
             `name`  varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
             `title`  varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
             `message`  text CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL ,
-            `date_create`  datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP ,
-            `date_send`  datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP ,
+            `date_create`  datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            `date_send`  datetime,
             `status`  enum('new','current','past') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT 'new' ,
             PRIMARY KEY (`id`),
             FOREIGN KEY (`author_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
             INDEX `mail_delivery_author_id` (`author_id`) USING BTREE 
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8");
+        $this->execute("CREATE TABLE `user_mail_delivery` (
+            `mail_delivery_id`  bigint(11) UNSIGNED NOT NULL ,
+            `user_id`  bigint(11) UNSIGNED NOT NULL ,
+            PRIMARY KEY (`mail_delivery_id`, `user_id`),
+            FOREIGN KEY (`mail_delivery_id`) REFERENCES `mail_delivery` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+            FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+            INDEX `user_mail_delivery_user_id` (`user_id`) USING BTREE 
+        ) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8");
+
         $this->execute("INSERT INTO `user` (`email`,`password_hash`,`first_name`,`last_name`,`phone`,`avatar`,`role`,`status`,`info`,`date_register`) VALUES
           ('remkwdriga@yandex.ua','c40cbf43e7ca2bcce301a090adcabbe9','Дмитрий','Кушнерёв','(063) 568 86 19',NULL,'admin','active','','2016-09-05 23:10:17'),
           ('ac.kiev.ua@gmail.com','16353818f5e97f46296b1d7908e29014','Ирина','Заец','',NULL,'admin','active',NULL,'2016-03-23 22:15:15')");

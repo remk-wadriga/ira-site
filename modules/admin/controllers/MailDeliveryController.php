@@ -8,6 +8,7 @@ use models\MailDelivery;
 use models\search\MailDeliverySearch;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use helpers\MailHelper;
 
 class MailDeliveryController extends ControllerAbstract
 {

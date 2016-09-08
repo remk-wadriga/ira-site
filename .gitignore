@@ -30,3 +30,4 @@ phpunit.phar
 tests/_output/*
 
 config/db_local.php
+config/params_local.php

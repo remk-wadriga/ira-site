@@ -14,4 +14,5 @@ return [
     'Tag successfully added'                                                                                            => 'Тэг успешно добавлен',
     'Tag successfully removed'                                                                                          => 'Тэг успешно удалён',
     'Story status changed'                                                                                              => 'Статус истории изменён',
+    'You are unfollow from the mail deliveries'                                                                         => 'Вы отписаны от рассылок',
 ];
