@@ -166,8 +166,8 @@ class m160401_154446_install_tables extends Migration
         ) ENGINE=InnoDB DEFAULT CHARACTER SET=utf8");
 
         $this->execute("INSERT INTO `user` (`email`,`password_hash`,`first_name`,`last_name`,`phone`,`avatar`,`role`,`status`,`info`,`date_register`) VALUES
-          ('remkwdriga@yandex.ua','c40cbf43e7ca2bcce301a090adcabbe9','Дмитрий','Кушнерёв','(063) 568 86 19',NULL,'admin','active','','2016-09-05 23:10:17'),
-          ('ac.kiev.ua@gmail.com','16353818f5e97f46296b1d7908e29014','Ирина','Заец','',NULL,'admin','active',NULL,'2016-03-23 22:15:15')");
+          ('remkwdriga@yandex.ua','c57d178da36bd1bc74436cb28452abbc','Дмитрий','Кушнерёв','(063) 568 86 19',NULL,'admin','active','','2016-09-05 23:10:17'),
+          ('ac.kiev.ua@gmail.com','aad484a102426975a7d6685340307a9b','Ирина','Заец','',NULL,'admin','active',NULL,'2016-03-23 22:15:15')");
     }
 
     public function down()
