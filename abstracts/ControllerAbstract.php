@@ -99,9 +99,19 @@ abstract class ControllerAbstract extends Controller
         Yii::$app->getSession()->setFlash($key, $value, $removeAfterAccess);
     }
 
+    public function setInfo($message, $removeAfterAccess = true)
+    {
+        Yii::$app->getSession()->setFlash('info', $message, $removeAfterAccess);
+    }
+
     public function setSuccess($message, $removeAfterAccess = true)
     {
         Yii::$app->getSession()->setFlash('success', $message, $removeAfterAccess);
+    }
+
+    public function setWarning($message, $removeAfterAccess = true)
+    {
+        Yii::$app->getSession()->setFlash('warning', $message, $removeAfterAccess);
     }
 
     public function setError($message, $removeAfterAccess = true)

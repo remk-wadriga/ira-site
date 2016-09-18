@@ -90,6 +90,8 @@ $items = [
         NavBar::end();
         ?>
 
+        <?= $this->render('partials/flash-message') ?>
+
         <div class="container content-wrap">
             <?= Breadcrumbs::widget([
                 'homeLink' => ['label' => $this->t('Home'), 'url' => ['/admin/index/index']],

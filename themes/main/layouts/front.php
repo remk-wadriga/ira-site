@@ -80,6 +80,8 @@ if (Yii::$app->user->isGuest) {
                 'menuItems' => $menuItems,
             ]) ?>
 
+            <?= $this->render('partials/flash-message') ?>
+
             <!-- Content -->
             <?= $this->render('partials-front/content', [
                 'content' => $content,

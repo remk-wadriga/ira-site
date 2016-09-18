@@ -75,6 +75,8 @@ if (Yii::$app->user->isGuest) {
             'items' => $items,
         ]) ?>
 
+        <?= $this->render('partials/flash-message') ?>
+
         <?= $content ?>
 
         <?php $this->endBody() ?>
