@@ -26,6 +26,7 @@ use yii\web\UserEvent;
  * @property string $email
  * @property string $phone
  * @property string $ipAddress
+ * @property boolean $isSubscribed
  */
 class UserService extends User
 {
@@ -88,6 +89,15 @@ class UserService extends User
             }
             return $adminUser['id'];
         }
+    }
+    // isSubscribed
+    public function setIsSubscribed($var)
+    {
+        return $this->identity !== null ? $this->identity->setIsSubscribed($var) : false;
+    }
+    public function getIsSubscribed()
+    {
+        return $this->identity !== null ? $this->identity->getIsSubscribed() : false;
     }
 
     // END Getters

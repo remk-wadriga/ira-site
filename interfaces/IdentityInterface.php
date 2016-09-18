@@ -65,4 +65,15 @@ interface IdentityInterface extends BaseIdentityInterface
      * @return bool
      */
     public function save();
+
+    /**
+     * @param boolean $var
+     * @return boolean
+     */
+    public function setIsSubscribed($var);
+
+    /**
+     * @return boolean
+     */
+    public function getIsSubscribed();
 }

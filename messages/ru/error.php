@@ -35,4 +35,6 @@ return [
     'Invalid parameter: "{name}"'                                                                                       => '',
     'Incorrect token'                                                                                                   => '',
     'Can not unfollow from mail deliveries'                                                                             => 'Не удалось отписаться от рассылок',
+    'You are already subscribed to our newsletter'                                                                      => '',
+    'Could not subscribe you to our newsletter'                                                                         => 'Не уадолось подписать Вас на рассылку',
 ];

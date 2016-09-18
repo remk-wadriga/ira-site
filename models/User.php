@@ -72,6 +72,7 @@ class User extends ModelAbstract implements IdentityInterface, StoryInterface, F
     const STORY_ACTION_UPDATED = 'Updated';
     const STORY_ACTION_CHANGE_ROLE = 'Change role';
     const STORY_ACTION_MAIL_DELIVERY_UNFOLLOW = 'Mail delivery unfollow';
+    const STORY_ACTION_MAIL_DELIVERY_SUBSCRIBED = 'Mail delivery subscribed';
 
     public $password;
     public $rememberMe = true;
@@ -107,6 +108,7 @@ class User extends ModelAbstract implements IdentityInterface, StoryInterface, F
         self::STORY_ACTION_UPDATED,
         self::STORY_ACTION_CHANGE_ROLE,
         self::STORY_ACTION_MAIL_DELIVERY_UNFOLLOW,
+        self::STORY_ACTION_MAIL_DELIVERY_SUBSCRIBED,
     ];
 
     private static $_rolesNames = [
@@ -374,11 +376,6 @@ class User extends ModelAbstract implements IdentityInterface, StoryInterface, F
             $this->setStoryAction($action);
         }
 
-        if (!parent::save($runValidation, $attributeNames)) {
-            $transaction->rollBack();
-            return false;
-        }
-
         if (!in_array($action, [self::STORY_ACTION_LOGIN, self::STORY_ACTION_LOGOUT, self::STORY_ACTION_REGISTRATION])) {
             // Create "User changed" event
             $event = new UserEvent();
@@ -388,6 +385,11 @@ class User extends ModelAbstract implements IdentityInterface, StoryInterface, F
                 $this->addError(null, $event->message);
                 return false;
             }
+        }
+
+        if (!parent::save($runValidation, $attributeNames)) {
+            $transaction->rollBack();
+            return false;
         }
 
         $this->cropInfo = null;
@@ -581,6 +583,30 @@ class User extends ModelAbstract implements IdentityInterface, StoryInterface, F
     {
         return $this->phone;
     }
+    
+   public function setIsSubscribed($var)
+   {
+       $var = (bool)$var;
+       if ($var === true) {
+           $this->setStoryAction(self::STORY_ACTION_MAIL_DELIVERY_SUBSCRIBED);
+       } else {
+            $this->setStoryAction(self::STORY_ACTION_MAIL_DELIVERY_UNFOLLOW);
+       }
+
+       $this->mailDeliveryAllowed = $var;
+       return $this->save();
+   }
+
+    public function getIsSubscribed()
+    {
+        return $this->getRTCItem('isSubscribed', function () {
+            return (bool)(new Query())
+                ->select('mail_delivery_allowed')
+                ->from(self::tableName())
+                ->where(['id' => $this->id])
+                ->scalar();
+        }, false);
+    }
 
     // END Implements IdentityInterface
 
@@ -623,6 +649,8 @@ class User extends ModelAbstract implements IdentityInterface, StoryInterface, F
 
         if ($this->getStoryAction() == self::STORY_ACTION_MAIL_DELIVERY_UNFOLLOW) {
             return ['mail_delivery_allowed', 'mail_delivery_token'];
+        } elseif ($this->getStoryAction() == self::STORY_ACTION_MAIL_DELIVERY_SUBSCRIBED) {
+            return ['mail_delivery_allowed'];
         }
 
         $attributes = [];

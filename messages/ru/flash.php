@@ -15,4 +15,5 @@ return [
     'Tag successfully removed'                                                                                          => 'Тэг успешно удалён',
     'Story status changed'                                                                                              => 'Статус истории изменён',
     'You are unfollow from the mail deliveries'                                                                         => 'Вы отписаны от рассылок',
+    'You are subscribed to our newsletter'                                                                              => 'Вы подписались на расылку',
 ];

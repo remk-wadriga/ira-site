@@ -149,6 +149,9 @@ $messages = [
     'Delivery is started'                                                                                               => 'Рассылка запущена',
     'Delivery is cancelled'                                                                                             => 'Рассылка отменена',
     'Start delivery'                                                                                                    => 'Запустить рассылку',
+    'Unfollow from mail delivery'                                                                                       => 'Отписаться от почтовой рассылки',
+    'You are not subscribed to mail delivery'                                                                           => 'Вы не подписаны на расслку',
+    'Subscribe'                                                                                                         => 'Подписаться',
 ];
 
 return array_merge($messages, require(__DIR__ . '/error.php'), require(__DIR__ . '/flash.php'));

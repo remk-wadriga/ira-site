@@ -10,6 +10,7 @@ namespace site\controllers;
 
 use Yii;
 use site\abstracts\ControllerAbstract;
+use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
 use models\User;
 
@@ -35,6 +36,27 @@ class MailDeliveryController extends ControllerAbstract
             $this->setError($this->t('Can not unfollow from mail deliveries'));
         } else {
             $this->setFlash($this->t('You are unfollow from the mail deliveries'));
+        }
+
+        return $this->redirect(['/site/account/update']);
+    }
+    
+    public function actionSubscribe()
+    {
+        // Check the request method
+        if (!$this->isPost()) {
+            throw new BadRequestHttpException($this->t('Bad request'));
+        }
+        // Check is user not subscribed
+        if (Yii::$app->user->getIsSubscribed()) {
+            throw new BadRequestHttpException($this->t('You are already subscribed to our newsletter'));
+        }
+
+        // Try to subscribe user to mail delivery
+        if (Yii::$app->user->setIsSubscribed(true)) {
+            $this->setSuccess($this->t('You are subscribed to our newsletter'));
+        } else {
+            $this->setError($this->t('Could not subscribe you to our newsletter'));
         }
 
         return $this->redirect(['/site/account/update']);
