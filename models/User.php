@@ -435,8 +435,6 @@ class User extends ModelAbstract implements IdentityInterface, StoryInterface, F
             return null;
         }
 
-        $this->dateRegister = $account->dateRegister;
-
         if ($account->passwordHash != $this->generatePasswordHash()) {
             $this->addError('email', $this->t('Email or password is incorrect'));
             return null;
@@ -525,9 +523,7 @@ class User extends ModelAbstract implements IdentityInterface, StoryInterface, F
             return null;
         }
 
-        $date = Yii::$app->time->formatDateTime($this->dateRegister);
-
-        return md5($date . trim($password) . trim($this->email) . Yii::$app->params['salt']);
+        return md5('123' . trim($password) . ':' . trim($this->email) . Yii::$app->params['salt']);
     }
 
     // END Private methods
