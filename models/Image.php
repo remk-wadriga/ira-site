@@ -191,23 +191,15 @@ class Image extends ModelAbstract
         if ($entity->getImgID() > 0) {
             return self::findOne($entity->getImgID());
         } else {
-            $command = (new Query())
+            $imgIDQuery = (new Query())
                 ->select('image_id')
                 ->from(self::entityImageTableName())
                 ->where([
                     'entity_id' => $entity->getID(),
                     'entity_class' => $entity::className(),
                     'is_main' => 1,
-                ])
-                ->createCommand();
-
-            $sql = $command->sql;
-            $params = $command->params;
-
-            return self::find()
-                ->where("id = ({$sql})")
-                ->params($params)
-                ->one();
+                ]);
+            return self::findOne($imgIDQuery);
         }
     }
 

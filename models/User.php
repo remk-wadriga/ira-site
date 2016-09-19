@@ -743,12 +743,12 @@ class User extends ModelAbstract implements IdentityInterface, StoryInterface, F
 
     public function getImgID()
     {
-
+        return $this->getRTC('imgID');
     }
-
-    public function setImgID($id)
+    
+    public function setImgID($ID)
     {
-
+        $this->setRTC('imgID', $ID);
     }
 
     // END Implements ImagedEntityInterface
