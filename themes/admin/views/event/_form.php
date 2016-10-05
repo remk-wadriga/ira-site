@@ -15,8 +15,7 @@ use yii\bootstrap\ActiveForm;
 use models\User;
 use dosamigos\fileupload\FileUploadUI;
 use bupy7\cropbox\Cropbox;
-use skeeks\yii2\ckeditor\CKEditorWidget;
-use skeeks\yii2\ckeditor\CKEditorPresets;
+use yii\redactor\widgets\Redactor;
 ?>
 
 <div class="event-form">
@@ -94,10 +93,9 @@ use skeeks\yii2\ckeditor\CKEditorPresets;
         <div class="row">
             <?= $form->field($model, 'description', [
                 'template' => "<div class=\"col-lg-12\">{input}</div>",
-            ])->widget(CKEditorWidget::className(), [
-                'options' => ['rows' => 6],
-                'preset' => CKEditorPresets::FULL,
-            ]) ?>
+            ])->widget(Redactor::className(), ['clientOptions' => [
+                'plugins' => ['clips', 'fontcolor', 'imagemanager', 'inlinestyle'],
+            ]]) ?>
         </div>
     </div>
 

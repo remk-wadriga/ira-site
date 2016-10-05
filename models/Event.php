@@ -388,13 +388,10 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
                 $this->ownerName = Yii::$app->user->fullName;
             }
         }
-        if ($this->dateStart) {
-            $this->dateStart = Yii::$app->time->formatDateTime($this->dateStart);
+        if (!$this->dateStart) {
+            $this->dateStart = Yii::$app->time->getCurrentDateTime();
         }
-        if ($this->dateEnd) {
-            $this->dateStart = Yii::$app->time->formatDateTime($this->dateEnd);
-        }
-        if ($this->url === null) {
+        if (!$this->url) {
             $this->url = $this->createCpuUrl($this->name, $this->dateStart);
         }
 
@@ -404,7 +401,7 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
             $this->setStoryAction(self::STORY_ACTION_UPDATED);
         }
 
-        if ($this->description !== null) {
+        if ($this->description) {
             $this->description = str_replace('&nbsp;', ' ', $this->description);
         }
 
@@ -804,7 +801,7 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
     // cpuUrl
     public function getCpuUrl()
     {
-        $id = $this->url !== null ? $this->url : $this->id;
+        $id = $this->url ? $this->url : $this->id;
         return Url::to(['/front/event/view', 'id' => $id]);
     }
 

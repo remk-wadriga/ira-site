@@ -15,6 +15,7 @@ $this->title = $this->t('Update event "{name}"', ['name' => $model->name]);
 $this->params['breadcrumbs'][] = ['label' => $this->t('Events'), 'url' => ['list']];
 $this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = $this->t('Update');
+
 ?>
 <div class="event-update">
 

@@ -15,7 +15,7 @@ use yii\bootstrap\Html;
 <div class="blog anim fadeInLeft">
     <span class="image">
         <?php $image = Html::img($model->imgUrl, ['alt' => $model->title]) ?>
-        <?= Html::a($image, ['/front/post/view', 'id' => $model->id], [
+        <?= Html::a($image, $model->cpuUrl, [
             'data' => [
                 'icon' => 'fa-link',
             ],

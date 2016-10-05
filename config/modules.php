@@ -10,4 +10,7 @@ return [
     'site' => [
         'class' => 'site\SiteModule',
     ],
+    'redactor' => [
+        'class' => 'yii\redactor\RedactorModule',
+    ],
 ];

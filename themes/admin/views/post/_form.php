@@ -13,8 +13,7 @@
 use yii\bootstrap\Html;
 use yii\bootstrap\ActiveForm;
 use bupy7\cropbox\Cropbox;
-use skeeks\yii2\ckeditor\CKEditorWidget;
-use skeeks\yii2\ckeditor\CKEditorPresets;
+use yii\redactor\widgets\Redactor;
 ?>
 
 <div class="blog-form">
@@ -59,10 +58,9 @@ use skeeks\yii2\ckeditor\CKEditorPresets;
     <div class="row">
         <?= $form->field($model, 'text', [
             'template' => "<div class=\"col-lg-12\">{input}</div>",
-        ])->widget(CKEditorWidget::className(), [
-            'options' => ['rows' => 6],
-            'preset' => CKEditorPresets::FULL,
-        ]) ?>
+        ])->widget(Redactor::className(), ['clientOptions' => [
+            'plugins' => ['clips', 'fontcolor', 'imagemanager', 'inlinestyle'],
+        ]]) ?>
     </div>
 
     <div class="form-group">

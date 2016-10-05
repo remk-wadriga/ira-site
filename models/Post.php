@@ -198,11 +198,11 @@ class Post extends ModelAbstract implements StoryInterface, FileModelInterface, 
                 $this->setStoryFields(['title', 'text', 'citation', 'video', 'status']);
             }
         }
-        if ($this->url === null) {
+        if (!$this->url) {
             $this->url = $this->createCpuUrl($this->title, $this->dateCreate);
         }
 
-        if ($this->text !== null) {
+        if ($this->text) {
             $this->text = str_replace('&nbsp;', ' ', $this->text);
         }
 
@@ -363,7 +363,7 @@ class Post extends ModelAbstract implements StoryInterface, FileModelInterface, 
     // cpuUrl
     public function getCpuUrl()
     {
-        $id = $this->url !== null ? $this->url : $this->id;
+        $id = $this->url ? $this->url : $this->id;
         return Url::to(['/front/post/view', 'id' => $id]);
     }
 

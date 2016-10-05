@@ -8,8 +8,7 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use bupy7\cropbox\Cropbox;
-use skeeks\yii2\ckeditor\CKEditorWidget;
-use skeeks\yii2\ckeditor\CKEditorPresets;
+use yii\redactor\widgets\Redactor;
 ?>
 
 <div class="mail-delivery-form">
@@ -48,10 +47,9 @@ use skeeks\yii2\ckeditor\CKEditorPresets;
 
         <?= $form->field($model, 'message', [
             'template' => "<div class=\"col-lg-12\">{input}</div>",
-        ])->widget(CKEditorWidget::className(), [
-            'options' => ['rows' => 6],
-            'preset' => CKEditorPresets::FULL,
-        ]) ?>
+        ])->widget(Redactor::className(), ['clientOptions' => [
+            'plugins' => ['clips', 'fontcolor', 'imagemanager', 'inlinestyle'],
+        ]]) ?>
     </div>
 
     <div class="form-group">

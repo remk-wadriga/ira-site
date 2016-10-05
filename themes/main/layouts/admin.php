@@ -46,7 +46,7 @@ $items = [
     ['label' => $this->t('Home'), 'url' => ['/admin/index/index']],
     ['label' => $this->t('Front'), 'url' => ['/front/index/index']],
     ['label' => $this->t('Account'), 'items' => [
-        ['label' => $this->t('My profile'), 'url' => ['/admin/account/update']],
+        ['label' => $this->t('My profile'), 'url' => ['/site/account/update']],
         ['label' => $this->t('Logout ({name})', ['name' => Yii::$app->user->fullName]), 'url' => ['/site/auth/logout'], 'linkOptions' => [
             'data' => [
                 'type' => 'POST',
