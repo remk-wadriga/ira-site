@@ -23,7 +23,8 @@
         "2amigos/yii2-file-upload-widget": "~1.0",
         "rmrevin/yii2-fontawesome": "~2.12",
         "yiidoc/yii2-redactor": "*",
-        "2amigos/yii2-transliterator-helper": "*"
+        "2amigos/yii2-transliterator-helper": "*",
+        "2amigos/yii2-multi-select-widget": "*"
     },
     "require-dev": {
         "yiisoft/yii2-codeception": "^2.0",

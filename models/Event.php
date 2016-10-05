@@ -52,6 +52,7 @@ use yii\helpers\Url;
  * @property Comment[] $lastComments
  * @property integer $interestedUsersCount
  * @property array $interestedUsersNames
+ * @property array $trainersItems
  * @property User[] $interestedUsers
  * @property string $cpuUrl
  *
@@ -68,6 +69,7 @@ use yii\helpers\Url;
  * @property Image[] $allImages
  * @property Image $mainImage
  * @property Comment[] $comments
+ * @property User[] $trainers
  */
 class Event extends ModelAbstract implements StoryInterface, FileModelInterface, ImagedEntityInterface, UserClickInterface, CpuUrlsInterface
 {
@@ -135,6 +137,8 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
         self::STORY_ACTION_DELETED,
     ];
 
+    private $_trainersChanged = false;
+
     public $hasOwner = false;
     public $hasFiles = false;
     public $img;
@@ -154,6 +158,11 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
         return 'event_user';
     }
 
+    public static function eventTrainerTableName()
+    {
+        return 'event_trainer';
+    }
+
     public function rules()
     {
         return [
@@ -161,7 +170,7 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
             [['ownerID', 'membersCount', 'inMainSlider'], 'integer'],
             [['description', 'citation', 'img'], 'string'],
             [['price', 'profit', 'cost'], 'number'],
-            [['dateStart', 'dateEnd', 'hasOwner', 'cropInfo', 'userID', 'tag'], 'safe'],
+            [['dateStart', 'dateEnd', 'hasOwner', 'cropInfo', 'userID', 'tag', 'trainersIDs'], 'safe'],
             [['name', 'ownerName'], 'string', 'max' => 255],
             [['address', 'url'], 'string', 'max' => 512],
             ['type', 'in', 'range' => self::$_types],
@@ -190,7 +199,9 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
             'userID' => $this->t('User'),
             'citation' => $this->t('Citation'),
             'interestedUsersCount' => $this->t('Interested users'),
-            'url' => $this->t('Ссылка'),
+            'url' => $this->t('Url'),
+            'dateStart' => $this->t('Start date'),
+            'trainersIDs' => $this->t('Trainers'),
         ];
     }
 
@@ -330,6 +341,16 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
             ]);
     }
 
+
+    /**
+     * @return ActiveQuery
+     */
+    public function getTrainers()
+    {
+        return $this->hasMany(User::className(), ['id' => 'trainer_id'])->viaTable(self::eventTrainerTableName(), ['event_id' => 'id'])
+            ->andWhere(['role' => [User::ROLE_ADMIN, User::ROLE_TRAINER]]);
+    }
+
     // END Depending
 
 
@@ -423,12 +444,10 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
     {
         return $this->owner_id;
     }
-
     public function setOwnerID($owner_id)
     {
         $this->owner_id = $owner_id;
     }
-
     // ownerName
     public function getOwnerName()
     {
@@ -437,56 +456,46 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
         }
         return $this->owner_name;
     }
-
     public function setOwnerName($owner_name)
     {
         $this->owner_name = $owner_name;
     }
-
     // membersCount
     public function getMembersCount()
     {
         return $this->members_count;
     }
-
     public function setMembersCount($members_count)
     {
         $this->members_count = $members_count;
     }
-
     // dateStart
     public function getDateStart()
     {
         return $this->date_start;
     }
-
     public function setDateStart($date_start)
     {
         $this->date_start = $date_start;
     }
-
     // dateEnd
     public function getDateEnd()
     {
         return $this->date_end;
     }
-
     public function setDateEnd($date_end)
     {
         $this->date_end = $date_end;
     }
-
     // inMainSlider
     public function getInMainSlider()
     {
         return $this->in_main_slider;
     }
-
     public function setInMainSlider($in_main_slider)
     {
         $this->in_main_slider = $in_main_slider;
     }
-
     // defaultAddress
     public function getDefaultAddress()
     {
@@ -497,21 +506,46 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
         }
         return $address;
     }
-
     public function setDefaultAddress($default_address)
     {
         $this->setRTC('defaultAddress', $default_address);
     }
-
     // imagesUrls
     public function getImagesUrls()
     {
         return (array)$this->getRTC('imagesUrls');
     }
-
     public function setImagesUrls($images_urls)
     {
         $this->setRTC('imagesUrls', (array)$images_urls);
+    }
+    // trainersItems
+    public function getTrainersItems()
+    {
+        return $this->getRTCItem('trainersItems', function () {
+            $items = [];
+            $trainers = $this->getTrainers()->select(['id', 'name' => 'CONCAT(first_name, " ", last_name, " (", email, ")")'])->asArray()->all();
+            foreach ($trainers as $trainer) {
+                $items[$trainer['id']] = $trainer['name'];
+            }
+            return $items;
+        }, []);
+    }
+    public function setTrainersItems($items)
+    {
+        $this->_trainersChanged = $this->getTrainers() != $items;
+        $this->setRTC('trainersItems', $items);
+    }
+    // trainersIDs
+    public function getTrainersIDs()
+    {
+        return $this->getRTCItem('trainersIDs', function () {
+            return array_keys($this->getTrainersItems());
+        }, []);
+    }
+    public function setTrainersIDs($ids)
+    {
+        $this->setTrainersItems($ids);
     }
 
     // END Getters and setters
@@ -612,6 +646,11 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
     public function isImageChanged()
     {
         return !empty($this->cropInfo) || $this->getRTC('oldImg') != $this->img;
+    }
+
+    public function isTrainersChanged()
+    {
+        return $this->_trainersChanged;
     }
 
     public function setIsMainImage($isMain)
@@ -803,6 +842,40 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
     {
         $id = $this->url ? $this->url : $this->id;
         return Url::to(['/front/event/view', 'id' => $id]);
+    }
+
+    public function saveTrainers()
+    {
+        $result = true;
+
+        // Get DB connection instance and begin transaction
+        $db = Yii::$app->db;
+        $transaction = $db->beginTransaction();
+
+        // Remove old trainers
+        $db->createCommand()->delete(self::eventTrainerTableName(), ['event_id' => $this->id])->execute();
+
+        // Write new trainers (if exist)
+        if (!empty($this->getTrainersItems())) {
+            // Create insert data array
+            $insertData = array_map(function ($id) {
+                return [
+                    $this->id,
+                    $id,
+                ];
+            }, $this->getTrainersItems());
+
+            // Try to write changes in "event_trainers" table
+            $result = $db->createCommand()->batchInsert(self::eventTrainerTableName(), ['event_id', 'trainer_id'], $insertData)->execute();
+        }
+
+        if (!$result) {
+            $transaction->rollBack();
+        }
+
+        // Commit the transaction
+        $transaction->commit();
+        return $result;
     }
 
     // END Public methods

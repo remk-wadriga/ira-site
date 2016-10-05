@@ -13,7 +13,7 @@ use yii\bootstrap\Html;
 
 $names = [];
 $count = count($event->interestedUsers);
-$countText = $this->t('Total: {count}', ['count' => $event->interestedUsersCount]);
+$countText = $this->t('Total: {count}', ['count' => $count]);
 if ($count < 200) {
     foreach ($event->interestedUsers as $user) {
         $names[] = Html::a($user->fullName, ['/admin/user/view', 'id' => $user->id]);

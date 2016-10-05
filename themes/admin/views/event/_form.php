@@ -16,6 +16,7 @@ use models\User;
 use dosamigos\fileupload\FileUploadUI;
 use bupy7\cropbox\Cropbox;
 use yii\redactor\widgets\Redactor;
+use dosamigos\multiselect\MultiSelect;
 ?>
 
 <div class="event-form">
@@ -65,21 +66,11 @@ use yii\redactor\widgets\Redactor;
         </div>
 
         <div class="col-lg-6">
-            <h4><?= $this->t('Event owner') ?>:</h4>
 
-            <?= $form->field($model, 'hasOwner')->checkbox([
-                'class' => 'form-group field-event-hasowner toggle-element',
-                'data' => [
-                    'target' => '#event_owner_id_field,#event_owner_name_field',
-                ],
+            <?= $form->field($model, 'trainersIDs')->widget(MultiSelect::className(), [
+                'data' => User::getItems(['role' => [User::ROLE_TRAINER, User::ROLE_ADMIN]]),
+                'options' => ['multiple' => 'multiple'],
             ]) ?>
-
-            <div id="event_owner_id_field" class="user-owner-id-field<?= !$model->hasOwner ? ' hide' : '' ?>">
-                <?= $form->field($model, 'ownerID')->dropDownList(User::getItems(['role' => [User::ROLE_ADMIN, User::ROLE_TRAINER]], $this->t('Select owner'))) ?>
-            </div>
-            <div id="event_owner_name_field" class="user-owner-id-field<?= $model->hasOwner ? ' hide' : '' ?>">
-                <?= $form->field($model, 'ownerName')->textInput(['maxlength' => true]) ?>
-            </div>
 
             <?= $form->field($model, 'type')->dropDownList($model->getTypesItems($this->t('Select type'))) ?>
 

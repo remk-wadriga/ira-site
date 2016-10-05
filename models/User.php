@@ -376,6 +376,11 @@ class User extends ModelAbstract implements IdentityInterface, StoryInterface, F
             $this->setStoryAction($action);
         }
 
+        if (!parent::save($runValidation, $attributeNames)) {
+            $transaction->rollBack();
+            return false;
+        }
+
         if (!in_array($action, [self::STORY_ACTION_LOGIN, self::STORY_ACTION_LOGOUT, self::STORY_ACTION_REGISTRATION])) {
             // Create "User changed" event
             $event = new UserEvent();
@@ -385,11 +390,6 @@ class User extends ModelAbstract implements IdentityInterface, StoryInterface, F
                 $this->addError(null, $event->message);
                 return false;
             }
-        }
-
-        if (!parent::save($runValidation, $attributeNames)) {
-            $transaction->rollBack();
-            return false;
         }
 
         $this->cropInfo = null;

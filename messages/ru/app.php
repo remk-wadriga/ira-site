@@ -152,6 +152,9 @@ $messages = [
     'Unfollow from mail delivery'                                                                                       => 'Отписаться от почтовой рассылки',
     'You are not subscribed to mail delivery'                                                                           => 'Вы не подписаны на расслку',
     'Subscribe'                                                                                                         => 'Подписаться',
+    'Url'                                                                                                               => 'Ссылка',
+    'Start date'                                                                                                        => 'Начало',
+    'Trainers'                                                                                                          => 'Тренеры',
 ];
 
 return array_merge($messages, require(__DIR__ . '/error.php'), require(__DIR__ . '/flash.php'));

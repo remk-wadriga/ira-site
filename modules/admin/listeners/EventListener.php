@@ -31,6 +31,10 @@ class EventListener extends ListenerAbstract
                 $eventModel->setIsMainImage(false);
             }
         }
+        
+        if ($event->isValid && $eventModel->isTrainersChanged() && !$eventModel->saveTrainers()) {
+            $event->isValid = false;
+        }
 
         if ($event->isValid) {
             // Write the story

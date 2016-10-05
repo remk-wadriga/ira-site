@@ -20,6 +20,7 @@ class UserListener extends ListenerAbstract
     public static function handleUserChanged(UserEvent $event)
     {
         $sender = $event->sender;
+
         if ($sender->getStoryAction() == $sender::STORY_ACTION_CREATED_BY_EVENT_RECORD) {
             $params = ['user_id' => $sender->getID()];
             $conditions = ['email' => $sender->email];
