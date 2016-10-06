@@ -39,19 +39,23 @@ $this->params['breadcrumbs'][] = $this->title;
                             <h3><?= $model->name ?></h3>
                             <ul class="meta">
                                 <li>
-                                    <?= Html::a('<i class="fa fa-user"></i> ' . $model->ownerName, '#', [
-                                        'title' => $this->t('Trainer: {name}', ['name' => $model->ownerName]),
-                                        'data' => [
-                                            'toggle' => 'tooltip',
-                                        ],
-                                    ]) ?>
-                                </li>
-                                <li>
                                     <?= $this->render('@common/user-click-btn', [
                                         'model' => $model,
                                         'type' => UserClick::TYPE_INTEREST,
                                     ]) ?>
                                 </li>
+                                <?php if (!empty($model->trainers)) : ?>
+                                    <?php foreach ($model->trainers as $trainer) : ?>
+                                        <li>
+                                            <?= Html::a('<i class="fa fa-user"></i>' . $trainer->fullName, '#', [
+                                                'title' => $this->t('Trainer: {name}', ['name' => $trainer->fullName]),
+                                                'data' => [
+                                                    'toggle' => 'tooltip',
+                                                ],
+                                            ]) ?>
+                                        </li>
+                                    <?php endforeach; ?>
+                                <?php endif ?>
                                 <!--<li><a href="#"><i class="fa fa-comment"></i>12</a></li>
                                 <li><a href="#"><i class="fa fa-heart"></i>1,201</a></li>
                                 <li><a href="#"><i class="fa fa-external-link"></i>31</a></li>-->

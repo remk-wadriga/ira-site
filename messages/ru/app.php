@@ -155,6 +155,8 @@ $messages = [
     'Url'                                                                                                               => 'Ссылка',
     'Start date'                                                                                                        => 'Начало',
     'Trainers'                                                                                                          => 'Тренеры',
+    'Trainers are not selected'                                                                                         => 'Тренеры не выбраны',
+    'trainers selected'                                                                                                 => 'транеров выбрано',
 ];
 
 return array_merge($messages, require(__DIR__ . '/error.php'), require(__DIR__ . '/flash.php'));

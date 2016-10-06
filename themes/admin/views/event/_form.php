@@ -70,6 +70,11 @@ use dosamigos\multiselect\MultiSelect;
             <?= $form->field($model, 'trainersIDs')->widget(MultiSelect::className(), [
                 'data' => User::getItems(['role' => [User::ROLE_TRAINER, User::ROLE_ADMIN]]),
                 'options' => ['multiple' => 'multiple'],
+                'clientOptions' => [
+                    'numberDisplayed' => 3,
+                    'nonSelectedText' => $this->t('Trainers are not selected'),
+                    'nSelectedText' => $this->t('trainers selected'),
+                ],
             ]) ?>
 
             <?= $form->field($model, 'type')->dropDownList($model->getTypesItems($this->t('Select type'))) ?>
