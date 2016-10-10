@@ -905,6 +905,15 @@ class Event extends ModelAbstract implements StoryInterface, FileModelInterface,
         ];
     }
 
+    public static function getRandomList($limit = 20)
+    {
+        return self::find()
+            ->where(['!=', 'status', self::STATUS_CANCELED])
+            ->orderBy('RAND()')
+            ->limit($limit)
+            ->all();
+    }
+
     // END Public static methods
 
 

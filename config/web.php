@@ -18,6 +18,7 @@ Yii::setAlias('@themes', __DIR__ . '/../themes');
 
 $config = [
     'id' => $params['appID'],
+    'name' => 'Альтернатива',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'components' => $components,

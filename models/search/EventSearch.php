@@ -86,7 +86,6 @@ class EventSearch extends Event
         $query->andFilterWhere(['like', 'name', $this->searchText]);
 
         if (!empty($this->tags)) {
-            //echo '<pre>'; print_r($this->tags); exit('</pre>');
             $command = (new Query())
                 ->select('entity_id')
                 ->from(Tag::tableName())

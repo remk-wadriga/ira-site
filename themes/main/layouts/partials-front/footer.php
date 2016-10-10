@@ -11,17 +11,16 @@
 use yii\bootstrap\Html;
 ?>
 
-
 <footer class="classic">
     <section class="content-section parallax-bg-3" data-stellar-background-ratio=".15">
 
         <div class="container">
 
             <div class="col-lg-12">
-                <h1 class="anim fadeInDown">Convinced?</h1>
+                <h1 class="anim fadeInDown">Подписаться на рассылку</h1>
                 <div class="center-buttons">
                     <p>
-                        <a class="btn btn-bordered white anim fadeInRight" role="button">Buy Dale</a>
+                        <a class="btn btn-bordered white anim fadeInRight" role="button">подписаться</a>
                     </p>
                 </div><!-- .center-buttons -->
             </div>
@@ -33,9 +32,9 @@ use yii\bootstrap\Html;
                 <div class="row">
 
                     <div class="col-md-3 anim fadeInLeft">
-                                <span class="logo">
-                                    <img src="/img/logo-light.png" alt="Light logo" />
-                                </span><!-- .logo -->
+                        <span class="logo">
+                            <?= Html::img('/img/main_logo.jpg') ?>
+                        </span><!-- .logo -->
                         <p>
                             Aenean lacinia bibendum nulla sed leo erat a ante venenatis dapibus posuere velit aliquet.
                             Donec ullamcorper metus auctor fringi. Nillam quis risus.

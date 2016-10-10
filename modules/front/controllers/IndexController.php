@@ -10,11 +10,14 @@ namespace front\controllers;
 
 use Yii;
 use front\abstracts\ControllerAbstract;
+use models\Event;
 
 class IndexController extends ControllerAbstract
 {
     public function actionIndex()
     {
-        return $this->render();
+        return $this->render([
+            'events' => Event::getRandomList(8),
+        ]);
     }
 }
